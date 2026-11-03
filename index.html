@@ -126,8 +126,48 @@ const save=()=>{try{localStorage.setItem(storeKey,JSON.stringify(state))}catch(e
 function toast(msg){const x=$('#toast');x.textContent=msg;x.classList.add('show');clearTimeout(window._toast);window._toast=setTimeout(()=>x.classList.remove('show'),2300)}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function slug(s){return s.replace(/[^a-zA-Z0-9]/g,'')}
-function championImg(name){return 'https://hexcomps.com/img/champions/DA_18_'+slug(name)+'.webp'}
-function itemImg(id){return 'https://hexcomps.com/img/items/DA_'+id+'.webp'}
+// Most game assets follow a name-based path, but several have different internal
+// filenames (alternate champion forms, Riftbeasts, capitalization differences).
+// These overrides were checked against the actual Set 18 image links.
+// Keep names stable: they are also used by the champion search and composition data.
+const CHAMPION_ICON_OVERRIDES={
+  'Akali':'DA_18_Akali_AD.webp',
+  'Cinderling':'DA_Cinderling18.webp',
+  'Karma':'DA_Karma18.webp',
+  'Pebbles':'DA_18_Sentry.webp',
+  'Gromp':'DA_Gromp18_AP.webp',
+  'Murkwolf':'DA_Murkwolf18.webp',
+  'Scuttlecrab':'DA_Scuttlecrab18.webp',
+  'Fiddlesticks':'DA_Fiddlesticks18.webp',
+  "Kog'Maw":'DA_KogMaw18_AD.webp',
+  'Krug':'DA_Krug18.webp',
+  'Mama Beak':'DA_CrimsonRaptor18.webp',
+  'Master Yi':'DA_18_MasterYi_AD.webp',
+  'Vi':'DA_Vi18.webp',
+  'Amumu':'DA_Amumu18.webp',
+  'Brambleback':'DA_Brambleback18.webp',
+  'Nidalee':'DA_Nidalee18_AP.webp',
+  'Sentinel':'DA_Sentinel18.webp',
+  'Draven':'DA_Draven18.webp',
+  'Gnar':'DA_18_GnarSmall.webp',
+  'Lux':'DA_Lux18_Base.webp',
+  'Taric':'DA_Taric18.webp',
+  // The source's DA_18_Varus.webp image is unavailable; use a verified
+  // CommunityDragon champion portrait instead of a broken icon.
+  'Varus':'https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/110.png'
+};
+const ITEM_ICON_OVERRIDES={
+  'EdgeofNight':'DA_EdgeOfNight.webp',
+  'HandofJustice':'DA_HandOfJustice.webp',
+  'SpearofShojin':'DA_SpearOfShojin.webp'
+};
+function championImg(name){
+  const file=CHAMPION_ICON_OVERRIDES[name]||'DA_18_'+slug(name)+'.webp';
+  return file.startsWith('https://')?file:'https://hexcomps.com/img/champions/'+file;
+}
+function itemImg(id){
+  return 'https://hexcomps.com/img/items/'+(ITEM_ICON_OVERRIDES[id]||'DA_'+id+'.webp');
+}
 function portrait(name,showName=true){const cost=Object.entries(ROSTER_BY_COST).find(([,v])=>v.includes(name))?.[0]||'?';const abbr=name.split(/\s+/).map(s=>s[0]).join('').slice(0,2).toUpperCase();return `<div class="champ-sm" title="${esc(name)}"><span class="portrait"><span class="abbr">${abbr}</span><img src="${championImg(name)}" loading="lazy" alt="" onerror="this.remove()"><span class="cost">${cost}g</span></span>${showName?`<span class="champ-label">${esc(name)}</span>`:''}</div>`}
 function itemMark(name,short=false){const x=ITEMS.find(i=>i[0]===name),icon=x?itemImg(x[5]):null;return `<span class="itemmark" title="${esc(name)}"><span class="sicon">${esc(name[0])}${icon?`<img src="${icon}" loading="lazy" alt="" onerror="this.remove()">`:''}</span>${short?'':esc(name)}</span>`}
 let compFilter='all';
