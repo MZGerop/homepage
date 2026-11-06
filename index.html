@@ -65,16 +65,48 @@
 @media print{#opening{display:none!important}}
 
 
+
+.holder-section{margin:20px 0 22px}
+.holder-titlebar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
+.holder-titlebar h3{font-size:20px;margin:0 0 4px}.holder-titlebar p{font-size:12px;margin:0}
+.holder-columns{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.holder-column{background:#0d1c2f;border:1px solid var(--line);border-radius:13px;overflow:hidden;min-width:0}
+.holder-column-head{background:#1b3048;border-bottom:1px solid var(--line);padding:12px 14px}
+.holder-column-head b{font-size:12px;letter-spacing:.08em;color:#91e9ce}
+.holder-column-head p{color:#a5bcd9;font-size:11px;margin:4px 0 0}
+.holder-card{margin:10px;border:1px solid #36506d;background:#172841;border-radius:10px;padding:11px}
+.holder-card.owned{border-color:#74d7b4;background:#173a3c}
+.holder-person{display:flex;align-items:center;gap:10px}
+.holder-photo{position:relative;border:2px solid var(--holder-rim,#8b9baa);background:#30425b;border-radius:9px;flex:0 0 62px;width:62px;height:62px;display:flex;align-items:center;justify-content:center;overflow:hidden;font-weight:900}
+.holder-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.holder-photo small{position:absolute;bottom:0;right:0;background:#050b16d9;color:#f7d588;padding:0 3px}
+.holder-person b{font-size:16px}.holder-person .meta{font-size:11px;color:#c1cfe3}
+.holder-label{font-size:11px;color:#8deac9;margin-top:5px;font-weight:800}
+.holder-summary{font-size:12px;color:#c6d7e9;margin:10px 0 7px}
+.holder-minititle{font-size:10px;color:#91aac7;letter-spacing:.1em;text-transform:uppercase;font-weight:850;margin:8px 0 5px}
+.holder-gooditems{display:flex;gap:5px;flex-wrap:wrap}
+.holder-item{display:inline-flex;align-items:center;gap:5px;background:#24394f;padding:4px 7px 4px 3px;font-size:11px;border-radius:6px;color:#dfedff}
+.holder-item img{width:26px;height:26px;border-radius:5px;object-fit:cover}
+.holder-flow{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.holder-step{display:inline-flex;gap:5px;align-items:center;border:1px solid #3b536d;background:#203449;border-radius:7px;padding:4px 6px;font-size:11px;font-weight:700}
+.holder-step img{width:26px;height:26px;object-fit:cover;border-radius:4px}
+.holder-arrow{font-size:16px;color:var(--gold);font-weight:800}
+.holder-open{margin-top:9px;background:#24455c;border:1px solid #567890;border-radius:8px;color:#f0f9ff;padding:9px 12px;text-align:left;width:100%;font-size:12px}
+.holder-open:hover{background:#315a74}
+.holder-empty{padding:19px;color:#b2c8df;font-size:12px}
+.holder-tip{margin:10px 0 20px;border-left:3px solid #cdb879;background:#202b40;padding:11px 13px;font-size:12px;color:#d1ddec}
+@media(max-width:1000px){.holder-columns{grid-template-columns:1fr}.holder-column{display:block}}
+@media(max-width:650px){.holder-titlebar{align-items:flex-start;flex-direction:column}.holder-card{margin:8px}.holder-photo{width:56px;height:56px;flex-basis:56px}}
 </style>
 </head>
 <body>
 <div class="shell">
-<aside class="sidebar" aria-label="Sections"><div class="brand"><div class="rune">✦ <b>TFT FIELD GUIDE</b></div><small>SET 18 · V1.3</small></div>
+<aside class="sidebar" aria-label="Sections"><div class="brand"><div class="rune">✦ <b>TFT FIELD GUIDE</b></div><small>SET 18 · V1.4</small></div>
 <a class="nav" href="#overview"><span class="n">◈</span> Overview</a><a class="nav" href="#opening"><span class="n">✧</span> Opening Planner</a><a class="nav" href="#comps"><span class="n">♛</span> Endgame comps</a><a class="nav" href="#champions"><span class="n">✧</span> Champions</a><a class="nav" href="#items"><span class="n">⚒</span> Items & recipes</a><a class="nav" href="#economy"><span class="n">◉</span> Leveling & economy</a><a class="nav" href="#training"><span class="n">◎</span> Win checklist</a><a class="nav" href="#notes"><span class="n">✎</span> My notes</a>
 <div class="foot">Local-first & editable<br>Patch reference: 18.6<br>Updated: 06 Nov 2026</div></aside>
 <main>
 <section id="overview">
-<div class="mast"><div><div class="eyebrow">Your expandable TFT playbook</div><h1>From top four <span style="color:var(--gold)">to first place.</span></h1><p class="lead">A practical, searchable guide for flex play. Start with the Opening Planner: enter items, champions and Augments to see which endgame directions fit your current game.</p></div><div class="hero-actions"><button class="btn primary" onclick="document.querySelector('#opening').scrollIntoView()">Plan my opening ↗</button><button class="btn" onclick="window.print()">Print / PDF</button></div></div>
+<div class="mast"><div><div class="eyebrow">Your expandable TFT playbook</div><h1>From top four <span style="color:var(--gold)">to first place.</span></h1><p class="lead">A practical, searchable guide for flex play. Start with your items, find an early or midgame champion to hold them, then transition into the best endgame build.</p></div><div class="hero-actions"><button class="btn primary" onclick="document.querySelector('#opening').scrollIntoView()">Plan my opening ↗</button><button class="btn" onclick="window.print()">Print / PDF</button></div></div>
 <div class="stats"><div class="stat"><strong id="countComps">12</strong><span>Endgame routes</span></div><div class="stat"><strong id="countUnits">65</strong><span>Shop-roster champions</span></div><div class="stat"><strong id="countItems">30+</strong><span>Buildable core items</span></div><div class="stat"><strong>8 → 9</strong><span>Critical endgame transition</span></div></div>
 <div class="callout"><strong>The winning mindset:</strong> Items amplify a good board. They cannot replace upgraded units, good traits, a second damage threat, and positioning. A strong level 8 board beats a weak level 9 board.</div>
 <div class="hero-tip" style="margin-top:16px"><div class="glow">✦</div><div>
@@ -112,6 +144,11 @@
 </section>
 </div>
 <div class="opening-samples"><strong>Try an example:</strong><button class="chip" id="openSampleAD" type="button">AD + Guinsoo + Kayle</button><button class="chip" id="openSampleAP" type="button">AP + Teemo 2★</button><button class="chip" id="openSampleFae" type="button">Embiggen + Fae</button><button class="chip" id="openSampleRammus" type="button">Rammus reroll</button></div>
+<section class="holder-section" aria-label="Champion item holders">
+<div class="holder-titlebar"><div><div class="eyebrow">Items → Early carry → Midgame → Endgame</div><h3>Who should hold my items?</h3><p class="muted">Recommended champions you can actually buy early. A strong 2★ already on your board is often the best holder.</p></div><span class="tag" id="holderStatus">Select items</span></div>
+<div class="holder-columns"><div class="holder-column"><div class="holder-column-head"><b>EARLY · 1–2 gold</b><p>Get through Stages 2–3</p></div><div id="holderEarly"></div></div><div class="holder-column"><div class="holder-column-head"><b>MID · 2–3 gold</b><p>Stabilize or reroll in Stages 3–4</p></div><div id="holderMid"></div></div></div>
+<div class="holder-tip"><b>When to transfer:</b> Keep items on your strong upgraded champion until a replacement is ready. Don't sell a 2★ just to move them onto a weaker 1★. A 3★ reroll carry may keep the items.</div>
+</section>
 <div class="opening-results-head"><div><h3>Best directions for your opening</h3><p id="openIntro" class="muted">Select something above to see recommendations.</p></div><span class="tag" id="openCount">No opening selected</span></div>
 <div id="openResults" class="grid opening-results" aria-live="polite"></div>
 <p class="muted" style="font-size:11px;margin-top:12px">Fit scores are explainable planning heuristics, <b>not</b> match win probabilities or live competitive win rates. Reroll viability depends on available copies and whether other players contest the same units.</p>
@@ -423,13 +460,88 @@ function bindVisual(){
  $('#pUnitSearch').addEventListener('input',e=>{visualSearch.unit=e.target.value.trim().toLowerCase();if(visualSearch.unit)visualFilter.unit='all';renderOpening();});
  $('#pStages').addEventListener('click',e=>{const b=e.target.closest('[data-stage]');if(b){openingState().stage=b.dataset.stage;save();renderOpening();}});
 }
+
+/* Item → champion handoffs. Curated Set 18 suggestions, not live win-rate stats.
+   A 2★ unit already owned scores higher than an unowned equivalent. */
+const HOLDER_PATHS=[
+ ["Xayah",0,"AD attacks",["Guinsoo's Rageblade","Kraken's Fury","Deathblade","Infinity Edge","Last Whisper","Giant Slayer"],["Mama Beak","Aphelios"],["Draven"],["draven","dragon","aphelios","fae-flex"],"Ranged carry for attack-speed items; especially useful before Draven."],
+ ["Varus",0,"AD ability",["Spear of Shojin","Last Whisper","Deathblade","Infinity Edge","Giant Slayer"],["Yunara","Mama Beak"],["Ezreal","Ashe"],["ezreal","aphelios","solar-yunara","ashe"],"Good early AD caster. Can hand Shojin and damage items to Ezreal."],
+ ["Ornn",0,"Frontline tank",["Gargoyle Stoneplate","Warmog's Armor","Spirit Visage","Bramble Vest","Dragon's Claw","Protector's Vow"],["Rammus","Hecarim"],["Maokai","Taric"],["draven","rammus","veigar","ezreal"],"Use defensive items immediately, then hand them to a late tank."],
+ ["Karma",0,"AP caster",["Spear of Shojin","Jeweled Gauntlet","Rabadon's Deathcap","Blue Buff","Archangel's Staff","Void Staff"],["Teemo","Azir"],["Ahri","Alune"],["ahri","alune","teemo"],"Flexible spell-damage holder until you find an upgraded AP carry."],
+ ["Veigar",0,"AP caster",["Blue Buff","Jeweled Gauntlet","Hextech Gunblade","Rabadon's Deathcap","Spear of Shojin"],["Teemo","Azir"],["Morgana","Alune"],["veigar","rammus","alune"],"Can stay a 3★ reroll carry or transfer his caster items later."],
+ ["Rakan",0,"Frontline utility",["Gargoyle Stoneplate","Warmog's Armor","Protector's Vow","Spirit Visage"],["Sejuani","Rammus"],["Sentinel","Taric"],["fae-flex","alune"],"An easy frontline when you're playing Fae or want to protect a damage carry."],
+ ["Leona",0,"Frontline tank",["Gargoyle Stoneplate","Warmog's Armor","Bramble Vest","Dragon's Claw"],["Sejuani","Hecarim"],["Amumu","Taric"],["kayle","solar-yunara"],"Cheap tank to protect your early carry."],
+ ["Caitlyn",0,"AD attacks",["Guinsoo's Rageblade","Kraken's Fury","Deathblade","Infinity Edge","Giant Slayer"],["Tristana","Mama Beak"],["Aphelios","Draven"],["draven","aphelios"],"Alternative temporary attack-speed holder when Xayah is missing."],
+ ["Kayle",0,"AP / attack speed",["Guinsoo's Rageblade","Jeweled Gauntlet","Rabadon's Deathcap","Red Buff","Archangel's Staff"],["Tristana","Azir"],["Aphelios","Alune"],["kayle","aphelios"],"Keep items if you hit Kayle 3★; otherwise bridge toward a stronger carry."],
+ ["Yunara",0,"AD ability",["Spear of Shojin","Last Whisper","Deathblade","Infinity Edge","Giant Slayer"],["Mama Beak","Tristana"],["Ezreal","Ashe"],["solar-yunara","ezreal","ashe"],"Can be a long-term 3★ reroll carry or a temporary Shojin holder."],
+ ["Teemo",0,"AP caster",["Spear of Shojin","Jeweled Gauntlet","Rabadon's Deathcap","Blue Buff","Morellonomicon"],["Azir","Fiddlesticks"],["Morgana","Alune"],["teemo","rammus","alune"],"Good mana and AP holder, or permanent carry if you reach 3★."],
+ ["LeBlanc",0,"AP caster",["Spear of Shojin","Jeweled Gauntlet","Blue Buff","Rabadon's Deathcap","Archangel's Staff"],["Azir","Fiddlesticks"],["Ahri","Morgana"],["teemo","ahri","alune"],"Flexible AP bridge for a caster opening."],
+ ["Alistar",0,"Frontline tank",["Gargoyle Stoneplate","Warmog's Armor","Spirit Visage","Dragon's Claw"],["Hecarim","Rammus"],["Maokai","Sentinel"],["draven","teemo"],"Early tank that can use defensive items until the endgame."],
+ ["Warwick",0,"Melee fighter",["Bloodthirster","Titan's Resolve","Edge of Night","Hand of Justice"],["Master Yi","Vi"],["Nidalee","Brambleback"],["yi","primal-nidalee","riftbeast"],"Hold melee sustain items until your midgame fighter appears."],
+ ["Murkwolf",0,"Melee fighter",["Bloodthirster","Titan's Resolve","Hand of Justice","Edge of Night"],["Master Yi","Vi"],["Brambleback","Nidalee"],["riftbeast","yi"],"Riftbeast holder for bruiser items."],
+ ["Azir",1,"AP / attack speed",["Guinsoo's Rageblade","Hextech Gunblade","Rabadon's Deathcap","Jeweled Gauntlet"],["Azir"],["Morgana","Alune"],["rammus","alune"],"Commit to 3★ Azir with Rammus only if uncontested."],
+ ["Mama Beak",1,"AD attacks",["Guinsoo's Rageblade","Kraken's Fury","Infinity Edge","Deathblade","Last Whisper"],["Mama Beak"],["Aphelios","Draven"],["aphelios","draven"],"A 3-cost stop for attack-speed items before the expensive carries."],
+ ["Tristana",1,"AD attacks",["Guinsoo's Rageblade","Deathblade","Infinity Edge","Kraken's Fury","Last Whisper"],["Tristana"],["Aphelios","Draven"],["fae-flex","aphelios","draven"],"Upgraded ranged holder, particularly when Fae is already active."],
+ ["Rammus",1,"Frontline tank",["Gargoyle Stoneplate","Spirit Visage","Warmog's Armor","Steadfast Heart","Bramble Vest"],["Rammus"],["Sentinel","Maokai"],["rammus","alune"],"At 3★ he can keep your tank items for the entire game."],
+ ["Hecarim",1,"Frontline tank",["Gargoyle Stoneplate","Warmog's Armor","Spirit Visage","Bramble Vest"],["Hecarim"],["Amumu","Sentinel"],["ezreal","aphelios","draven"],"A durable bridge when your cheap tanks are falling off."],
+ ["Master Yi",1,"Melee fighter",["Guinsoo's Rageblade","Titan's Resolve","Edge of Night","Bloodthirster","Hand of Justice"],["Master Yi"],["Nidalee","Brambleback"],["yi","riftbeast"],"Keep items at 3★ for Yi reroll, otherwise pivot into another melee carry."],
+ ["Vi",1,"Melee fighter",["Bloodthirster","Hand of Justice","Titan's Resolve","Edge of Night"],["Vi"],["Nidalee","Brambleback"],["yi","primal-nidalee"],"Good midgame option for melee survival and damage items."],
+ ["Fiddlesticks",1,"AP / utility",["Spear of Shojin","Jeweled Gauntlet","Rabadon's Deathcap","Morellonomicon"],["Fiddlesticks"],["Ahri","Morgana","Alune"],["ahri","alune"],"Can hold caster items until a 4- or 5-cost AP carry is upgraded."],
+ ["Krug",1,"Frontline tank",["Gargoyle Stoneplate","Warmog's Armor","Spirit Visage","Bramble Vest"],["Krug"],["Sentinel","Taric"],["riftbeast","yi"],"Riftbeast tank bridge for your defensive items."],
+ ["Cassiopeia",1,"AP caster",["Archangel's Staff","Spear of Shojin","Morellonomicon","Jeweled Gauntlet"],["Cassiopeia"],["Zyra","Morgana"],["veigar","alune"],"A midgame spell holder that can eventually hand items to Zyra or Morgana."]
+];
+function holderCost(n){const e=Object.entries(ROSTER_BY_COST).find(x=>x[1].includes(n));return e?Number(e[0]):0;}
+function holderFit(path,o){
+ const names=[...new Set(o.items)];
+ const matched=names.filter(n=>path[3].includes(n));
+ const craft=path[3].filter(n=>!names.includes(n)&&canCraft(n,o.components));
+ const owned=o.units.find(u=>u.name===path[0]);
+ const bonus=owned?(owned.stars===3?13:owned.stars===2?9:4):0;
+ const score=matched.length*6+(matched.length>1?5:0)+Math.min(2,craft.length)*1.8+bonus;
+ return {path,matched,craft,owned,score};
+}
+function holderStep(n){
+ return '<span class="holder-step"><img src="'+championImg(n)+'" alt="" loading="lazy" onerror="this.remove()">'+esc(n)+'</span>';
+}
+function holderCard(m){
+ const p=m.path,name=p[0],cost=holderCost(name);
+ const rim={1:'#9ba8bd',2:'#70cf9d',3:'#6ca7ee',4:'#ad81eb',5:'#f4c66f'}[cost]||'#7891ad';
+ const source=(name,idx)=>{const i=getItem(name);return '<span class="holder-item"><img src="'+(i?itemImg(i[5]):'')+'" alt="" loading="lazy" onerror="this.remove()">'+esc(name)+(idx?' (craft)':'')+'</span>';};
+ const target=p[1]===0?p[4]:p[5];
+ const last=p[1]===0?p[5]:[];
+ const firstId=p[6].find(id=>COMP_LIST.some(c=>c.id===id));
+ const firstComp=COMP_LIST.find(c=>c.id===firstId);
+ return '<article class="holder-card'+(m.owned?' owned':'')+'"><div class="holder-person"><div class="holder-photo" style="--holder-rim:'+rim+'">'+esc(name.slice(0,2))+'<img src="'+championImg(name)+'" alt="" loading="lazy" onerror="this.remove()"><small>'+cost+'g</small></div><div><b>'+esc(name)+'</b><div class="meta">'+esc(p[2])+'</div><div class="holder-label">'+(m.owned?'ON YOUR BOARD · '+m.owned.stars+'★':m.matched.length+' item'+(m.matched.length===1?'':'s')+' fit')+'</div></div></div>'
+ +'<p class="holder-summary">'+esc(p[7])+'</p>'
+ +'<div class="holder-minititle">Items that fit</div><div class="holder-gooditems">'+(m.matched.length?m.matched.map(n=>source(n,0)).join(''):(m.craft.length?'':'No completed matching items yet'))+m.craft.slice(0,1).map(n=>source(n,1)).join('')+'</div>'
+ +'<div class="holder-minititle">Transition</div><div class="holder-flow">'+holderStep(name)+'<span class="holder-arrow">→</span>'+target.slice(0,2).map(holderStep).join('')+(last.length?'<span class="holder-arrow">→</span>'+last.slice(0,2).map(holderStep).join(''):'')+'</div>'
+ +(firstComp?'<button type="button" class="holder-open" data-holder-comp="'+esc(firstId)+'">See '+esc(firstComp.name)+' ↗</button>':'')+'</article>';
+}
+function renderHolders(){
+ const o=openingState(),inputCount=o.items.length+o.components.length+o.units.length;
+ if(!inputCount){
+  $('#holderStatus').textContent='Add items above';
+  $('#holderEarly').innerHTML='<div class="holder-empty">Select your starting items to find a cheap holder.</div>';
+  $('#holderMid').innerHTML='<div class="holder-empty">Midgame replacements will appear here.</div>';
+  return;
+ }
+ const fits=HOLDER_PATHS.map(p=>holderFit(p,o)).filter(m=>m.matched.length||m.craft.length||m.owned);
+ const compare=(a,b)=>b.score-a.score||Number(!!b.owned)-Number(!!a.owned)||holderCost(a.path[0])-holderCost(b.path[0]);
+ const early=fits.filter(m=>m.path[1]===0).sort(compare).slice(0,3);
+ const mid=fits.filter(m=>m.path[1]===1).sort(compare).slice(0,3);
+ $('#holderStatus').textContent=(early.length+mid.length)+' champion suggestions';
+ $('#holderEarly').innerHTML=early.length?early.map(holderCard).join(''):'<div class="holder-empty">No matching cheap holder yet. Use your strongest upgraded unit and add more items.</div>';
+ $('#holderMid').innerHTML=mid.length?mid.map(holderCard).join(''):'<div class="holder-empty">No matching midgame holder yet — keep your upgraded early champion for now.</div>';
+ document.querySelectorAll('[data-holder-comp]').forEach(b=>b.onclick=()=>showComposition(b.dataset.holderComp));
+}
+
 function showComposition(id){
  $('#compSearch').value=COMP_LIST.find(function(c){return c.id===id;}).name;
  compFilter='all';document.querySelectorAll('#compFilters .chip').forEach(function(b){b.classList.toggle('active',b.dataset.filter==='all');});
  renderComps();document.querySelector('#comps').scrollIntoView({behavior:'smooth',block:'start'});
 }
 function renderOpening(){
- var o=openingState();renderVisual(o);
+ var o=openingState();renderVisual(o);renderHolders();
  var hasAny=o.items.length+o.components.length+o.units.length+o.augments.length;
  if(!hasAny){
   $('#openIntro').textContent='Add an item, an upgraded champion, or an Augment — or try a sample opening above.';
