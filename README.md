@@ -1,33 +1,48 @@
 # TFT Field Guide — Set 18
 
-A one-file, dependency-free Teamfight Tactics cheat sheet for champion selection, team compositions, items, leveling, and late-game decisions.
+A self-contained, dependency-free Teamfight Tactics guide with an interactive **Opening Planner** to decide what to play from the items, champions, and Augments you actually find.
 
 ## Open
 
-Double-click `index.html` in any modern browser. The text, filters, checklists, favorites, and match journal work without a server. Portraits are hotlinked from HexComps, so they require an internet connection; built-in text initials are shown when the images cannot load.
+Open `index.html` in a modern browser or visit [GitHub Pages](https://mzgerop.github.io/homepage/) (if enabled). The app works without a server. Champion and item portraits are loaded from external sources and require internet access; text labels remain if they fail.
 
-## Contents
+## Opening Planner — the new starting point
 
-- Twelve endgame directions (AD, AP, Fast 9, and reroll), with team cores, traits, items, pivots, and links to detailed guides
-- 65-champion shop roster, cost and practical tier filters
-- 35 craftable items and a two-component recipe lookup
-- Leveling curve, XP costs, interest rules, roll-versus-level decision helper
-- Endgame checklist, favorites, personal notes, and match journal
-- JSON import/export so you can carry your notes between browsers
+1. Add your **completed items** (multiple copies supported) and **loose components**.
+2. Add your most important **champions**, choosing 1★ / 2★ / 3★.
+3. Choose up to three **Augments** and your current stage.
+4. Review the **five suggested compositions**, their fit reasons, craftable items, missing core units, and reroll/level advice.
+5. Select **Open complete build** to navigate to that composition.
 
-## How to extend
+Four sample openings are included (AD, AP, Embiggen/Fae, and Rammus/Azir). A curated 13-Augment library includes Embiggen, Beast Within, economy Augments, and reroll Augments. This is not yet the complete Set 18 Augment catalog.
 
-Open `index.html` in an editor and edit the data objects near the start of the `<script>` tag:
+**Fit points are a heuristic, not a predicted win rate.** The algorithm scores exact item matches, potential component recipes, champion overlap/upgrades, and explicitly mapped Augment synergies. It cannot see contested units, your actual lobby, positioning, or live augment statistics. Avoid forcing an otherwise weak comp just because it tops the suggestions.
 
-- `COMP_LIST`: add, remove, and update compositions
-- `ROSTER_BY_COST`, `SPLUS`, `STIER`, `ATIER`, `CTIER`, `ROLES`: champion roster, tiers, and roles
-- `ITEMS`, `COMPONENTS`: item recipes and effects
-- `TIMELINE`, `CHECKS`: leveling advice and checklists
+## Other sections
 
-Search, filters, cards and recipes are all generated from these collections. Save, refresh the browser, and you're done.
+- 16 endgame directions spanning AD, AP, trait-flex, Fast 9 and reroll routes
+- Champion roster with cost and practical tier filters
+- 35 completed items, component lookup, and role-based item guidance
+- Leveling/economy, roll-versus-level decisions and a win checklist
+- Favorites, personal notes, match history, and JSON import/export
 
-## Versioning and sources
+Personal selections and notes are stored locally in your browser. Export your data before clearing browser storage or changing devices.
 
-This is a **static** snapshot, not a live meta tracker. Reference patch: Set 18, 18.5 / 18.5c, November 2, 2026. Source links are displayed in the page; confirm rankings after each patch.
+## Updating content
+
+Edit the data collections in `index.html`:
+
+- `COMP_LIST`: composition boards, core units, item priorities, level, and traits
+- `ROSTER_BY_COST`, `SPLUS`, `STIER`, `ATIER`, `CTIER`, `ROLES`: champion reference
+- `ITEMS`, `COMPONENTS`: item recipes
+- `AUGMENT_HINTS`: curated Augment names, descriptions and explicit scoring boosts
+- `relevance(comp)`: explainable Opening Planner ranking
+- `TIMELINE`, `CHECKS`: economy and checklist
+
+The Opening Planner lives in a second inline `<script>` near the end of the file. No build process or backend is necessary.
+
+## Versioning and limitations
+
+Current reference patch: **Set 18, Patch 18.6 (November 2026)**. This is a manually curated snapshot, not a live meta feed. Source links are in the page; confirm tiers and numbers after patch updates. Item and Augment recommendations are contextual, not universal best-in-slot.
 
 Unofficial fan-made reference. Not affiliated with Riot Games.
