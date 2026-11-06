@@ -14,19 +14,42 @@
 @media(max-width:600px){.grid,.split,.tiers{grid-template-columns:1fr}.roster{grid-template-columns:repeat(2,minmax(0,1fr))}.item-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.timeline{grid-template-columns:repeat(2,minmax(0,1fr))}.match{grid-template-columns:1fr 1fr}.match input:nth-child(3){grid-column:span 2}.stats{gap:7px}.stat{padding:12px}.section{margin-top:28px}}
 @media print{body{background:#fff;color:#171b25}.sidebar,.hero-actions,.controls,.chiprow,.btn,.fav,.details-toggle,.mutebar,.decision-form,.notes-section{display:none!important}.shell{display:block}main{padding:0}.card,.stat,.tierbox,.panel,.level-card{background:white;color:#15191e;border-color:#ccc;break-inside:avoid}.sub,.muted,.smallline,.comp-bottom,.comp-details,.panel p,.panel li{color:#404a5a!important}.comp-details{display:block!important;background:white}.grid{grid-template-columns:repeat(3,1fr)}.item-grid{grid-template-columns:repeat(4,1fr)}.section{page-break-inside:avoid}.portrait img,.sicon img{filter:grayscale(.1)}}
 
-/* Opening Planner */
-.opening-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
-.opening-panel{min-height:182px}.opening-panel h3{font-size:16px}.opening-panel p{font-size:12px;margin-bottom:13px}
-.opening-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.opening-controls select{min-width:0;max-width:100%;flex:1 1 160px}
-.opening-controls #openStar,.opening-controls #openStage{flex:0 0 74px}
-.opening-stage{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted)}
-.opening-stage select{width:84px}
-.opening-chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:13px;min-height:29px}
-.openchip{display:inline-flex;align-items:center;gap:7px;background:#1a2d47;border:1px solid #435777;border-radius:9px;color:var(--text);padding:5px 7px 5px 9px;font-size:12px}
-.openchip img{width:24px;height:24px;object-fit:cover;border-radius:4px}
-.openchip button{border:0;border-radius:5px;background:#2e4261;color:#f2f6ff;padding:2px 7px;font-size:14px;font-weight:800}
-.openchip button:hover{background:#7c3a48}
+/* Visual opening planner */
+.opening-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:14px}
+.opening-panel{grid-column:span 8;padding:17px;min-width:0}
+.opening-panel:nth-child(2),.opening-panel:nth-child(4){grid-column:span 4}
+.picker-head{display:flex;justify-content:space-between;align-items:start;gap:12px;margin-bottom:10px}
+.picker-head h3{font-size:17px;margin:0 0 5px}.picker-head p{font-size:12px;color:var(--muted);margin:0}
+.picker-total{border:1px solid #508879;background:#153e3b;color:#b3ffe4;border-radius:15px;padding:1px 8px;margin-left:5px;font-size:12px}
+.picker-search{width:160px;max-width:42%;border:1px solid #405e79;background:#101c30;border-radius:9px;padding:9px;color:#f0f8ff}
+.picker-filters{display:flex;gap:5px;flex-wrap:wrap;margin:10px 0}
+.picker-filters button{border:1px solid #3c526f;background:#192b46;color:#b6cae5;border-radius:7px;padding:8px 10px;font-size:12px;font-weight:750}
+.picker-filters button.active{background:#236059;border-color:#70c6b2;color:white}
+.picker-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:7px;max-height:348px;overflow-y:auto;align-content:start;padding:3px 3px 6px;scrollbar-color:#556f8c #111d2e}
+.picker-components{grid-template-columns:repeat(auto-fill,minmax(81px,1fr));max-height:none}
+.picker-augments{grid-template-columns:repeat(auto-fill,minmax(86px,1fr))}
+.pick-cell{min-width:0;position:relative;display:flex;flex-direction:column;align-items:stretch}
+.pick-main{width:100%;min-width:0;min-height:91px;background:#122239;border:1px solid #3d5370;border-radius:10px;display:flex;align-items:center;flex-direction:column;gap:5px;padding:7px 3px;color:#dce9fb}
+.pick-main:hover{border-color:#91accb;background:#1c3453}
+.pick-main[aria-pressed="true"]{border:2px solid #74e4be;background:#174441;padding:6px 2px}
+.pick-art{width:50px;height:50px;position:relative;display:flex;align-items:center;justify-content:center;border:1px solid #5b5d7e;border-radius:8px;background:linear-gradient(135deg,#503b64,#234d63);font-size:18px;font-weight:850;color:#ffe19b;overflow:hidden}
+.pick-art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.pick-name{font-size:10px;line-height:1.2;text-align:center;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere;min-height:23px}
+.pick-number{position:absolute;right:2px;top:2px;border-radius:12px;background:#f4cb6b;border:2px solid #101a30;color:#142133;min-width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900}
+.pick-cost{position:absolute;bottom:0;right:0;font-size:10px;background:#040a15d9;color:white;padding:0 3px;border-top-left-radius:3px}
+.pick-minus{position:absolute;z-index:2;right:3px;bottom:23px;border:1px solid #c78c95;background:#673744;border-radius:6px;color:white;font-size:18px;font-weight:900;width:24px;height:25px;padding:0;line-height:1}
+.pick-minus:hover{background:#a23a51}
+.pick-stars{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:3px}
+.pick-stars button{border:1px solid #506078;background:#1b2c45;color:#a9b9d1;border-radius:5px;font-size:10px;letter-spacing:-1px;padding:7px 0}
+.pick-stars button.active{border-color:#efc369;background:#654f23;color:#ffe6a1}
+.picker-chosen{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.picker-chosen:empty{display:none}
+.picker-chosen .chosen{display:flex;align-items:center;gap:4px;background:#1e3b43;border:1px solid #50877d;border-radius:6px;font-size:11px;padding:3px 5px;color:white}
+.picker-chosen img{width:23px;height:23px;border-radius:4px;object-fit:cover}
+.picker-chosen .goldstars{color:#ffe08e;font-weight:900}
+.picker-chosen button{background:#5b3846;border:0;border-radius:5px;color:white;padding:3px 6px}
+.stage-controls{border-top:1px solid var(--line);display:flex;gap:10px;align-items:center;padding-top:10px;margin-top:12px}
+.stage-controls strong{font-size:12px}.stage-controls .picker-filters{margin:0}
 .opening-samples{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:15px 0 19px}
 .opening-samples strong{font-size:12px;color:var(--muted)}
 .opening-results-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:16px 0}
@@ -34,18 +57,19 @@
 .opening-results .comp-top{padding-bottom:16px}
 .opening-fit{font-size:11px;border:1px solid #488b87;border-radius:6px;background:#10383c;color:#8ef2cd;padding:4px 7px}
 .opening-reasons{margin:9px 0 0;padding-left:18px;font-size:12px;color:#c0d8ec}
-.opening-reasons li{margin-bottom:6px}
-.opening-plan{border-top:1px solid var(--line);padding:12px 17px 17px;background:#0c1a2b;font-size:12px;color:#aec8df}
-.opening-plan b{color:var(--gold)}
-.opening-action{margin-top:10px;display:block;width:100%}
-@media(max-width:870px){.opening-grid{grid-template-columns:1fr}}
+.opening-reasons li{margin-bottom:6px}.opening-plan{border-top:1px solid var(--line);padding:12px 17px 17px;background:#0c1a2b;font-size:12px;color:#aec8df}
+.opening-plan b{color:var(--gold)}.opening-action{margin-top:10px;display:block;width:100%}
+.pick-main:focus-visible,.pick-stars button:focus-visible,.pick-minus:focus-visible,.picker-filters button:focus-visible{outline:3px solid #ffe08e;outline-offset:2px}
+@media(max-width:1050px){.opening-panel{grid-column:span 12!important}.picker-components{grid-template-columns:repeat(8,minmax(0,1fr))}}
+@media(max-width:600px){.opening-panel{padding:12px}.picker-head{flex-direction:column}.picker-search{width:100%;max-width:100%}.picker-grid{grid-template-columns:repeat(auto-fill,minmax(69px,1fr));gap:5px}.picker-components{grid-template-columns:repeat(4,minmax(0,1fr))}.picker-augments{grid-template-columns:repeat(auto-fill,minmax(76px,1fr))}.pick-art{width:44px;height:44px}.pick-name{font-size:10px}}
 @media print{#opening{display:none!important}}
+
 
 </style>
 </head>
 <body>
 <div class="shell">
-<aside class="sidebar" aria-label="Sections"><div class="brand"><div class="rune">✦ <b>TFT FIELD GUIDE</b></div><small>SET 18 · V1.2</small></div>
+<aside class="sidebar" aria-label="Sections"><div class="brand"><div class="rune">✦ <b>TFT FIELD GUIDE</b></div><small>SET 18 · V1.3</small></div>
 <a class="nav" href="#overview"><span class="n">◈</span> Overview</a><a class="nav" href="#opening"><span class="n">✧</span> Opening Planner</a><a class="nav" href="#comps"><span class="n">♛</span> Endgame comps</a><a class="nav" href="#champions"><span class="n">✧</span> Champions</a><a class="nav" href="#items"><span class="n">⚒</span> Items & recipes</a><a class="nav" href="#economy"><span class="n">◉</span> Leveling & economy</a><a class="nav" href="#training"><span class="n">◎</span> Win checklist</a><a class="nav" href="#notes"><span class="n">✎</span> My notes</a>
 <div class="foot">Local-first & editable<br>Patch reference: 18.6<br>Updated: 06 Nov 2026</div></aside>
 <main>
@@ -64,27 +88,28 @@
 <section class="section" id="opening">
 <div class="section-head"><div><div class="eyebrow">NEW · Decide from what you find</div><h2>Opening Planner</h2><p>Enter your current items, components, champions, and Augments. See which builds fit <em>your</em> start — and why.</p></div><button class="btn" type="button" id="openingClear">Clear opening</button></div>
 <div class="opening-grid">
- <div class="card panel opening-panel">
-   <h3>1 · Completed items</h3><p class="muted">Select items you already built or received. You can add duplicates.</p>
-   <div class="opening-controls"><select id="openItem" aria-label="Choose completed item"></select><button type="button" class="btn primary" id="openAddItem">+ Add item</button></div>
-   <div id="openItems" class="opening-chips" aria-live="polite"></div>
- </div>
- <div class="card panel opening-panel">
-   <h3>2 · Loose components</h3><p class="muted">We check which recommended items you can craft from the components you have.</p>
-   <div class="opening-controls"><select id="openComponent" aria-label="Choose component"></select><button type="button" class="btn primary" id="openAddComponent">+ Add component</button></div>
-   <div id="openComponents" class="opening-chips" aria-live="polite"></div>
- </div>
- <div class="card panel opening-panel">
-   <h3>3 · Champions you have</h3><p class="muted">Upgraded units count more. Add key champions from your board and bench, not every shop purchase.</p>
-   <div class="opening-controls"><select id="openUnit" aria-label="Choose champion"></select><select id="openStar" aria-label="Champion star level"><option value="1">1★</option><option value="2">2★</option><option value="3">3★</option></select><button type="button" class="btn primary" id="openAddUnit">+ Add</button></div>
-   <div id="openUnits" class="opening-chips" aria-live="polite"></div>
- </div>
- <div class="card panel opening-panel">
-   <h3>4 · Augments and stage</h3><p class="muted">Trait Augments affect your direction; economy Augments change when you can level or roll.</p>
-   <div class="opening-controls"><select id="openAugment" aria-label="Choose augment"></select><button type="button" class="btn primary" id="openAddAugment">+ Add</button><label class="opening-stage">Stage <select id="openStage" aria-label="Current stage"><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5+</option></select></label></div>
-   <div id="openAugments" class="opening-chips" aria-live="polite"></div>
-   <small>Curated Augments, including Embiggen and Beast Within. More can be added later.</small>
- </div>
+<section class="card panel opening-panel">
+ <div class="picker-head"><div><h3>1 · Completed items <span class="picker-total" id="pItemCount">0</span></h3><p>Click an icon to add one. Click − to remove a copy.</p></div><input id="pItemSearch" class="picker-search" type="search" placeholder="Search items…" aria-label="Search items"></div>
+ <div class="picker-filters" id="pItemFilters" role="group" aria-label="Item categories"><button data-if="all" class="active">All</button><button data-if="AD">AD</button><button data-if="AP">AP</button><button data-if="Tank">Tank</button><button data-if="Utility">Utility</button></div>
+ <div class="picker-grid" id="pItems" role="group" aria-label="Tap an item to add it"></div>
+</section>
+<section class="card panel opening-panel">
+ <div class="picker-head"><div><h3>2 · Components <span class="picker-total" id="pComponentCount">0</span></h3><p>Choose the components you have. Copies show as numbers.</p></div></div>
+ <div class="picker-grid picker-components" id="pComponents" role="group" aria-label="Available components"></div>
+</section>
+<section class="card panel opening-panel">
+ <div class="picker-head"><div><h3>3 · Champions <span class="picker-total" id="pUnitCount">0</span></h3><p>Click a portrait, then pick ★ / ★★ / ★★★ below it.</p></div><input id="pUnitSearch" class="picker-search" type="search" placeholder="Search champions…" aria-label="Search champions"></div>
+ <div class="picker-filters" id="pUnitFilters" role="group" aria-label="Champion costs"><button data-uf="early" class="active">Early 1–3g</button><button data-uf="all">All</button><button data-uf="1">1g</button><button data-uf="2">2g</button><button data-uf="3">3g</button><button data-uf="4">4g</button><button data-uf="5">5g</button></div>
+ <div id="pChosenUnits" class="picker-chosen" aria-label="Selected champions"></div>
+ <div class="picker-grid" id="pUnits" role="group" aria-label="Tap a champion to add, then choose star level"></div>
+</section>
+<section class="card panel opening-panel">
+ <div class="picker-head"><div><h3>4 · Augments <span class="picker-total" id="pAugmentCount">0 / 3</span></h3><p>Choose up to three Augments by their artwork.</p></div></div>
+ <div class="picker-filters" id="pAugmentFilters" role="group" aria-label="Augment categories"><button data-af="all" class="active">All</button><button data-af="Trait">Trait</button><button data-af="Economy">Economy</button><button data-af="Team">Team</button><button data-af="Item">Item</button></div>
+ <div class="picker-grid picker-augments" id="pAugments" role="group" aria-label="Choose up to three Augments"></div>
+ <div class="stage-controls"><strong>Stage</strong><div class="picker-filters" id="pStages" role="group" aria-label="Current stage"><button data-stage="2">2</button><button data-stage="3" class="active">3</button><button data-stage="4">4</button><button data-stage="5">5+</button></div></div>
+ <small class="muted">13 curated Augments. Hover or focus to read the full effect.</small>
+</section>
 </div>
 <div class="opening-samples"><strong>Try an example:</strong><button class="chip" id="openSampleAD" type="button">AD + Guinsoo + Kayle</button><button class="chip" id="openSampleAP" type="button">AP + Teemo 2★</button><button class="chip" id="openSampleFae" type="button">Embiggen + Fae</button><button class="chip" id="openSampleRammus" type="button">Rammus reroll</button></div>
 <div class="opening-results-head"><div><h3>Best directions for your opening</h3><p id="openIntro" class="muted">Select something above to see recommendations.</p></div><span class="tag" id="openCount">No opening selected</span></div>
@@ -337,17 +362,66 @@ function relevance(comp){
  var missing=comp.carry.concat(comp.front).filter(function(n){return !o.units.some(function(u){return u.name===n;});}).slice(0,3);
  return {comp:comp,score:score,reasons:reasons,missing:missing,craft:craft};
 }
-function removeOne(k,i){openingState()[k].splice(i,1);save();renderOpening();}
-function chip(label,icon,kind,idx){
- return '<span class="openchip">'+(icon?'<img src="'+icon+'" alt="" onerror="this.remove()">':'')+'<span>'+esc(label)+'</span><button type="button" data-remove="'+kind+'" data-index="'+idx+'" aria-label="Remove '+esc(label)+'">×</button></span>';
+
+const AUGMENT_ART={
+  Embiggen:'DA_18_FaeTraitAugment.webp','Beast Within':'DA_18_PrimalAugment_Sivir.webp',
+  "Nature's Shelter":'DA_18_ElderwoodTraitAugment.webp','Epic Rolldown':'DA_EpicRolldown.webp',
+  Epoch:'DA_Epoch.webp','Explosive Growth':'DA_ExplosiveGrowth.webp','Duo Queue':'DA_18_DuoQueue.webp',
+  'Frontline Foundation':'DA_FrontlineFoundation.webp','Double Trouble':'TFT6_Augment_Twins2.webp',
+  'Fully Adapted':'TFT10_Augment_FullyAdapted.webp','Feed the Flames':'TFT_Augment_FeedTheFlames.webp',
+  'Coven Acolyte':'DA_18_CovenTraitAugment.webp','Dark Ritual':'DA_18_CovenTraitAugment_LootToAP.webp'
+};
+const COMPONENT_ART={Sword:'DA_Component_BFSword.webp',Bow:'DA_Component_RecurveBow.webp',Rod:'DA_Component_NeedlesslyLargeRod.webp',Tear:'DA_Component_TearOfTheGoddess.webp',Vest:'DA_Component_ChainVest.webp',Cloak:'DA_Component_NegatronCloak.webp',Belt:'DA_Component_GiantsBelt.webp',Gloves:'DA_Component_SparringGloves.webp'};
+const COST_COLORS={1:'#a9b8c8',2:'#59d79a',3:'#72a8f5',4:'#b98bfa',5:'#f0c45b'};
+let visualFilter={item:'all',unit:'early',augment:'all'},visualSearch={item:'',unit:''};
+function renderTile(type,id,label,src,n,more){
+ const found=n>0;const cost=more&&more.cost;
+ const img='<span class="pick-art"'+(cost?' style="border-bottom:3px solid '+COST_COLORS[cost]+'"':'')+'>'+esc(label.slice(0,2).toUpperCase())+'<img src="'+src+'" loading="lazy" alt="" onerror="this.remove()">'+(cost?'<span class="pick-cost">'+cost+'g</span>':'')+'</span>';
+ const count=found?'<span class="pick-number">'+(type==='unit'?'★'.repeat(n):n)+'</span>':'';
+ let s='<div class="pick-cell"><button type="button" class="pick-main" data-kind="'+type+'" data-id="'+esc(id)+'" aria-pressed="'+found+'" aria-label="'+esc((found?'Selected ':'Add ')+label)+'" title="'+esc(label+(more&&more.desc?' — '+more.desc:''))+'">'+img+count+'<span class="pick-name">'+esc(label)+'</span></button>';
+ if(found&&type==='unit'){s+='<div class="pick-stars" role="group" aria-label="'+esc(label)+' star level">'+[1,2,3].map(x=>'<button type="button" data-star="'+x+'" data-id="'+esc(id)+'" class="'+(x===n?'active':'')+'" aria-pressed="'+(x===n)+'" aria-label="'+esc(label)+' '+x+' stars">'+('★'.repeat(x))+'</button>').join('')+'</div>';}
+ if(found&&type!=='augment'){s+='<button class="pick-minus" type="button" data-minus="'+type+'" data-id="'+esc(id)+'" aria-label="Remove '+esc(label)+'">−</button>';}
+ return s+'</div>';
 }
-function drawSelected(o){
- $('#openItems').innerHTML=o.items.length?o.items.map(function(n,i){var it=getItem(n);return chip(n,it?itemImg(it[5]):'', 'items',i);}).join(''):'<span class="muted">No completed items yet</span>';
- $('#openComponents').innerHTML=o.components.length?o.components.map(function(n,i){return chip(COMPONENTS[n],null,'components',i);}).join(''):'<span class="muted">No components yet</span>';
- $('#openUnits').innerHTML=o.units.length?o.units.map(function(u,i){return chip(u.name+' '+u.stars+'★',championImg(u.name),'units',i);}).join(''):'<span class="muted">No champions yet</span>';
- $('#openAugments').innerHTML=o.augments.length?o.augments.map(function(n,i){return chip(n,null,'augments',i);}).join(''):'<span class="muted">No Augments yet</span>';
- document.querySelectorAll('#opening [data-remove]').forEach(function(b){b.onclick=function(){removeOne(b.dataset.remove,Number(b.dataset.index));};});
- $('#openStage').value=o.stage;
+function renderVisual(o){
+ const scrollIds=['#pItems','#pComponents','#pUnits','#pAugments'],scrolls=scrollIds.map(id=>$(id).scrollTop||0);
+ const ci=counted(o.items),cc=counted(o.components);
+ $('#pItems').innerHTML=ITEMS.filter(x=>(visualFilter.item==='all'||x[3]===visualFilter.item)&&x[0].toLowerCase().includes(visualSearch.item)).map(x=>renderTile('item',x[0],x[0],itemImg(x[5]),ci[x[0]]||0)).join('');
+ $('#pComponents').innerHTML=Object.keys(COMPONENTS).map(k=>renderTile('component',k,COMPONENTS[k],'https://hexcomps.com/img/items/'+COMPONENT_ART[k],cc[k]||0)).join('');
+ const units=Object.entries(ROSTER_BY_COST).flatMap(([c,ns])=>ns.map(name=>({name,cost:Number(c)}))).filter(x=>(visualFilter.unit==='all'||(visualFilter.unit==='early'?x.cost<=3:x.cost===Number(visualFilter.unit)))&&x.name.toLowerCase().includes(visualSearch.unit)).sort((x,y)=>x.cost-y.cost||x.name.localeCompare(y.name));
+ $('#pUnits').innerHTML=units.map(x=>{const u=o.units.find(u=>u.name===x.name);return renderTile('unit',x.name,x.name,championImg(x.name),u?u.stars:0,x);}).join('');
+ $('#pChosenUnits').innerHTML=o.units.map(u=>'<span class="chosen"><img src="'+championImg(u.name)+'" alt="" onerror="this.remove()">'+esc(u.name)+' <span class="goldstars">'+('★'.repeat(u.stars))+'</span><button type="button" data-minus="unit" data-id="'+esc(u.name)+'" aria-label="Remove '+esc(u.name)+'">×</button></span>').join('');
+ $('#pAugments').innerHTML=AUGMENT_HINTS.filter(x=>visualFilter.augment==='all'||x.group===visualFilter.augment).map(x=>renderTile('augment',x.id,x.id,'https://hexcomps.com/img/augments/'+AUGMENT_ART[x.id],o.augments.includes(x.id)?1:0,x)).join('');
+ $('#pItemCount').textContent=o.items.length;$('#pComponentCount').textContent=o.components.length;$('#pUnitCount').textContent=o.units.length;$('#pAugmentCount').textContent=o.augments.length+' / 3';
+ scrollIds.forEach((id,i)=>$(id).scrollTop=scrolls[i]);
+ [['#pItemFilters','if','item'],['#pUnitFilters','uf','unit'],['#pAugmentFilters','af','augment']].forEach(([sel,k,filter])=>document.querySelectorAll(sel+' button').forEach(b=>{const on=b.dataset[k]===visualFilter[filter];b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on));}));
+ document.querySelectorAll('#pStages button').forEach(b=>{const on=b.dataset.stage===o.stage;b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on));});
+}
+function chooseIcon(kind,id){
+ const o=openingState();
+ if(kind==='item')o.items.push(id);
+ else if(kind==='component')o.components.push(id);
+ else if(kind==='unit'){if(!o.units.some(u=>u.name===id))o.units.push({name:id,stars:1});}
+ else if(kind==='augment'){if(o.augments.includes(id))o.augments=o.augments.filter(x=>x!==id);else if(o.augments.length<3)o.augments.push(id);else {toast('Maximum three Augments');return;}}
+ save();renderOpening();
+}
+function removeIcon(kind,id){
+ const o=openingState();
+ if(kind==='unit')o.units=o.units.filter(u=>u.name!==id);
+ else {const k=kind==='item'?'items':kind==='component'?'components':'augments';const i=o[k].indexOf(id);if(i>=0)o[k].splice(i,1);}
+ save();renderOpening();
+}
+function iconClick(e){
+ const star=e.target.closest('[data-star]');if(star){const u=openingState().units.find(u=>u.name===star.dataset.id);if(u){u.stars=Number(star.dataset.star);save();renderOpening();}return;}
+ const minus=e.target.closest('[data-minus]');if(minus){removeIcon(minus.dataset.minus,minus.dataset.id);return;}
+ const tile=e.target.closest('[data-kind]');if(tile)chooseIcon(tile.dataset.kind,tile.dataset.id);
+}
+function bindVisual(){
+ ['#pItems','#pComponents','#pUnits','#pAugments','#pChosenUnits'].forEach(id=>$(id).addEventListener('click',iconClick));
+ [['#pItemFilters','if','item'],['#pUnitFilters','uf','unit'],['#pAugmentFilters','af','augment']].forEach(([sel,k,type])=>$(sel).addEventListener('click',e=>{const b=e.target.closest('button');if(b){visualFilter[type]=b.dataset[k];renderOpening();}}));
+ $('#pItemSearch').addEventListener('input',e=>{visualSearch.item=e.target.value.trim().toLowerCase();renderOpening();});
+ $('#pUnitSearch').addEventListener('input',e=>{visualSearch.unit=e.target.value.trim().toLowerCase();if(visualSearch.unit)visualFilter.unit='all';renderOpening();});
+ $('#pStages').addEventListener('click',e=>{const b=e.target.closest('[data-stage]');if(b){openingState().stage=b.dataset.stage;save();renderOpening();}});
 }
 function showComposition(id){
  $('#compSearch').value=COMP_LIST.find(function(c){return c.id===id;}).name;
@@ -355,7 +429,7 @@ function showComposition(id){
  renderComps();document.querySelector('#comps').scrollIntoView({behavior:'smooth',block:'start'});
 }
 function renderOpening(){
- var o=openingState();drawSelected(o);
+ var o=openingState();renderVisual(o);
  var hasAny=o.items.length+o.components.length+o.units.length+o.augments.length;
  if(!hasAny){
   $('#openIntro').textContent='Add an item, an upgraded champion, or an Augment — or try a sample opening above.';
@@ -382,10 +456,6 @@ function renderOpening(){
  }).join('');
  document.querySelectorAll('#openResults [data-open-comp]').forEach(function(b){b.onclick=function(){showComposition(b.dataset.openComp);};});
 }
-function addItem(){var n=$('#openItem').value;if(!n)return;openingState().items.push(n);save();renderOpening();}
-function addComponent(){var n=$('#openComponent').value;if(!n)return;openingState().components.push(n);save();renderOpening();}
-function addUnit(){var name=$('#openUnit').value,stars=Number($('#openStar').value);if(!name)return;var a=openingState().units,u=a.find(function(x){return x.name===name;});if(u)u.stars=stars;else a.push({name:name,stars:stars});save();renderOpening();}
-function addAugment(){var n=$('#openAugment').value;if(!n)return;var a=openingState().augments;if(a.includes(n))return;if(a.length>=3){toast('A game has at most three Augments');return;}a.push(n);save();renderOpening();}
 function example(type){
  var o={items:[],components:[],units:[],augments:[],stage:'3'};
  if(type==='ad'){o.items=["Guinsoo's Rageblade"];o.components=['Sword','Gloves'];o.units=[{name:'Kayle',stars:2},{name:'Alistar',stars:2}];}
@@ -395,17 +465,9 @@ function example(type){
  state.opening=o;save();renderOpening();
 }
 function initOpening(){
- var list=Object.values(ROSTER_BY_COST).flat().sort(function(a,b){return a.localeCompare(b);});
- $('#openUnit').innerHTML=list.map(function(n){return '<option value="'+esc(n)+'">'+esc(n)+'</option>';}).join('');
- $('#openItem').innerHTML=ITEMS.slice().sort(function(a,b){return a[0].localeCompare(b[0]);}).map(function(x){return '<option value="'+esc(x[0])+'">'+esc(x[0])+' — '+x[3]+'</option>';}).join('');
- $('#openComponent').innerHTML=Object.entries(COMPONENTS).map(function(x){return '<option value="'+esc(x[0])+'">'+esc(x[1])+'</option>';}).join('');
- $('#openAugment').innerHTML=AUGMENT_HINTS.map(function(a){return '<option value="'+esc(a.id)+'">'+esc(a.label)+'</option>';}).join('');
- $('#openAddItem').onclick=addItem;$('#openAddComponent').onclick=addComponent;$('#openAddUnit').onclick=addUnit;$('#openAddAugment').onclick=addAugment;
- $('#openStage').onchange=function(){openingState().stage=this.value;save();renderOpening();};
- $('#openingClear').onclick=function(){state.opening={items:[],components:[],units:[],augments:[],stage:'3'};save();renderOpening();};
- $('#openSampleAD').onclick=function(){example('ad');};$('#openSampleAP').onclick=function(){example('ap');};
- $('#openSampleFae').onclick=function(){example('fae');};$('#openSampleRammus').onclick=function(){example('rammus');};
- renderOpening();
+ bindVisual();
+ $('#openingClear').onclick=function(){state.opening={items:[],components:[],units:[],augments:[],stage:'3'};visualFilter={item:'all',unit:'early',augment:'all'};visualSearch={item:'',unit:''};$('#pItemSearch').value='';$('#pUnitSearch').value='';save();renderOpening();};
+ $('#openSampleAD').onclick=function(){example('ad');};$('#openSampleAP').onclick=function(){example('ap');};$('#openSampleFae').onclick=function(){example('fae');};$('#openSampleRammus').onclick=function(){example('rammus');};renderOpening();
 }
 window.renderOpening=renderOpening;
 initOpening();
