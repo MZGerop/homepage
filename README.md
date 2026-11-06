@@ -35,6 +35,19 @@ The browser's context menu is suppressed **only for these interactive planner co
 
 For touchscreen, keyboard, or accessibility use, visible **−** controls and direct 1★ / 2★ / 3★ buttons remain. The selected champion row has **×** to remove a champion entirely.
 
+## Champion-first item recommendations (v1.6)
+
+Select one or more champion portraits in the **Opening Planner**. A new **What items should I build for my champions?** section automatically displays visual item suggestions for each selected unit, even when you have no items.
+
+- Recommended completed items with icons and their **two component recipes** as small icons
+- Inventory-aware badges: **Have ×N**, **Can craft**, or **Need parts** (hover the item row for the missing components)
+- Already-owned and craftable items are shown first, so you can choose realistic items during Stage 2–4
+- A champion portrait, cost, ★/★★/★★★, short role description, possible item handoff, and link to a relevant endgame build
+- **25 champion-specific item-holder profiles**, **16 general early-champion role profiles**, and comp-based suggestions for later champions
+- No new dropdowns: this section updates from the existing visual picker using left/right click
+
+The recommendation library is curated and heuristic, **not live best-in-slot**. General role-based suggestions are labeled. Crafting availability is checked against the loose components you entered, but the planner does not spend components or reserve an item for one champion. Multiple champions may show the same candidate item.
+
 ## Item holder and transition guide (v1.4)
 
 The Opening Planner also recommends **individual champions**, not only complete endgame boards. It uses the selected completed items, any craftable items from loose components, and the star level of champions you already have.
