@@ -20,6 +20,21 @@ The five suggested compositions update immediately. Explanations show matching i
 
 **Fit scores are not live win probabilities.** They're an explainable heuristic, and the planner cannot detect contested units, current opponent boards, or actual Augment win rates.
 
+## Mouse shortcuts for the visual planner (v1.5)
+
+The item, component, champion, and Augment icons support quick **left/right mouse clicks**:
+
+| Tile | Left click | Right click |
+| --- | --- | --- |
+| Completed item | Add one copy | Remove one copy |
+| Loose component | Add one copy | Remove one copy |
+| Champion portrait | Increase the star level: none → 1★ → 2★ → 3★ (max) | Decrease stars: 3★ → 2★ → 1★ → removed |
+| Augment artwork | Select or deselect | Deselect if chosen |
+
+The browser's context menu is suppressed **only for these interactive planner controls**. All changes update the recommendations and are saved locally.
+
+For touchscreen, keyboard, or accessibility use, visible **−** controls and direct 1★ / 2★ / 3★ buttons remain. The selected champion row has **×** to remove a champion entirely.
+
 ## Item holder and transition guide (v1.4)
 
 The Opening Planner also recommends **individual champions**, not only complete endgame boards. It uses the selected completed items, any craftable items from loose components, and the star level of champions you already have.
