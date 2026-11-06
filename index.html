@@ -490,7 +490,19 @@ function relevance(comp){
   if(a.style==='damage' && comp.type!=='reroll')bonus+=1.5;
   if(bonus){score+=bonus;augHits.push(n);}
  });
- if(augHits.length)reasons.push('Augment synergy: '+augHits.join(', ')+'.');
+ const artifactSynergies=[];
+  [...new Set(o.artifacts)].forEach(function(n){
+   const preferred=Object.entries(HERO_ARTIFACTS).filter(([name,list])=>list.includes(n));
+   let best=0,bestName='';
+   for(const [name,list] of preferred){
+    let tier=list.indexOf(n);
+    let points=comp.carry.includes(name)?(9-tier*2):comp.front.includes(name)?(6-tier):comp.units.includes(name)?(4-tier):0;
+    if(points>best){best=points;bestName=name;}
+   }
+   if(best){score+=best;artifactSynergies.push(n+' → '+bestName);}
+  });
+  if(artifactSynergies.length)reasons.push('Artifact holders: '+artifactSynergies.slice(0,2).join(', ')+'.');
+  if(augHits.length)reasons.push('Augment synergy: '+augHits.join(', ')+'.');
  if(itemHits.length)reasons.push('Great completed items: '+Array.from(new Set(itemHits)).slice(0,3).join(', ')+'.');
  if(unitHits.length)reasons.push('Your units already fit: '+unitHits.slice(0,3).join(', ')+'.');
  if(craft.length)reasons.push('You can craft: '+craft.slice(0,2).join(' or ')+'.');
@@ -697,7 +709,7 @@ function heroItemCard(unit,o){
  '<div><h4>'+esc(name)+'</h4><div class="hero-picks-role">'+esc(profile.role)+' · '+esc(profile.quality)+'</div>'+
  '<span class="hero-picks-stars">'+('★'.repeat(unit.stars))+'</span></div></div>'+
  '<div class="hero-picks-body"><p class="hero-picks-note">'+esc(profile.note)+'</p>'+
- '<div class="hero-picks-itemlist">'+shown.map(p=>heroItemRow(p,o)).join('')+'</div>'+
+ '<div class="hero-picks-itemlist">'+shown.map(p=>heroItemRow(p,o)).join('')+'</div>'+heroArtifactAdvice(name,o)+
  (later.length?'<div class="hero-picks-next"><b>Later item holders</b><div class="hero-picks-next-list">'+
  '<span><img src="'+championImg(name)+'" alt="" onerror="this.remove()">'+esc(name)+'</span>'+
  '<span class="arrow">→</span>'+later.map(n=>'<span><img src="'+championImg(n)+'" alt="" onerror="this.remove()">'+esc(n)+'</span>').join('')+
@@ -711,6 +723,60 @@ function renderHeroItems(){
  $('#heroPicksCards').innerHTML=selected.length?selected.map(u=>heroItemCard(u,o)).join(''):
  '<div class="hero-picks-empty">Click any champion portrait above. Even without items, you will see recommended item icons and recipes.</div>';
  document.querySelectorAll('#heroPicksCards [data-hero-build]').forEach(b=>b.onclick=()=>showComposition(b.dataset.heroBuild));
+}
+
+
+function artifactTag(name,owned){
+ return '<span class="hero-artifact-choice'+(owned?' owned':'')+'" title="'+esc((ARTIFACTS[name]?.desc||'')+' · Artifact, cannot craft')+'">'+
+ '<span class="letter">'+esc(name.slice(0,2).toUpperCase())+artifactImgTag(name)+'</span>'+
+ '<span>'+esc(name)+(owned?' · Have':'')+'</span></span>';
+}
+function heroArtifactAdvice(name,o){
+ const list=HERO_ARTIFACTS[name]||[];
+ if(!list.length)return '';
+ const counts=counted(o.artifacts);
+ const ordered=list.slice().sort((a,b)=>Number(!!counts[b])-Number(!!counts[a]));
+ return '<div class="hero-artifacts"><h5>Recommended Artifacts</h5><div class="hero-artifact-row">'+
+ ordered.map(n=>artifactTag(n,counts[n]||0)).join('')+'</div>'+
+ '<div class="hero-artifact-note">Special loot only — not craftable from components. Green = you have this Artifact.</div></div>';
+}
+function findArtifactHolders(o){
+ const uniques=[...new Set(o.artifacts)];
+ return Object.entries(HERO_ARTIFACTS).map(([name,list])=>{
+  const matches=uniques.filter(a=>list.includes(a));
+  const owned=o.units.find(u=>u.name===name);
+  const cost=holderCost(name);
+  const score=matches.reduce((sum,a)=>sum+10-3*list.indexOf(a),0)+(matches.length>1?6:0)+(owned?(owned.stars===3?11:owned.stars===2?8:3):0);
+  return {name,matches,owned,cost,score};
+ }).filter(x=>x.matches.length).sort((a,b)=>b.score-a.score||Number(!!b.owned)-Number(!!a.owned)||a.cost-b.cost);
+}
+function artifactHolderCard(m){
+ const comp=COMP_LIST.find(c=>c.carry.includes(m.name)||c.front.includes(m.name))||
+  COMP_LIST.find(c=>c.units.includes(m.name));
+ const costColor=COST_COLORS[m.cost]||'#af95c8';
+ return '<article class="artifact-holder-card'+(m.owned?' owned':'')+'"><div class="identity"><div class="portrait" style="border-color:'+costColor+'">'+
+ esc(m.name.slice(0,2))+'<img src="'+championImg(m.name)+'" alt="" loading="lazy" onerror="this.remove()"><small>'+m.cost+'g</small></div>'+
+ '<div><b>'+esc(m.name)+'</b><small>'+(m.owned?'On your board · '+m.owned.stars+'★':m.cost<=2?'Early holder':m.cost<=3?'Midgame holder':'Late carry')+'</small></div></div>'+
+ '<p>'+esc(m.matches.length>1?'Multiple selected Artifacts fit this champion.':'Good match for your selected Artifact.')+'</p>'+
+ '<div>'+m.matches.map(a=>'<span class="artifact-tag"><span class="abbr">'+esc(a.slice(0,2))+artifactImgTag(a)+'</span>'+esc(a)+'</span>').join('')+'</div>'+
+ (comp?'<p class="handoff">Possible direction: <b>'+esc(comp.name)+'</b></p>':'')+'</article>';
+}
+function renderArtifactHolders(){
+ const o=openingState();
+ if(!o.artifacts.length){
+  $('#artifactHolderCount').textContent='Choose an Artifact';
+  $('#artifactHolderResults').innerHTML='<div class="hero-picks-empty">Select an Artifact above to find suitable early-game holders and later carries.</div>';
+  return;
+ }
+ const candidates=findArtifactHolders(o);
+ // Provide a spread of realistic early options and eventual expensive carries.
+ const early=candidates.filter(x=>x.cost<=2).slice(0,3);
+ const mid=candidates.filter(x=>x.cost===3).slice(0,2);
+ const late=candidates.filter(x=>x.cost>=4).slice(0,3);
+ const shown=early.concat(mid,late);
+ $('#artifactHolderCount').textContent=shown.length+' recommended holders';
+ $('#artifactHolderResults').innerHTML=shown.map(artifactHolderCard).join('')||
+  '<div class="hero-picks-empty">No direct matches in the curated list; choose your strongest upgraded unit.</div>';
 }
 
 function holderCost(n){const e=Object.entries(ROSTER_BY_COST).find(x=>x[1].includes(n));return e?Number(e[0]):0;}
@@ -764,7 +830,7 @@ function showComposition(id){
  renderComps();document.querySelector('#comps').scrollIntoView({behavior:'smooth',block:'start'});
 }
 function renderOpening(){
- var o=openingState();renderVisual(o);renderHeroItems();renderHolders();
+ var o=openingState();renderVisual(o);renderArtifactHolders();renderHeroItems();renderHolders();
  var hasAny=o.items.length+o.components.length+o.units.length+o.augments.length+o.artifacts.length;
  if(!hasAny){
   $('#openIntro').textContent='Add an item, an upgraded champion, or an Augment — or try a sample opening above.';
