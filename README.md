@@ -6,17 +6,19 @@ A self-contained, dependency-free Teamfight Tactics guide with an interactive **
 
 Open `index.html` in a modern browser or visit [GitHub Pages](https://mzgerop.github.io/homepage/) (if enabled). The app works without a server. Champion and item portraits are loaded from external sources and require internet access; text labels remain if they fail.
 
-## Opening Planner — the new starting point
+## Opening Planner — icon-based controls (v1.3)
 
-1. Add your **completed items** (multiple copies supported) and **loose components**.
-2. Add your most important **champions**, choosing 1★ / 2★ / 3★.
-3. Choose up to three **Augments** and your current stage.
-4. Review the **five suggested compositions**, their fit reasons, craftable items, missing core units, and reroll/level advice.
-5. Select **Open complete build** to navigate to that composition.
+The planner is visual-first for fast use while playing, with **no dropdowns for selecting items, champions, or Augments**:
 
-Four sample openings are included (AD, AP, Embiggen/Fae, and Rammus/Azir). A curated 13-Augment library includes Embiggen, Beast Within, economy Augments, and reroll Augments. This is not yet the complete Set 18 Augment catalog.
+- **Completed items:** click the item's TFT icon once per copy. Its badge shows the quantity; press **−** on a selected tile to remove one. Use the AD / AP / Tank / Utility icon gallery filters or optional search.
+- **Components:** eight recognizable component icons. Click repeatedly to add duplicates; the badge shows the current count. Loose components affect craftable-item suggestions.
+- **Champions:** click a champion portrait to select it at 1★, then tap **★, ★★, or ★★★** underneath to set the star level. Selected champions are also visible in a compact row. Filter by cost (1–5g), use the Early 1–3g view, or search.
+- **Augments:** click the actual Augment artwork to select or deselect it (maximum 3). Filter by Trait / Economy / Team / Item. Hover or focus for a short description. The current stage is also chosen using buttons.
+- Four example openings (AD, AP, Embiggen/Fae, Rammus/Azir) and a Clear opening control remain available.
 
-**Fit points are a heuristic, not a predicted win rate.** The algorithm scores exact item matches, potential component recipes, champion overlap/upgrades, and explicitly mapped Augment synergies. It cannot see contested units, your actual lobby, positioning, or live augment statistics. Avoid forcing an otherwise weak comp just because it tops the suggestions.
+The five suggested compositions update immediately. Explanations show matching items, craftable recipes, upgraded champions, useful Augments, and missing units. Your existing opening, favorites, notes, and match journal continue using the same browser storage key.
+
+**Fit scores are not live win probabilities.** They're an explainable heuristic, and the planner cannot detect contested units, current opponent boards, or actual Augment win rates.
 
 ## Other sections
 
@@ -39,7 +41,7 @@ Edit the data collections in `index.html`:
 - `relevance(comp)`: explainable Opening Planner ranking
 - `TIMELINE`, `CHECKS`: economy and checklist
 
-The Opening Planner lives in a second inline `<script>` near the end of the file. No build process or backend is necessary.
+The visual Opening Planner lives in a second inline `<script>` near the end of the file. No build process or backend is necessary.
 
 ## Versioning and limitations
 
