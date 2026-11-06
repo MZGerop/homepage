@@ -10,7 +10,7 @@ Open `index.html` in a modern browser or visit [GitHub Pages](https://mzgerop.gi
 
 The planner is visual-first for fast use while playing, with **no dropdowns for selecting items, champions, or Augments**:
 
-- **Completed items:** click the item's TFT icon once per copy. Its badge shows the quantity; press **−** on a selected tile to remove one. Use the AD / AP / Tank / Utility icon gallery filters or optional search.
+- **Completed items and Artifacts:** click the icon once per copy. Artifacts have a separate visual picker and cannot be crafted. Its badge shows the quantity; press **−** on a selected tile to remove one. Use the AD / AP / Tank / Utility icon gallery filters or optional search.
 - **Components:** eight recognizable component icons. Click repeatedly to add duplicates; the badge shows the current count. Loose components affect craftable-item suggestions.
 - **Champions:** click a champion portrait to select it at 1★, then tap **★, ★★, or ★★★** underneath to set the star level. Selected champions are also visible in a compact row. Filter by cost (1–5g), use the Early 1–3g view, or search.
 - **Augments:** click the actual Augment artwork to select or deselect it (maximum 3). Filter by Trait / Economy / Team / Item. Hover or focus for a short description. The current stage is also chosen using buttons.
@@ -34,6 +34,19 @@ The item, component, champion, and Augment icons support quick **left/right mous
 The browser's context menu is suppressed **only for these interactive planner controls**. All changes update the recommendations and are saved locally.
 
 For touchscreen, keyboard, or accessibility use, visible **−** controls and direct 1★ / 2★ / 3★ buttons remain. The selected champion row has **×** to remove a champion entirely.
+
+## Artifact support (v1.7)
+
+The Opening Planner now has a separate **Artifact** visual picker below Augments, with all **30 Set 18 Artifacts** and searchable AD / AP / Tank / Utility filters. These are special Armory/Anvil items and **cannot be crafted from components**.
+
+- **Left-click** an Artifact icon to add one copy; **right-click** to remove one copy. Quantity badges and a touch-friendly minus button work like standard items.
+- A **Who should hold my Artifacts?** recommendation section shows matching early (1–2-cost), midgame (3-cost), and late-game (4–5-cost) holders. Star-upgraded champions you already own receive extra preference.
+- The **What items should I build for my champions?** cards also display each champion's top-three curated Artifact options and highlight Artifacts already in your inventory.
+- Artifacts influence the endgame composition fit scores when a carry/frontline unit in a recommended comp is a suitable holder. A short reason explains the specific Artifact-to-champion match.
+- All 65 shop-roster champions have curated Artifact candidates, based on the Set 18 Artifact guide updated November 4, 2026. See [Mobalytics Set 18 Artifact Guide](https://mobalytics.gg/tft/guides/set-18-artifact-guide) and [HexComps Artifact Catalogue](https://hexcomps.com/team-builder/).
+- Existing local selections and JSON import/export are preserved. Reset clears Artifacts together with your other selections.
+
+**Limitations:** These are useful holder pairings, not guaranteed best-in-slot or live win probabilities. Some champions have alternative AP/AD builds that need different Artifacts. Artifact images use externally hosted sources and fall back to text initials if a source is unavailable.
 
 ## Champion-first item recommendations (v1.6)
 
