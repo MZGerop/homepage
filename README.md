@@ -20,6 +20,19 @@ The five suggested compositions update immediately. Explanations show matching i
 
 **Fit scores are not live win probabilities.** They're an explainable heuristic, and the planner cannot detect contested units, current opponent boards, or actual Augment win rates.
 
+## Item holder and transition guide (v1.4)
+
+The Opening Planner also recommends **individual champions**, not only complete endgame boards. It uses the selected completed items, any craftable items from loose components, and the star level of champions you already have.
+
+- **Early (mostly 1-cost):** Suggested item holders such as Xayah for Guinsoo / Kraken, Varus for Shojin / Last Whisper, Karma or Veigar for AP, and Ornn for tank equipment.
+- **Midgame (2–3 cost):** Suggested upgrades such as Yunara, Teemo, Kayle, Azir, Mama Beak, and Rammus.
+- Each champion card includes a portrait, cost, role, compatible items, a visual **champion → upgrade → late carry** chain, and a link to a relevant endgame composition.
+- Multiple matching items receive more weight, while a champion you already own at 2★ or 3★ gets a significant bonus.
+- Shows what you can craft from available components, but does not automatically consume them.
+- The system uses 25 curated champion handoffs. These are flexible recommendations, not rankings based on live match data. Don't sell a strong 2★ for an unupgraded replacement.
+
+**Example:** Spear of Shojin + Last Whisper → Varus (early) → Yunara (midgame) → Ezreal (endgame). Guinsoo + Kraken → Xayah → Mama Beak → Draven. Gargoyle + Warmog → Ornn → Rammus → Maokai.
+
 ## Other sections
 
 - 16 endgame directions spanning AD, AP, trait-flex, Fast 9 and reroll routes
