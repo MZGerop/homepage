@@ -266,11 +266,51 @@
 .hero-radiants .hero-artifact-choice.owned{border-color:#60c69e;background:#1f4c3e}
 .hero-radiants .letter{background:#71582a}
 @media(max-width:600px){.radiant-gallery{grid-template-columns:repeat(auto-fill,minmax(73px,1fr))}}
+
+.aug-mode-row{display:flex;gap:7px;flex-wrap:wrap;margin:11px 0}
+.aug-mode-row button{border:1px solid #435d7a;border-radius:8px;background:#213047;padding:8px 11px;color:#cfdfef;font-size:12px;font-weight:800}
+.aug-mode-row button.active{background:#24685d;color:#fff;border-color:#77d5ba}
+.aug-search-row{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.aug-search-row .picker-search{max-width:none;width:min(240px,100%)}
+.aug-search-row .picker-filters{margin:0}
+.picker-augments{grid-template-columns:repeat(auto-fill,minmax(86px,1fr));max-height:405px}
+.augment-guide{border-top:1px solid #435774;padding-top:16px;margin:23px 0}
+.aug-guide-head{display:flex;align-items:start;justify-content:space-between;gap:12px}
+.aug-guide-head h3{font-size:20px;margin:0 0 4px}.aug-guide-head p{font-size:12px;margin:0}
+.aug-guide-head a{white-space:nowrap;font-size:11px}
+.aug-offer-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:14px}
+.aug-offer-card{background:#1b2b45;border:1px solid #435d7e;border-radius:12px;padding:13px;min-width:0}
+.aug-offer-card.best{border-color:#e4c678;background:#303345}
+.aug-offer-top{display:flex;gap:9px;align-items:center}
+.aug-offer-top img{height:54px;width:54px;flex:0 0 54px;object-fit:cover;border-radius:10px;border:2px solid #72679a;background:#454d61}
+.aug-offer-top b{display:block;font-size:14px;line-height:1.2}
+.aug-offer-top small{display:block;font-size:11px;margin-top:4px}
+.aug-pill{display:inline-block;padding:2px 6px;margin:5px 5px 0 0;border:1px solid #556987;border-radius:6px;background:#263b53;font-size:10px;font-weight:800}
+.aug-pill.s{background:#735a2d;color:#fce7a1}.aug-pill.a{background:#215b50;color:#b8fee2}.aug-pill.b{background:#305a80;color:#d5ebff}
+.aug-offer-card p{font-size:12px;color:#c4d9eb;margin:10px 0 0}
+.aug-offer-card button{margin-top:10px;width:100%;background:#264b5f;color:#e5f8ff;border:1px solid #55879a;border-radius:7px;padding:9px;font-size:12px;font-weight:800}
+.aug-offer-placeholder{grid-column:1/-1;padding:14px;border:1px dashed #516a83;border-radius:10px;color:#aabdd9;font-size:12px}
+.aug-tier-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:22px;flex-wrap:wrap}
+.aug-tier-heading h3{font-size:17px}
+.aug-tier-row{display:flex;gap:10px;background:#13263c;border:1px solid #344b65;border-radius:11px;margin-top:9px;padding:10px}
+.aug-tier-marker{width:33px;height:33px;flex:0 0 33px;display:flex;align-items:center;justify-content:center;background:#49617b;border-radius:7px;font-size:18px;font-weight:900}
+.aug-tier-row.tier-S .aug-tier-marker{background:#a07d39}.aug-tier-row.tier-A .aug-tier-marker{background:#277364}.aug-tier-row.tier-B .aug-tier-marker{background:#3d6597}.aug-tier-row.tier-C .aug-tier-marker{background:#625177}
+.aug-tier-icons{display:grid;grid-template-columns:repeat(auto-fill,minmax(82px,1fr));gap:6px;flex:1;min-width:0}
+.aug-mini{position:relative;display:flex;flex-direction:column;align-items:center;gap:5px;border-radius:9px;border:1px solid #455b76;padding:6px 4px;background:#1a2f49;color:#deedff;min-height:97px;min-width:0}
+.aug-mini:hover{border-color:#a6c4e4;background:#294460}
+.aug-mini[aria-pressed=true]{border-color:#7bd8bc;background:#235547}
+.aug-mini img{height:49px;width:49px;border-radius:8px;object-fit:cover;background:#4a4266}
+.aug-mini span{font-size:10.5px;line-height:1.2;overflow-wrap:anywhere;text-align:center;max-width:100%}
+.aug-mini small{position:absolute;top:2px;right:2px;background:#2d415d;border-radius:5px;font-size:9px;padding:2px 4px}
+.aug-offer-flag{position:absolute;top:2px;left:2px;background:#d7ab67;color:#261b10;border-radius:5px;padding:2px 4px;font-size:10px;font-weight:900}
+.aug-legal-note{font-size:11px;margin:10px 0 0}
+@media(max-width:1060px){.aug-offer-cards{grid-template-columns:1fr 1fr}}
+@media(max-width:650px){.aug-offer-cards{grid-template-columns:1fr}.aug-guide-head{flex-direction:column}.aug-tier-row{gap:6px;padding:7px}.aug-tier-icons{grid-template-columns:repeat(auto-fill,minmax(70px,1fr))}}
 </style>
 </head>
 <body>
 <div class="shell">
-<aside class="sidebar" aria-label="Sections"><div class="brand"><div class="rune">✦ <b>TFT FIELD GUIDE</b></div><small>SET 18 · V1.9</small></div>
+<aside class="sidebar" aria-label="Sections"><div class="brand"><div class="rune">✦ <b>TFT FIELD GUIDE</b></div><small>SET 18 · V2.0</small></div>
 <a class="nav" href="#overview"><span class="n">◈</span> Overview</a><a class="nav" href="#opening"><span class="n">✧</span> Opening Planner</a><a class="nav" href="#comps"><span class="n">♛</span> Endgame comps</a><a class="nav" href="#champions"><span class="n">✧</span> Champions</a><a class="nav" href="#items"><span class="n">⚒</span> Items & recipes</a><a class="nav" href="#economy"><span class="n">◉</span> Leveling & economy</a><a class="nav" href="#training"><span class="n">◎</span> Win checklist</a><a class="nav" href="#notes"><span class="n">✎</span> My notes</a>
 <div class="foot">Local-first & editable<br>Patch reference: 18.6<br>Updated: 06 Nov 2026</div></aside>
 <main>
@@ -327,16 +367,34 @@
  <div class="picker-grid" id="pUnits" role="group" aria-label="Tap a champion to add, then choose star level"></div>
 </section>
 <section class="card panel opening-panel">
- <div class="picker-head"><div><h3>6 · Augments <span class="picker-total" id="pAugmentCount">0 / 3</span></h3><p>Left-click to select · right-click to remove. Up to 3.</p></div></div>
+ <div class="picker-head"><div><h3>6 · Augments <span class="picker-total" id="pAugmentCount">0 / 3</span></h3><p>Click icons to add a chosen Augment, or switch to <b>Compare 3 offers</b>.</p></div></div>
+ 
+ <div class="aug-mode-row" id="augModeButtons" role="group" aria-label="Augment input mode">
+  <button type="button" data-aug-mode="chosen" class="active">✓ My Augments</button>
+  <button type="button" data-aug-mode="offers">⚖ Compare 3 offers</button>
+ </div>
+ <div class="aug-search-row"><input id="pAugmentSearch" type="search" class="picker-search" placeholder="Search Augments…" aria-label="Search Augments"/>
+ <div class="picker-filters" id="pAugmentRarities" role="group" aria-label="Augment rarity">
+  <button type="button" data-aug-rarity="all" class="active">All rarities</button><button type="button" data-aug-rarity="Silver">Silver</button><button type="button" data-aug-rarity="Gold">Gold</button><button type="button" data-aug-rarity="Prismatic">Prismatic</button>
+ </div></div>
  <div class="picker-filters" id="pAugmentFilters" role="group" aria-label="Augment categories"><button data-af="all" class="active">All</button><button data-af="Trait">Trait</button><button data-af="Economy">Economy</button><button data-af="Team">Team</button><button data-af="Item">Item</button></div>
  <div class="picker-grid picker-augments" id="pAugments" role="group" aria-label="Choose up to three Augments"></div>
  
- <small class="muted">13 curated Augments. Hover or focus to read the full effect.</small>
+ <small class="muted">Curated Patch 18.6 Augments. Icons show rarity and tier; hover, focus or use the info button for explanations.</small>
 </section>
 
 </div>
 <div class="opening-samples"><strong>Try an example:</strong><button class="chip" id="openSampleAD" type="button">AD + Guinsoo + Kayle</button><button class="chip" id="openSampleAP" type="button">AP + Teemo 2★</button><button class="chip" id="openSampleFae" type="button">Embiggen + Fae</button><button class="chip" id="openSampleRammus" type="button">Rammus reroll</button></div>
 
+
+<section class="augment-guide" aria-label="Augment recommendations and tier list">
+ <div class="aug-guide-head"><div><div class="eyebrow">Choose for your actual board</div><h3>Which Augment should I take?</h3><p class="muted">Enter the three offered Augments above. Ratings combine their patch tier with your items, units, level and game plan.</p></div>
+ <a href="https://www.pivottft.com/augments/" rel="noopener" target="_blank">Full Patch 18.6 source ↗</a></div>
+ <div id="augmentOffersSummary" class="aug-offer-cards" aria-live="polite"></div>
+ <div class="aug-tier-heading"><h3>Augment tier list</h3><div class="picker-filters" id="augTierFilters" role="group" aria-label="Filter Augment tiers"><button data-aug-tier="all" class="active">All</button><button data-aug-tier="S">S</button><button data-aug-tier="A">A</button><button data-aug-tier="B">B</button><button data-aug-tier="C">C</button><button data-aug-tier="?">Unranked</button></div></div>
+ <div id="augmentTierBoard" class="aug-tier-board" aria-live="polite"></div>
+ <p class="muted aug-legal-note">A curated subset of current Augments, not the full game catalogue. Tier letters are editorial ratings, not measured win probabilities. A high-rated trait Augment can be the wrong choice without its trait.</p>
+</section>
 <section class="value-guide" aria-label="Current item and Artifact tier lists">
  <div class="value-guide-top"><div><div class="eyebrow">Patch 18.6 · Snapshot 7 November 2026</div><h3>Item, Artifact & Radiant tiers</h3><p class="muted">S = most flexible / powerful · A = strong · B = situational · C = niche. Left-click icons to add, right-click to remove. A perfect holder can make a B-tier Artifact excellent.</p></div><a href="https://www.pivottft.com/items/" target="_blank" rel="noopener">Standard / Artifact: PivotTFT ↗</a></div>
  <div class="value-filters"><div id="valueKindFilters" class="picker-filters" role="group" aria-label="Select item class"><button data-value-kind="item" class="active">Completed items</button><button data-value-kind="artifact">Artifacts</button><button data-value-kind="radiant">Radiant</button></div><div id="valueTierFilters" class="picker-filters" role="group" aria-label="Filter by tier"><button data-value-tier="all" class="active">All tiers</button><button data-value-tier="S">S</button><button data-value-tier="A">A</button><button data-value-tier="B">B</button><button data-value-tier="C">C</button><button data-value-tier="inventory">Mine / craftable</button></div></div>
@@ -608,6 +666,24 @@ var AUGMENT_HINTS=[
  {id:'Coven Acolyte',label:'Coven Acolyte · Coven',group:'Trait',desc:'Coven-specific opener. No dedicated Coven final board in this guide yet.',boost:{}},
  {id:'Dark Ritual',label:'Dark Ritual · Coven',group:'Trait',desc:'Coven-specific scaling. No dedicated Coven final board in this guide yet.',boost:{}}
 ];
+
+
+/* Patch 18.6 PivotTFT Augment snapshot, 7 Nov 2026.
+ * Curated selection, not complete 249-Augment database.
+ * '?' means legacy/unverified, not an invented tier. */
+const AUGMENT_EXTRA=[["Branching Out","Silver","S","Trait","Get a random Emblem. Flexible when it completes a useful trait.","emblem"],["Branching Out+","Silver","S","Trait","Get a random Emblem plus a Reforger to fix an unsuitable emblem.","emblem"],["Beast Within+","Gold","S","Trait","Primal gains a second Blessing immediately, with Vi and a Primal carry.","primal"],["Baron's Lair","Prismatic","S","Team","Gain a tank item; after eight seconds, your whole team gains stacking AD and AP.","front"],["Booster Pack+","Gold","S","Economy","Get a package of champions including a guaranteed 4-cost.","econ"],["Booster Pack++","Gold","S","Economy","Get a package of champions including a guaranteed 5-cost.","econ"],["Latent Forge","Silver","S","Item","Receive an Artifact Anvil after eight player combats.","artifact"],["Level Up!","Prismatic","S","Economy","Your XP purchases grant more XP, accelerating a level 9 plan.","fast9"],["Magic Roll","Gold","S","Economy","Roll three dice for a random bundle of loot.","econ"],["Portable Forge","Gold","S","Item","Choose one of four Artifacts now.","artifact"],["Rolling For Days","Silver","S","Economy","Receive free rerolls now; strong for a reroll strategy.","reroll"],["Seraphim's Staff","Gold","S","Item","Receive an enhanced Archangel's Staff for a scaling AP caster.","ap"],["Spreading Roots","Gold","S","Trait","Get one random Emblem now and another after three combats.","emblem"],["Spreading Roots+","Gold","S","Trait","Get two random Emblems immediately and some gold.","emblem"],["Tactician's Kitchen","Prismatic","S","Team","Gain an Emblem, then a Tactician's Cape that lets you field another unit.","emblem"],["The Trait Tree","Prismatic","S","Trait","Get three random Emblems and some gold.","emblem"],["The Trait Tree+","Prismatic","S","Trait","Get three random Emblems and a Reforger.","emblem"],["Big Grab Bag","Gold","A","Item","Gain three random components, some gold and a Reforger.","item"],["Caretaker's Ally","Silver","A","Team","Gain a random 2-cost now and another copy when you level.","reroll"],["Backline Blueprint","Gold","A","Team","Gain a 3-cost damage dealer and a matching class Emblem.","ad"],["Band of Thieves","Silver","A","Item","Get a Thief's Gloves for immediate early-board tempo.","item"],["Birthday Reunion","Gold","A","Team","Get a 2-star 2-cost, a component later and a 2-star 5-cost at level 9.","fast9"],["Commerce Core","Prismatic","A","Economy","Gain many free rerolls now, and a few each round.","reroll"],["Component Buffet","Silver","A","Item","Choose among several components whenever you would gain one.","item"],["Forge A Friend","Silver","A","Team","The next 1-cost champion you buy becomes 3-star.","reroll"],["Forged In Strength","Prismatic","A","Item","Gain an Artifact now; get more items when your health drops low.","artifact"],["Golden Gamble","Prismatic","A","Item","A coin flip grants Radiant items or two completed-item anvils.","item"],["Hold the Line","Prismatic","A","Team","Back-row units gain more AD and AP for every champion in the front row.","damage"],["Living Forge","Prismatic","A","Item","Gain an Artifact Anvil now, and another after enough combats.","artifact"],["Pandora's Bench","Silver","A","Economy","The three rightmost bench slots reroll into same-cost champions each round.","reroll"],["Patient Study","Gold","A","Economy","Gain XP after each player combat, slightly more after losses.","econ"],["Prismatic Ticket","Prismatic","A","Economy","Shop rerolls have a chance to give an additional free reroll.","reroll"],["Replication","Gold","A","Item","Choose one component and gain two more copies of it.","item"],["Salvage Bin","Gold","A","Item","Gain an item and recover components when selling item-holding units.","item"],["Shopping Spree","Prismatic","A","Economy","Gain free shop rerolls whenever you level up.","fast8"],["Worth the Wait","Gold","A","Team","Gain a random 1-cost and additional copies each round.","reroll"],["Worth the Wait II","Prismatic","A","Team","Gain copies of a 2-cost every round toward a 3-star.","reroll"],["Jeweled Lotus I","Gold","A","Team","Your whole team gains critical-strike support.","damage"],["Explosive Growth+","Gold","A","Economy","Get extra XP now and at the start of the next three rounds.","fast8"],["Item Grab Bag I","Silver","A","Item","Gain one random completed item for immediate board strength.","item"],["Early Learnings","Gold","B","Team","AD and AP grow every combat, doubled for 1-cost units.","reroll"],["Clockwork Accelerator","Gold","B","Team","Your team builds attack speed over a long fight.","ad"],["Ascension","Gold","B","Team","Your team deals more damage after a fight lasts 12 seconds.","damage"],["Celestial Blessing II","Gold","B","Team","Get team Omnivamp with excess healing converted into shields.","damage"],["Backup Bows","Silver","B","Item","Gain a bow now and two more after many attacks.","ad"],["Glass Cannon II","Gold","B","Team","Back-row carries gain damage but start with reduced health.","ad"],["Small Furry Friend","Gold","C","Trait","Gain a second weaker Sprykin summon; only for Sprykin boards.","sprykin"],["Sun and Moon","Gold","C","Trait","Lunar units gain more stats from Solar allies.","lunar"],["Build A Bud","Prismatic","C","Team","Gain one random 3-star 1-cost champion and gold.","reroll"],["Hustler","Gold","C","Economy","Gain three gold every round but no interest income.","econ"]];
+const AUGMENT_BASE_META={"Embiggen":["Gold","B","Fae Pixies are stronger and Fae champions gain AD/AP. Gain Xayah and Rakan.","fae"],"Beast Within":["Gold","S","Primal gets a second Blessing, Vi now and a Primal carry later.","primal"],"Nature's Shelter":["Gold","B","Allies next to an Elderwood plant gain Attack Speed and healing.","elderwood"],"Epic Rolldown":["Gold","S","Reach level 8 to receive twenty free shop rerolls.","fast8"],"Epoch":["Gold","B","Gain XP and rerolls now and at each stage.","econ"],"Explosive Growth":["Gold","S","Gain XP now and again at the start of the next three rounds.","fast8"],"Duo Queue":["Gold","A","Gain two random 5-cost champions and two copies of a component.","econ"],"Frontline Foundation":["Gold","S","Gain a 2-star 1-cost tank and a class Emblem.","front"],"Double Trouble":["Gold","B","Two copies of the same champion gain damage and resists; 3-star gives a new 2-star.","reroll"],"Fully Adapted":["Unknown","?","Legacy Augment; could not verify availability on Patch 18.6.","ap"],"Feed the Flames":["Unknown","?","Legacy Augment; could not verify availability on Patch 18.6.","damage"],"Coven Acolyte":["Gold","B","Gain Coven units and accumulate Essence for additional health.","coven"],"Dark Ritual":["Gold","B","Coven cash-outs grant Ability Power instead of loot.","coven"]};
+const AUGMENT_ICON_FILES={"Branching Out":"branching-out-i.webp","Branching Out+":"branching-out-i.webp","Baron's Lair":"thebaronslair_iii.webp","Booster Pack+":"boosterpack1_ii.webp","Booster Pack++":"boosterpack1_ii.webp","Epic Rolldown":"epicrolldown_ii.webp","Explosive Growth":"explosivegrowth_ii.webp","Explosive Growth+":"explosivegrowth_ii.webp","Frontline Foundation":"frontlinefoundation_ii.webp","Latent Forge":"long-time-crafting-i.webp","Level Up!":"levelup3.webp","Magic Roll":"a-magical-roll-ii.webp","Portable Forge":"portableforge2.webp","Rolling For Days":"rolling-for-days-i.webp","Seraphim's Staff":"seraphimsstaff_ii.webp","Spreading Roots":"spreadingroots_ii.webp","Spreading Roots+":"spreadingroots_ii.webp","Tactician's Kitchen":"tacticianskitchen_iii.webp","The Trait Tree":"thetraittree_iii.webp","The Trait Tree+":"thetraittree_iii.webp","Duo Queue":"duoqueue_ii.webp","Birthday Reunion":"birthdayreunion_ii.webp","Commerce Core":"trade3.webp","Component Buffet":"the-customer-is-always-right-i.webp","Forge A Friend":"@da_forgeafriend.webp","Forged In Strength":"forgedinstrength_iii.webp","Golden Gamble":"goldengamble_iii.webp","Hold the Line":"holdtheline_iii.webp","Jeweled Lotus I":"jeweled-lotus-ii.webp","Living Forge":"living-forge-iii.webp","Pandora's Bench":"@da_pandorasbench.webp","Patient Study":"learning-from-experience-ii.webp","Prismatic Ticket":"goldenticket3.webp","Replication":"replication-ii.webp","Salvage Bin":"salvage2.webp","Worth the Wait":"worththewait_ii.webp","Worth the Wait II":"worththewait_ii.webp"};
+const AUGMENT_ICON_ROOT='https://www.pivottft.com/art/64/latest/game/assets/maps/tft/icons/augments/hexcore/';
+function augmentImage(id){
+ const file=AUGMENT_ICON_FILES[id];
+ if(file)return file.startsWith('@')?'https://www.pivottft.com/img/augments/'+file.slice(1):AUGMENT_ICON_ROOT+file;
+ const legacy=AUGMENT_ART[id];
+ return legacy?'https://hexcomps.com/img/augments/'+legacy:AUGMENT_ICON_ROOT+'missing-t2.webp';
+}
+function augmentMeta(id){return AUGMENT_HINTS.find(a=>a.id===id);}
+AUGMENT_HINTS.forEach(a=>{const m=AUGMENT_BASE_META[a.id];if(m){a.rarity=m[0];a.tier=m[1];a.desc=m[2];a.style=a.style||m[3];a.inactive=m[1]==='?';}});
+AUGMENT_EXTRA.forEach(e=>AUGMENT_HINTS.push({id:e[0],label:e[0],rarity:e[1],tier:e[2],group:e[3],desc:e[4],style:e[5]}));
 
 const SHOP_ODDS={3:[75,25,0,0,0],4:[55,30,15,0,0],5:[45,33,20,2,0],6:[30,40,25,5,0],7:[16,30,43,10,1],8:[15,20,32,30,3],9:[10,17,25,33,15],10:[5,10,20,40,25]};
 function levelForRound(stage,round){
