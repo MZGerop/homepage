@@ -1,5 +1,22 @@
 # TFT Field Guide — Set 18
 
+
+## Guided opening homepage — v4.0 (7 November 2026)
+
+The first screen is now a **guided first-three-round coach**, not a catalogue. It sits above the existing next-move dashboard and reuses the same local storage and Set 18 data.
+
+- **Round-by-round:** one-click shortcuts for 2-1, 2-2 and 2-3 (plus the early Stage 3 rounds), a Next round button, and practical priorities for each round. Detailed shop odds and manual level controls remain available under a disclosure.
+- **Pick your actual starter:** click a champion portrait after the first augment; the guide logs it as a 1★ unit without pretending that one extra copy is a 2★ upgrade. You can select additional champions through the complete gallery.
+- **What to look for:** context-ranked route cards such as Veigar / Ornn, Blossom, Riftbeast, Fae, Elderwood and Primal. Each shows target champion portraits, a short reason, and **I found X** / **I made X 2★** actions. You may explore one direction, but the board remains flexible and the recommendations adjust to your recorded finds and chosen Augments.
+- **Which augment:** at the top of the guided flow, see a *conditional* shortlist of useful Augments. Click **Compare my 3 real offers** to enter the specific Augments shown in-game; the page ranks only those actual offers in context and allows **Take** to record your choice. It never pretends you were offered an Augment.
+- **Emblems are opportunistic:** the optional **I found an emblem** gallery has 20 Set 18 emblems (including four non-craftable ones). It never adds an emblem to the regular shopping watchlist and **does not invent a Riftbeast Emblem**. Once an emblem is logged, the page offers potential holders, cross-trait ideas and **Try this combo** → a follow-up list of units to look for. You can change ideas or remove the emblem; multiple copies are tracked.
+- **Everything else still works:** item/component, champion, Augment, Artifact and Radiant pickers, full compositions, holder transitions, tier lists, tooltips, local save, notes and journal.
+
+The recommendations are **curated heuristics**, not real-time game data or live win probabilities. The user must enter their own shop finds, offers, and emblems. Emblem suggestions are possibilities: check the current trait count, actual item slots and the in-game tooltip before committing.
+
+Emblem references: [Set 18 recipes and holders (Mobalytics)](https://mobalytics.gg/tft/guides/set-18-emblems), [Set 18 emblem list (HexComps)](https://hexcomps.com/items/), [TFT 18.6 notes (Riot)](https://teamfighttactics.leagueoflegends.com/en-us/news/game-updates/teamfight-tactics-patch-18-6/).
+
+
 A self-contained, dependency-free Teamfight Tactics guide built around **what to look for next**. Record the champions, components, items, and Augments you actually find and the next suggestions update automatically.
 
 ## Open
