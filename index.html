@@ -415,6 +415,15 @@
 .next-find-art .radiant-art{height:100%;width:100%}
 .next-finds .next-find-art img{width:100%;height:100%;object-fit:cover}
 .next-reco-card .next-reco-icon .radiant-art,.next-later-card .next-reco-icon .radiant-art{position:absolute;inset:0}
+
+.finder-followup{position:sticky;bottom:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:13px;
+ background:linear-gradient(110deg,#214c4c,#1a3548);border-top:1px solid #60b8a1;padding:11px 15px;border-radius:0 0 12px 12px}
+.finder-followup-kicker{display:block;font-size:9px;font-weight:900;letter-spacing:.1em;color:#95f4ce}
+.finder-followup strong{display:block;font-size:14px;margin-top:3px}
+.finder-followup small{display:block;color:#bbd8db;font-size:10px;margin-top:2px}
+.finder-followup button{flex:0 0 auto;background:#bbefda;color:#134033;border:1px solid #86cfb6;
+ border-radius:8px;font-weight:900;font-size:12px;padding:10px 13px}
+@media(max-width:620px){.finder-followup{flex-direction:column;align-items:stretch}.finder-followup button{width:100%}}
 </style>
 </head>
 <body>
@@ -527,6 +536,7 @@
 
 </div>
 <div class="opening-samples"><strong>Try an example:</strong><button class="chip" id="openSampleAD" type="button">AD + Guinsoo + Kayle</button><button class="chip" id="openSampleAP" type="button">AP + Teemo 2★</button><button class="chip" id="openSampleFae" type="button">Embiggen + Fae</button><button class="chip" id="openSampleRammus" type="button">Rammus reroll</button></div>
+<div class="finder-followup" role="status"><div><span class="finder-followup-kicker">✓ RECOMMENDATIONS UPDATED</span><strong id="finderFollowTitle">Your next move is ready</strong><small id="finderFollowHint">Add what you found, then jump back to the plan above.</small></div><button type="button" id="finderFollowButton">↑ See what to look for next</button></div>
 </details>
 
 
@@ -1497,6 +1507,8 @@ function renderNext(o){
   'Don’t force a composition yet. Record what you actually find, and keep your early items useful.';
  $('#nextContextLine').textContent=
    'Round '+o.stage+'-'+o.round+' · Level '+o.level+' · '+count+' selections. The next cards are targets, not guaranteed shop offers.';
+ $('#finderFollowTitle').textContent=results.length?nextCardData(results[0],o).heading:'Keep your options open';
+ $('#finderFollowHint').textContent=count+' finds recorded · Your targets are recalculated after each selection.';
  const later=hasInfo?ranked.slice(0,2).map(x=>{
   const advice=x.reasons?.[0]||'Long-term direction if upgrades arrive.';
   return laterBuildCard(x.comp,advice);
@@ -1520,6 +1532,10 @@ function markNextAugment(name){
  o.augments.push(name);save();renderOpening();
 }
 function bindNext(){
+ $('#finderFollowButton').onclick=()=>{
+  $('#pickerDetails').open=false;
+  document.querySelector('.next-dashboard').scrollIntoView({behavior:'smooth',block:'start'});
+ };
  $('#nextShowAll').onclick=()=>showFinder('unit');
  $('#nextOpenFinder').onclick=()=>showFinder('unit');
  $('#nextReset').onclick=()=>$('#openingClear').onclick();
