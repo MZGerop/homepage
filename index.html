@@ -338,10 +338,10 @@
 <div class="opening-samples"><strong>Try an example:</strong><button class="chip" id="openSampleAD" type="button">AD + Guinsoo + Kayle</button><button class="chip" id="openSampleAP" type="button">AP + Teemo 2★</button><button class="chip" id="openSampleFae" type="button">Embiggen + Fae</button><button class="chip" id="openSampleRammus" type="button">Rammus reroll</button></div>
 
 <section class="value-guide" aria-label="Current item and Artifact tier lists">
- <div class="value-guide-top"><div><div class="eyebrow">Patch 18.6 · Snapshot 7 November 2026</div><h3>Item & Artifact tier list</h3><p class="muted">S = most flexible / powerful · A = strong · B = situational · C = niche. A perfect holder can make a B-tier Artifact excellent.</p></div><a href="https://www.pivottft.com/items/" target="_blank" rel="noopener">Source: PivotTFT 18.6 ↗</a></div>
+ <div class="value-guide-top"><div><div class="eyebrow">Patch 18.6 · Snapshot 7 November 2026</div><h3>Item, Artifact & Radiant tiers</h3><p class="muted">S = most flexible / powerful · A = strong · B = situational · C = niche. A perfect holder can make a B-tier Artifact excellent.</p></div><a href="https://www.pivottft.com/items/" target="_blank" rel="noopener">Standard / Artifact: PivotTFT ↗</a></div>
  <div class="value-filters"><div id="valueKindFilters" class="picker-filters" role="group" aria-label="Select item class"><button data-value-kind="item" class="active">Completed items</button><button data-value-kind="artifact">Artifacts</button><button data-value-kind="radiant">Radiant</button></div><div id="valueTierFilters" class="picker-filters" role="group" aria-label="Filter by tier"><button data-value-tier="all" class="active">All tiers</button><button data-value-tier="S">S</button><button data-value-tier="A">A</button><button data-value-tier="B">B</button><button data-value-tier="C">C</button><button data-value-tier="inventory">Mine / craftable</button></div></div>
  <div id="valueTierBoard" class="value-tier-board" aria-live="polite"></div>
- <p class="muted" style="font-size:11px;margin-top:9px">This is a manually curated patch snapshot, not a live win-rate model. Tiers reflect broad effectiveness; don't force an S-tier item onto the wrong champion. Artifact icons are sourced from the Set 18 image library.</p>
+ <p class="muted" style="font-size:11px;margin-top:9px">Radiant tiers are from an older Set 18 reference and may differ from Patch 18.6. This is a manually curated patch snapshot, not a live win-rate model. Tiers reflect broad effectiveness; don't force an S-tier item onto the wrong champion. Artifact icons are sourced from the Set 18 image library.</p>
 </section>
 <section class="combo-guide" aria-label="High synergy item combinations">
  <div class="value-guide-top"><div><div class="eyebrow">Champion + Item + Artifact interactions</div><h3>Powerful combinations to look for</h3><p class="muted">Some combinations are far stronger together than their individual item tiers suggest.</p></div></div>
@@ -688,25 +688,36 @@ for(const [tier,data] of Object.entries(ITEM_TIER_GROUPS)){
  for(const name of data.item)ITEM_TIER[name]=tier;
  for(const name of data.artifact)ARTIFACT_TIER[name]=tier;
 }
-function tierFor(name,kind){return(kind==='artifact'?ARTIFACT_TIER:ITEM_TIER)[name]||'B';}
+
+/* Set 18 Radiant tiers: manual reference from TFTguide 18.5b; not live 18.6 odds. */
+const RADIANT_TIER_GROUPS={"S":["Adaptive Helm","Blue Buff","Deathblade","Giant Slayer","Hand of Justice","Infinity Edge","Jeweled Gauntlet","Kraken's Fury","Last Whisper","Rabadon's Deathcap","Striker's Flail","Thief's Gloves"],"A":["Bloodthirster","Hextech Gunblade","Nashor's Tooth","Red Buff","Spear of Shojin","Spirit Visage","Sterak's Gage","Warmog's Armor"],"B":["Archangel's Staff","Bramble Vest","Dragon's Claw","Edge of Night","Gargoyle Stoneplate","Guinsoo's Rageblade","Ionic Spark","Morellonomicon","Quicksilver","Sunfire Cape","Titan's Resolve","Void Staff"],"C":["Crownguard","Evenshroud","Protector's Vow","Steadfast Heart"]};
+const RADIANT_TIER={};
+for(const [tier,names] of Object.entries(RADIANT_TIER_GROUPS))for(const base of names)RADIANT_TIER[radiantName(base)]=tier;
+
+function tierFor(name,kind){return(kind==='artifact'?ARTIFACT_TIER:kind==='radiant'?RADIANT_TIER:ITEM_TIER)[name]||'B';}
 let valueKind='item',valueTier='all';
 function tierIcon(name,kind,o){
- const artifact=kind==='artifact',info=artifact?ARTIFACTS[name]:getItem(name);
- const owned=counted(artifact?o.artifacts:o.items)[name]||0;
- const craft=!artifact&&!owned&&canCraft(name,o.components);
- const src=artifact?artifactImage(name):itemImg(info[5]);
- return '<button class="value-icon'+(owned?' owned':craft?' can-craft':'')+'" type="button" data-tier-kind="'+kind+'" data-tier-name="'+esc(name)+'" title="'+esc(name+(artifact?' — Artifact. ':' — '+info[1]+' + '+info[2]+'. ')+(owned?'You have '+owned+'. ':craft?'Can craft. ':'')+(artifact?info.desc:info[4]))+'">'+
- (artifact?'<span class="value-fallback">'+esc(name.slice(0,2).toUpperCase())+artifactImgTag(name)+'</span>':'<span class="value-fallback">'+esc(name.slice(0,2).toUpperCase())+'<img src="'+src+'" loading="lazy" alt="" onerror="this.remove()"></span>')+
- (owned?'<span class="value-label">×'+owned+'</span>':craft?'<span class="value-label">Craft</span>':'')+
- '<span class="value-icon-name">'+esc(name)+'</span></button>';
+ const artifact=kind==='artifact',radiant=kind==='radiant';
+ const info=artifact?ARTIFACTS[name]:radiant?RADIANT_ITEMS[name]:getItem(name);
+ const inventory=artifact?o.artifacts:radiant?o.radiants:o.items;
+ const owned=counted(inventory)[name]||0;
+ const craft=!artifact&&!radiant&&!owned&&canCraft(name,o.components);
+ const icon=radiant?radiantImgTag(name):artifact?artifactImgTag(name):
+  '<span class="radiant-art">'+esc(name.slice(0,2).toUpperCase())+'<img src="'+itemImg(info[5])+'" alt="" loading="lazy" onerror="this.remove()"></span>';
+ const detail=artifact?info.desc:radiant?info.desc:info[4];
+ return '<button class="value-icon'+(owned?' owned':craft?' can-craft':'')+'" type="button" data-tier-kind="'+kind+'" data-tier-name="'+esc(name)+
+  '" title="'+esc(name+' — '+detail+(owned?' · Have ×'+owned:craft?' · Can craft':''))+'">'+
+  '<span class="value-fallback">'+esc(name.slice(0,2).toUpperCase())+icon+'</span>'+
+  (owned?'<span class="value-label">×'+owned+'</span>':craft?'<span class="value-label">Craft</span>':'')+
+  '<span class="value-icon-name">'+esc(name)+'</span></button>';
 }
 function renderValueTiers(){
- const o=openingState(),list=valueKind==='item'?ITEMS.map(x=>x[0]):Object.keys(ARTIFACTS);
+ const o=openingState(),list=valueKind==='item'?ITEMS.map(x=>x[0]):valueKind==='radiant'?Object.keys(RADIANT_ITEMS):Object.keys(ARTIFACTS);
  const groups=['S','A','B','C'];
  const desired=groups.filter(t=>['all','inventory'].includes(valueTier)||t===valueTier);
  $('#valueTierBoard').innerHTML=desired.map(t=>{
    let names=list.filter(n=>tierFor(n,valueKind)===t);
-   if(valueTier==='inventory')names=names.filter(n=>counted(valueKind==='item'?o.items:o.artifacts)[n]||valueKind==='item'&&canCraft(n,o.components));
+   if(valueTier==='inventory')names=names.filter(n=>counted(valueKind==='item'?o.items:valueKind==='radiant'?o.radiants:o.artifacts)[n]||valueKind==='item'&&canCraft(n,o.components));
    if(!names.length)return '';
    const description={S:'Top broad value — still needs the right holder',A:'Strong and usually worth using',B:'Good with a matching champion or team',C:'Niche or heavily dependent on its holder'}[t];
    return '<div class="value-tier-group"><span class="value-tier-letter tier-'+t+'">'+t+'</span><div class="value-tier-contents"><p>'+description+' · '+names.length+' items</p><div class="value-icon-grid">'+names.map(n=>tierIcon(n,valueKind,o)).join('')+'</div></div></div>';
@@ -718,6 +729,8 @@ function bindValueTiers(){
  $('#valueKindFilters').addEventListener('click',e=>{const b=e.target.closest('[data-value-kind]');if(b){valueKind=b.dataset.valueKind;renderValueTiers();}});
  $('#valueTierFilters').addEventListener('click',e=>{const b=e.target.closest('[data-value-tier]');if(b){valueTier=b.dataset.valueTier;renderValueTiers();}});
  $('#valueTierBoard').addEventListener('click',e=>{const b=e.target.closest('[data-tier-name]');if(b){chooseIcon(b.dataset.tierKind,b.dataset.tierName);}});
+ // Right-click on a tier icon follows the same decrement semantics as the picker.
+ $('#valueTierBoard').addEventListener('contextmenu',e=>{const b=e.target.closest('[data-tier-name]');if(!b)return;e.preventDefault();removeIcon(b.dataset.tierKind,b.dataset.tierName);});
 }
 
 
