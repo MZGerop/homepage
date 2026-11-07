@@ -428,15 +428,17 @@
 </style>
 <link rel="stylesheet" href="guided-opening.css">
 <link rel="stylesheet" href="workspace-tabs.css">
+<link rel="stylesheet" href="quick-hints.css">
 </head>
-<body data-tft-tab="start">
+<body data-tft-tab="hints">
 <div class="shell">
-<aside class="sidebar" aria-label="Sections"><div class="brand"><div class="rune">✦ <b>TFT FIELD GUIDE</b></div><small>SET 18 · V5.0</small></div>
+<aside class="sidebar" aria-label="Sections"><div class="brand"><div class="rune">✦ <b>TFT FIELD GUIDE</b></div><small>SET 18 · V5.1</small></div>
 <a class="nav" href="#overview"><span class="n">◎</span> Next move</a><a class="nav" href="#opening"><span class="n">＋</span> Log a find</a><a class="nav" href="#deepDive"><span class="n">◈</span> Deep dive</a><a class="nav" href="#referenceLibrary"><span class="n">▤</span> Full library</a>
 <div class="foot">Local-first & editable<br>Patch reference: 18.6<br>Updated: 07 Nov 2026</div></aside>
 <main>
 <div class="tft-tabs-wrap"><div class="tft-tabs-brand"><strong>✦ TFT FIELD GUIDE</strong><div class="tft-tabs-brand-right"><small>SET 18 · YOUR GAME COMPANION</small><button type="button" id="tftResetGame" class="tft-reset-game" title="Start a new match: clear game selections, keep notes and match history">↻ Reset game</button></div></div>
-<nav class="tft-tabs" id="tftTabs" role="tablist" aria-label="Field Guide sections"><button type="button" role="tab" id="tft-tab-start" data-tft-tab-button="start" aria-controls="tabWorkspace" aria-selected="true" tabindex="0" class="tft-tab"><span class="tft-tab-label">Opening</span><span class="tft-tab-sub">Starter & rounds</span></button>
+<nav class="tft-tabs" id="tftTabs" role="tablist" aria-label="Field Guide sections"><button type="button" role="tab" id="tft-tab-hints" data-tft-tab-button="hints" aria-controls="tabWorkspace" aria-selected="true" tabindex="0" class="tft-tab"><span class="tft-tab-label">Quick Hints</span><span class="tft-tab-sub">No board tracking</span></button>
+<button type="button" role="tab" id="tft-tab-start" data-tft-tab-button="start" aria-controls="tabWorkspace" aria-selected="false" tabindex="-1" class="tft-tab"><span class="tft-tab-label">Opening</span><span class="tft-tab-sub">Starter & rounds</span></button>
 <button type="button" role="tab" id="tft-tab-next" data-tft-tab-button="next" aria-controls="tabWorkspace" aria-selected="false" tabindex="-1" class="tft-tab"><span class="tft-tab-label">Next Move</span><span class="tft-tab-sub">Live priorities</span></button>
 <button type="button" role="tab" id="tft-tab-finds" data-tft-tab-button="finds" aria-controls="tabWorkspace" aria-selected="false" tabindex="-1" class="tft-tab"><span class="tft-tab-label">My Finds</span><span class="tft-tab-sub">Log your board</span></button>
 <button type="button" role="tab" id="tft-tab-augments" data-tft-tab-button="augments" aria-controls="tabWorkspace" aria-selected="false" tabindex="-1" class="tft-tab"><span class="tft-tab-label">Augments</span><span class="tft-tab-sub">Rank real offers</span></button>
@@ -444,8 +446,52 @@
 <button type="button" role="tab" id="tft-tab-emblems" data-tft-tab-button="emblems" aria-controls="tabWorkspace" aria-selected="false" tabindex="-1" class="tft-tab"><span class="tft-tab-label">Emblems</span><span class="tft-tab-sub">Optional pivots</span></button>
 <button type="button" role="tab" id="tft-tab-builds" data-tft-tab-button="builds" aria-controls="tabWorkspace" aria-selected="false" tabindex="-1" class="tft-tab"><span class="tft-tab-label">Comps</span><span class="tft-tab-sub">Champion library</span></button>
 <button type="button" role="tab" id="tft-tab-strategy" data-tft-tab-button="strategy" aria-controls="tabWorkspace" aria-selected="false" tabindex="-1" class="tft-tab"><span class="tft-tab-label">Strategy</span><span class="tft-tab-sub">Economy & notes</span></button></nav></div>
-<div class="tft-tab-header"><div><div class="eyebrow">SET 18 · GUIDED DECISIONS</div><h1 id="tftTabTitle">Play your opening</h1><p id="tftTabDescription">Pick your starter and follow the first rounds.</p></div><div id="tftTabActions" class="tft-tab-actions"></div></div>
-<div id="tabWorkspace" class="tft-tab-panel" role="tabpanel" tabindex="0" aria-labelledby="tft-tab-start">
+<div class="tft-tab-header"><div><div class="eyebrow">SET 18 · GUIDED DECISIONS</div><h1 id="tftTabTitle">What is worth looking out for?</h1><p id="tftTabDescription">Quick hero, item and starting-board tips. No need to enter your entire match.</p></div><div id="tftTabActions" class="tft-tab-actions"></div></div>
+<div id="tabWorkspace" class="tft-tab-panel" role="tabpanel" tabindex="0" aria-labelledby="tft-tab-hints">
+
+<section id="quickHints" class="quick-hints" aria-label="TFT quick hints without match logging">
+  <div class="hint-summary">
+   <div><strong>Just play. Look things up when something interesting appears.</strong>
+   <p>No round tracking or complete board entry needed. Click one champion, item or starting pair for useful directions. Nothing you select here changes your current game.</p></div>
+   <small>Set 18 · Curated Patch 18.6 notes</small>
+  </div>
+  <div class="hint-top-layout">
+   <section class="hint-panel" id="hintLookupPanel" aria-label="Champion and item quick lookup">
+    <div class="hint-head"><div><div class="hint-eyebrow">QUICK LOOKUP</div><h2>I found a champion or an item</h2><p>One click. No logging. Item fits, special interactions and where to go next.</p></div></div>
+    <div class="hint-lookup-modes" role="group" aria-label="Lookup type">
+      <button type="button" class="hint-pill" data-hint-mode="champion" aria-pressed="true">Champion → items</button>
+      <button type="button" class="hint-pill" data-hint-mode="item" aria-pressed="false">Item → champions</button>
+    </div>
+    <div id="hintHeroBox"><input id="hintHeroSearch" class="hint-search" type="search" placeholder="Find a champion…" aria-label="Search champions">
+    <div class="hint-choices" id="hintHeroChoices" aria-label="Select champion"></div></div>
+    <div id="hintItemBox" hidden><input id="hintItemSearch" class="hint-search" type="search" placeholder="Find an item…" aria-label="Search items">
+    <div class="hint-choices hint-item-choices" id="hintItemChoices" aria-label="Select item"></div></div>
+   </section>
+   <section class="hint-panel" aria-label="Lookup recommendations">
+    <div class="hint-head"><div><div class="hint-eyebrow">WHY THIS WORKS</div><h2>What should I do with it?</h2><p>Practical options. Not a promise that this is the one best build.</p></div></div>
+    <div class="hint-result" id="hintLookupResult" aria-live="polite"></div>
+   </section>
+  </div>
+  <section class="hint-panel" aria-label="Strong starting pairs">
+   <div class="hint-head"><div><div class="hint-eyebrow">STARTING BOARD → NEXT DIRECTION</div>
+     <h2>If you find this start, consider going here</h2><p>Choose the pair you happened to find; you do not have to keep updating it every round.</p></div></div>
+   <div id="hintStartCards" class="hint-start-grid"></div>
+   <div id="hintStartDetail" class="hint-start-detail" aria-live="polite"></div>
+  </section>
+  <section class="hint-panel" aria-label="Strong item combos to recognize">
+   <div class="hint-head"><div><div class="hint-eyebrow">WHEN YOU SEE IT, RECOGNIZE IT</div>
+      <h2>Strong champion + item combinations</h2><p>Small combinations that can change a game. Rare Artifacts are opportunities, not things to chase.</p></div>
+      <div class="hint-combo-actions" id="hintComboFilters" role="group" aria-label="Filter combinations">
+        <button type="button" class="hint-pill" data-hint-combos="featured" aria-pressed="true">Highlights</button>
+        <button type="button" class="hint-pill" data-hint-combos="standard" aria-pressed="false">Standard items</button>
+        <button type="button" class="hint-pill" data-hint-combos="artifact" aria-pressed="false">Artifacts</button>
+        <button type="button" class="hint-pill" data-hint-combos="all" aria-pressed="false">Show all</button>
+      </div></div>
+   <div class="hint-combo-grid" id="hintComboCards"></div>
+  </section>
+  <p class="hint-bottom-note">These are curated strategy examples based on the site's Set 18 data, not live win-rate recommendations. Upgrades, economy, items and contested units still matter more than forcing a combo.</p>
+</section>
+
 <section id="overview" class="decision-home">
   <div class="decision-hero">
     <div class="decision-hero-left">
@@ -2228,7 +2274,7 @@ function initOpening(){
  $('#openSampleAD').onclick=function(){example('ad');};$('#openSampleAP').onclick=function(){example('ap');};$('#openSampleFae').onclick=function(){example('fae');};$('#openSampleRammus').onclick=function(){example('rammus');};renderOpening();save();
 }
 function openAugmentOffers(){augmentMode='offers';showFinder('augment');renderOpening();}
-window.TFTGuide={openingState,openingReadiness,toggleDismissedComp,chooseIcon,removeIcon,save,renderOpening,showFinder,openAugmentOffers,augmentMeta,augmentMatch,augmentHints:AUGMENT_HINTS,augmentImgTag,championImg,getItem,shopChance,holderCost,levelForRound};
+window.TFTGuide={openingState,openingReadiness,toggleDismissedComp,chooseIcon,removeIcon,save,renderOpening,showFinder,showComposition,openAugmentOffers,augmentMeta,augmentMatch,augmentHints:AUGMENT_HINTS,augmentImgTag,championImg,itemImg,artifactImage,heroItemProfile,getItem,shopChance,holderCost,levelForRound,hintData:{rosterByCost:ROSTER_BY_COST,comps:COMP_LIST,items:ITEMS,heroArtifacts:HERO_ARTIFACTS,powerCombos:POWER_COMBOS}};
 window.renderOpening=renderOpening;
 window.refreshVisualHelp=refreshVisualHelp;
 initOpening();
@@ -2238,5 +2284,6 @@ renderComps();
 </script>
 <script src="guided-opening.js"></script>
 <script src="workspace-tabs.js"></script>
+<script src="quick-hints.js"></script>
 <div id="visualTooltip" role="tooltip" class="visual-tooltip" hidden></div>
 </body></html>
