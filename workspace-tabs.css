@@ -131,3 +131,14 @@ body[data-tft-tab="finds"] #opening > #pickerDetails{display:block!important}
 @media print{
  body[data-tft-tab] .tft-tabs-wrap,body[data-tft-tab] .tft-tab-header{display:none!important}
 }
+
+/* A visible escape hatch when a Set 18 Augment is absent from the curated gallery. */
+.missing-augment-form{grid-column:1/-1;display:grid;gap:8px;margin-top:13px;padding:15px;border-radius:13px;border:1px solid #486481;background:#17283d}
+.missing-augment-heading{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+.missing-augment-heading b{font-size:14px;color:#f2db9b}
+.missing-augment-heading small{font-size:12px;color:#a7bdd3}
+.missing-augment-fields{display:flex;align-items:stretch;gap:9px;flex-wrap:wrap}
+.missing-augment-fields input{flex:1 1 225px;min-width:0}
+.missing-augment-fields select{min-width:110px}
+.missing-augment-form > small{font-size:11px}
+@media(max-width:600px){.missing-augment-fields input,.missing-augment-fields button{flex:1 1 100%}}
