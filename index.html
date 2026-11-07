@@ -857,10 +857,137 @@ function bindCombos(){
  $('#comboFilters').addEventListener('click',e=>{const b=e.target.closest('[data-combo-filter]');if(b){comboFilter=b.dataset.comboFilter;renderPowerCombos();}});
 }
 
+
+/* Real-time, explainable augment advice. This is a heuristic, not estimated win rate. */
+function augmentMatch(a,o){
+ let score={S:28,A:21,B:14,C:8,'?':0}[a.tier]||0;
+ const why=[],caution=[];
+ if(a.inactive){return {score:-100,why:['Not verified in current patch.'],caution:['Legacy entry: do not use this as a live recommendation.']};}
+ const best=COMP_LIST.map(relevance).sort((x,y)=>y.score-x.score)[0]?.comp;
+ const units=o.units.map(u=>u.name);
+ const has=names=>names.some(n=>units.includes(n));
+ const inBuild=term=>(best?.traits||[]).some(t=>t.toLowerCase().includes(term.toLowerCase()))|| (best?.name||'').toLowerCase().includes(term.toLowerCase());
+ const itemKinds=o.items.map(n=>getItem(n)?.[3]).filter(Boolean);
+ const hasAD=itemKinds.includes('AD')||o.radiants.some(n=>RADIANT_ITEMS[n]?.category==='AD');
+ const hasAP=itemKinds.includes('AP')||o.radiants.some(n=>RADIANT_ITEMS[n]?.category==='AP');
+ const hasTank=itemKinds.includes('Tank')||o.radiants.some(n=>RADIANT_ITEMS[n]?.category==='Tank');
+ const lvl=Number(o.level),stage=Number(o.stage);
+ const tunedStyle={...{fae:'Fae',primal:'Primal',elderwood:'Elderwood',coven:'Coven',sprykin:'Sprykin',lunar:'Lunar'}};
+ const style=a.style||'';
+ const traitData={
+  fae:{units:['Rakan','Xayah','Tristana','Lillia'],trait:'Fae'},
+  primal:{units:['Vi','Nidalee','Sivir'],trait:'Primal'},
+  elderwood:{units:['Ornn','Alistar','Xayah','Draven','Aphelios','Ezreal'],trait:'Elderwood'},
+  coven:{units:['Camille','Elise','Caitlyn','Morgana'],trait:'Coven'},
+  sprykin:{units:['Teemo','Rammus','Azir'],trait:'Sprykin'},
+  lunar:{units:['Diana','Aphelios','Kayle'],trait:'Lunar'}
+ };
+ if(traitData[style]){
+  const t=traitData[style],match=units.filter(n=>t.units.includes(n)).length,compMatch=inBuild(t.trait);
+  if(match>=2||compMatch){score+=13;why.push('Matches your '+t.trait+' units or likely endgame board.');}
+  else if(match===1){score+=3;why.push('One '+t.trait+' unit already on your board.');caution.push('You still need more of the trait.');}
+  else {score-=17;caution.push('Trait-specific: little value without '+t.trait+' units.');}
+ }
+ else if(style==='reroll'){
+  const upgraded=o.units.some(u=>u.stars>=2);
+  if(best?.type==='reroll'||(lvl<=7&&upgraded)){score+=10;why.push('Matches reroll or upgraded lower-cost units.');}
+  else if(lvl>=8){score-=7;caution.push('Reroll value is lower if you are already playing expensive carries.');}
+ }
+ else if(style==='fast8'){if(lvl<=8){score+=6;why.push('Helps you stabilize or roll at Level 8.');}else {score-=5;caution.push('The timing is less valuable after your Level 8 roll.');}}
+ else if(style==='fast9'){if(lvl>=7&&stage<=4){score+=7;why.push('Your level and round support a fast-level plan.');}else if(stage>=5&&lvl<=7){score-=8;caution.push('Late to start a level-9 economy plan.');}}
+ else if(style==='econ'){if(stage<=3){score+=6;why.push('Early economy pays off over more rounds.');}else if(stage>=5){score-=5;caution.push('Fewer rounds remain to recover the investment.');}}
+ else if(style==='front'){if(hasTank||has(['Ornn','Rammus','Alistar','Leona','Taric','Hecarim'])){score+=5;why.push('Improves your current frontline.');}else {score+=2;}}
+ else if(style==='ad'){if(hasAD||['ad'].includes(best?.type)){score+=8;why.push('Your items or intended carry favor physical damage.');}else {score-=4;caution.push('Needs attack-damage carries.');}}
+ else if(style==='ap'){if(hasAP||best?.type==='ap'){score+=8;why.push('Matches your ability-power items or caster plan.');}else {score-=4;caution.push('Needs a caster that benefits from this.');}}
+ else if(style==='artifact'){score+=4;why.push('Adds a special item for an appropriate carry.');}
+ else if(style==='emblem'){score+=3;why.push('Flexible if an emblem activates a useful trait breakpoint.');}
+ else if(style==='item'){score+=3;why.push('Provides useful item flexibility now.');}
+ else if(style==='damage'){score+=2;why.push('Provides general combat power.');}
+ if(a.boost&&best){const boost=Number(a.boost[best.id]||0);if(boost){score+=Math.min(boost,11);why.push('Synergy with '+best.name+'.');}}
+ if(a.id==='Embiggen'&&o.units.some(u=>['Xayah','Rakan','Tristana'].includes(u.name))){score+=3;}
+ if(a.id==='Duo Queue'&&stage>=5){score+=2;why.push('Extra 5-cost units help a late-game board.');}
+ if(a.id==='Latent Forge'&&stage>=5){score-=7;caution.push('Delayed reward: fewer fights remain.');}
+ if((a.id==='Portable Forge'||a.id==='Living Forge')&&o.artifacts.length){score+=2;}
+ if(!why.length)why.push('General baseline: '+a.tier+' tier on Patch 18.6.');
+ return {score,why,caution};
+}
+function augmentTile(a,selected,offer){
+ const tip=a.id+' · '+a.rarity+' · '+a.tier+' tier. '+a.desc;
+ return '<div class="pick-cell"><button class="pick-main" type="button" data-kind="augment" data-id="'+esc(a.id)+
+ '" aria-pressed="'+!!selected+'" title="'+esc(tip)+'" aria-label="'+esc(tip)+'">'+
+ '<span class="pick-art">'+esc(a.id.slice(0,2))+ '<img src="'+augmentImage(a.id)+'" loading="lazy" alt="" onerror="this.remove()"></span>'+
+ (selected?'<span class="pick-number">✓</span>':'')+'<span class="pick-quick-tier">'+esc(a.tier)+'</span>'+
+ '<span class="pick-name">'+esc(a.id)+'</span></button>'+
+ (offer?'<span class="aug-offer-flag">OFFER</span>':'')+'</div>';
+}
+function renderAugments(o){
+ const el=$('#pAugments'),scroll=el.scrollTop||0;
+ const selected=augmentMode==='offers'?o.augmentOffers:o.augments;
+ const showing=AUGMENT_HINTS.filter(a=>(!a.inactive||selected.includes(a.id)||o.augments.includes(a.id))&&
+  (visualFilter.augment==='all'||a.group===visualFilter.augment)&&
+  (augmentRarity==='all'||a.rarity===augmentRarity)&&
+  a.id.toLowerCase().includes(augmentSearch));
+ el.innerHTML=showing.sort((a,b)=>({S:0,A:1,B:2,C:3,'?':4}[a.tier]-{S:0,A:1,B:2,C:3,'?':4}[b.tier])||a.id.localeCompare(b.id))
+ .map(a=>augmentTile(a,selected.includes(a.id),o.augmentOffers.includes(a.id))).join('');
+ el.scrollTop=scroll;
+ $('#pAugmentCount').textContent=o.augments.length+' chosen · '+o.augmentOffers.length+' offered';
+ document.querySelectorAll('#augModeButtons button').forEach(b=>{const yes=b.dataset.augMode===augmentMode;b.classList.toggle('active',yes);b.setAttribute('aria-pressed',String(yes));});
+ document.querySelectorAll('#pAugmentRarities button').forEach(b=>{const yes=b.dataset.augRarity===augmentRarity;b.classList.toggle('active',yes);b.setAttribute('aria-pressed',String(yes));});
+}
+function toggleAugment(id,remove){
+ const o=openingState(),a=augmentMeta(id);if(!a)return;
+ const key=augmentMode==='offers'?'augmentOffers':'augments',list=o[key],idx=list.indexOf(id);
+ if(idx>=0){o[key].splice(idx,1);}else if(!remove){if(list.length>=3){toast('Maximum 3 '+(key==='augmentOffers'?'offers':'chosen Augments'));return;}list.push(id);}
+ save();renderOpening();
+}
+function augmentOfferSummary(o){
+ const matches=o.augmentOffers.map(id=>{const a=augmentMeta(id);if(!a)return null;return {a,...augmentMatch(a,o)};}).filter(Boolean).sort((a,b)=>b.score-a.score);
+ if(!matches.length){
+  $('#augmentOffersSummary').innerHTML='<div class="aug-offer-placeholder">Choose <b>Compare 3 offers</b>, then click the three Augment icons offered in your game. I will rank those specific choices for your current board.</div>';return;
+ }
+ $('#augmentOffersSummary').innerHTML=matches.map((row,i)=>{
+  const a=row.a,notActive=a.inactive,why=row.why.slice(0,2).join(' '),warn=row.caution.slice(0,2).join(' ');
+  return '<article class="aug-offer-card'+(i===0&&!notActive?' best':'')+'"><div class="aug-offer-top">'+
+  '<img src="'+augmentImage(a.id)+'" alt="" loading="lazy" onerror="this.remove()"><div><b>'+esc(a.id)+'</b>'+
+  '<small>'+esc(a.rarity)+' · <span class="aug-pill '+esc(a.tier.toLowerCase())+'">'+esc(a.tier)+' tier</span>'+
+  (i===0&&!notActive?' · Best fit of your offers':'')+'</small></div></div>'+
+  '<p><b>Effect:</b> '+esc(a.desc)+'</p><p><b>Why:</b> '+esc(why)+'</p>'+
+  (warn?'<p><b>Watch out:</b> '+esc(warn)+'</p>':'')+
+  '<button type="button" data-aug-take="'+esc(a.id)+'" '+(o.augments.includes(a.id)||notActive?'disabled':'')+'>'+
+  (o.augments.includes(a.id)?'Already chosen':'Mark as chosen')+'</button></article>';
+ }).join('');
+}
+function renderAugmentTiers(o){
+ const list=['S','A','B','C','?'].filter(t=>augmentTierFilter==='all'||augmentTierFilter===t);
+ $('#augmentTierBoard').innerHTML=list.map(t=>{
+  const arr=AUGMENT_HINTS.filter(a=>a.tier===t&&
+   (augmentRarity==='all'||a.rarity===augmentRarity)&&
+   a.id.toLowerCase().includes(augmentSearch));
+  if(!arr.length)return '';
+  return '<div class="aug-tier-row tier-'+esc(t)+'"><span class="aug-tier-marker">'+esc(t)+'</span><div class="aug-tier-icons">'+
+  arr.map(a=>'<button type="button" class="aug-mini" data-aug-select="'+esc(a.id)+'" aria-pressed="'+o.augmentOffers.includes(a.id)+'"'+
+    ' title="'+esc(a.id+' · '+a.rarity+'. '+a.desc)+'"><img src="'+augmentImage(a.id)+'" alt="" loading="lazy" onerror="this.remove()">'+
+   (o.augmentOffers.includes(a.id)?'<span class="aug-offer-flag">OFFER</span>':'')+
+   '<small>'+esc(a.rarity==='Prismatic'?'P':a.rarity==='Silver'?'S':a.rarity==='Gold'?'G':'?')+'</small><span>'+esc(a.id)+'</span></button>').join('')+
+ '</div></div>';
+ }).join('')||'<div class="aug-offer-placeholder">No Augments match these filters.</div>';
+ document.querySelectorAll('#augTierFilters button').forEach(b=>{const yes=b.dataset.augTier===augmentTierFilter;b.classList.toggle('active',yes);b.setAttribute('aria-pressed',String(yes));});
+}
+function renderAugmentGuide(o){augmentOfferSummary(o);renderAugmentTiers(o);}
+function bindAugmentGuide(){
+ $('#augModeButtons').addEventListener('click',e=>{const b=e.target.closest('[data-aug-mode]');if(b){augmentMode=b.dataset.augMode;renderOpening();}});
+ $('#pAugmentRarities').addEventListener('click',e=>{const b=e.target.closest('[data-aug-rarity]');if(b){augmentRarity=b.dataset.augRarity;renderOpening();}});
+ $('#pAugmentSearch').addEventListener('input',e=>{augmentSearch=e.target.value.trim().toLowerCase();renderOpening();});
+ $('#augTierFilters').addEventListener('click',e=>{const b=e.target.closest('[data-aug-tier]');if(b){augmentTierFilter=b.dataset.augTier;renderOpening();}});
+ $('#augmentTierBoard').addEventListener('click',e=>{const b=e.target.closest('[data-aug-select]');if(b){augmentMode='offers';toggleAugment(b.dataset.augSelect,false);}});
+ $('#augmentTierBoard').addEventListener('contextmenu',e=>{const b=e.target.closest('[data-aug-select]');if(b){e.preventDefault();augmentMode='offers';toggleAugment(b.dataset.augSelect,true);}});
+ $('#augmentOffersSummary').addEventListener('click',e=>{const b=e.target.closest('[data-aug-take]');if(!b)return;const id=b.dataset.augTake,o=openingState();if(!o.augments.includes(id)&&o.augments.length<3){o.augments.push(id);save();renderOpening();}});
+}
+
 function openingState(){
  if(!state.opening||typeof state.opening!=='object')state.opening={};
  var o=state.opening;
- ['items','components','units','augments','artifacts','radiants'].forEach(function(k){if(!Array.isArray(o[k]))o[k]=[];});
+ ['items','components','units','augments','augmentOffers','artifacts','radiants'].forEach(function(k){if(!Array.isArray(o[k]))o[k]=[];});
  if(!['2','3','4','5','6'].includes(String(o.stage)))o.stage='3';
  if(!Number.isInteger(Number(o.round))||Number(o.round)<1||Number(o.round)>7)o.round=2;
  o.round=Number(o.round);
@@ -950,6 +1077,7 @@ const AUGMENT_ART={
 const COMPONENT_ART={Sword:'DA_Component_BFSword.webp',Bow:'DA_Component_RecurveBow.webp',Rod:'DA_Component_NeedlesslyLargeRod.webp',Tear:'DA_Component_TearOfTheGoddess.webp',Vest:'DA_Component_ChainVest.webp',Cloak:'DA_Component_NegatronCloak.webp',Belt:'DA_Component_GiantsBelt.webp',Gloves:'DA_Component_SparringGloves.webp'};
 const COST_COLORS={1:'#a9b8c8',2:'#59d79a',3:'#72a8f5',4:'#b98bfa',5:'#f0c45b'};
 let visualFilter={item:'all',unit:'early',augment:'all',artifact:'all',radiant:'all'},visualSearch={item:'',unit:'',artifact:'',radiant:''};
+let augmentMode='chosen',augmentRarity='all',augmentTierFilter='all',augmentSearch='';
 function renderTile(type,id,label,src,n,more){
  const found=n>0;const cost=more&&more.cost;
  const img='<span class="pick-art"'+(cost?' style="border-bottom:3px solid '+COST_COLORS[cost]+'"':'')+'>'+esc(label.slice(0,2).toUpperCase())+'<img src="'+src+'" loading="lazy" alt="" onerror="this.remove()">'+(cost?'<span class="pick-cost">'+cost+'g</span>':'')+'</span>';
@@ -1008,9 +1136,9 @@ function renderVisual(o){
  const units=Object.entries(ROSTER_BY_COST).flatMap(([c,ns])=>ns.map(name=>({name,cost:Number(c)}))).filter(x=>(visualFilter.unit==='all'||(visualFilter.unit==='early'?x.cost<=3:x.cost===Number(visualFilter.unit)))&&x.name.toLowerCase().includes(visualSearch.unit)).sort((x,y)=>x.cost-y.cost||x.name.localeCompare(y.name));
  $('#pUnits').innerHTML=units.map(x=>{const u=o.units.find(u=>u.name===x.name);return renderTile('unit',x.name,x.name,championImg(x.name),u?u.stars:0,x);}).join('');
  $('#pChosenUnits').innerHTML=o.units.map(u=>'<span class="chosen"><img src="'+championImg(u.name)+'" alt="" onerror="this.remove()">'+esc(u.name)+' <span class="goldstars">'+('★'.repeat(u.stars))+'</span><button type="button" data-clear-unit="'+esc(u.name)+'" aria-label="Remove '+esc(u.name)+' entirely">×</button></span>').join('');
- $('#pAugments').innerHTML=AUGMENT_HINTS.filter(x=>visualFilter.augment==='all'||x.group===visualFilter.augment).map(x=>renderTile('augment',x.id,x.id,'https://hexcomps.com/img/augments/'+AUGMENT_ART[x.id],o.augments.includes(x.id)?1:0,x)).join('');
+ renderAugments(o);
  renderArtifacts(o);renderRadiants(o);
- renderValueTiers();renderPowerCombos();
+ renderValueTiers();renderPowerCombos();renderAugmentGuide(o);
  $('#pItemCount').textContent=o.items.length;$('#pComponentCount').textContent=o.components.length;$('#pUnitCount').textContent=o.units.length;$('#pAugmentCount').textContent=o.augments.length+' / 3';
  scrollIds.forEach((id,i)=>$(id).scrollTop=scrolls[i]);
  [['#pItemFilters','if','item'],['#pUnitFilters','uf','unit'],['#pAugmentFilters','af','augment']].forEach(([sel,k,filter])=>document.querySelectorAll(sel+' button').forEach(b=>{const on=b.dataset[k]===visualFilter[filter];b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on));}));
@@ -1023,10 +1151,11 @@ function chooseIcon(kind,id){
  else if(kind==='radiant'){if(RADIANT_ITEMS[id])o.radiants.push(id);}
  else if(kind==='component')o.components.push(id);
  else if(kind==='unit'){const u=o.units.find(u=>u.name===id);if(!u)o.units.push({name:id,stars:1});else u.stars=Math.min(3,u.stars+1);}
- else if(kind==='augment'){if(o.augments.includes(id))o.augments=o.augments.filter(x=>x!==id);else if(o.augments.length<3)o.augments.push(id);else {toast('Maximum three Augments');return;}}
+ else if(kind==='augment'){toggleAugment(id,false);return;}
  save();renderOpening();
 }
 function removeIcon(kind,id){
+ if(kind==='augment'){toggleAugment(id,true);return;}
  const o=openingState();
  if(kind==='unit'){
   const u=o.units.find(x=>x.name===id);
@@ -1328,7 +1457,7 @@ function renderOpening(){
  document.querySelectorAll('#openResults [data-open-comp]').forEach(function(b){b.onclick=function(){showComposition(b.dataset.openComp);};});
 }
 function example(type){
- var o={items:[],components:[],units:[],augments:[],artifacts:[],radiants:[],stage:'3',round:2,level:6,levelManual:false};
+ var o={items:[],components:[],units:[],augments:[],augmentOffers:[],artifacts:[],radiants:[],stage:'3',round:2,level:6,levelManual:false};
  if(type==='ad'){o.items=["Guinsoo's Rageblade"];o.components=['Sword','Gloves'];o.units=[{name:'Kayle',stars:2},{name:'Alistar',stars:2}];}
  if(type==='ap'){o.items=['Spear of Shojin'];o.components=['Rod','Gloves'];o.units=[{name:'Teemo',stars:2},{name:'Alistar',stars:2}];}
  if(type==='fae'){o.items=['Jeweled Gauntlet'];o.components=['Bow','Rod'];o.units=[{name:'Xayah',stars:2},{name:'Rakan',stars:2}];o.augments=['Embiggen'];}
@@ -1336,8 +1465,8 @@ function example(type){
  state.opening=o;save();renderOpening();
 }
 function initOpening(){
- bindVisual();bindValueTiers();bindCombos();
- $('#openingClear').onclick=function(){state.opening={items:[],components:[],units:[],augments:[],artifacts:[],radiants:[],stage:'3',round:2,level:6,levelManual:false};visualFilter={item:'all',unit:'early',augment:'all',artifact:'all',radiant:'all'};visualSearch={item:'',unit:'',artifact:'',radiant:''};$('#pItemSearch').value='';$('#pUnitSearch').value='';$('#pArtifactSearch').value='';$('#pRadiantSearch').value='';save();renderOpening();};
+ bindVisual();bindValueTiers();bindCombos();bindAugmentGuide();
+ $('#openingClear').onclick=function(){state.opening={items:[],components:[],units:[],augments:[],augmentOffers:[],artifacts:[],radiants:[],stage:'3',round:2,level:6,levelManual:false};visualFilter={item:'all',unit:'early',augment:'all',artifact:'all',radiant:'all'};visualSearch={item:'',unit:'',artifact:'',radiant:''};$('#pItemSearch').value='';$('#pUnitSearch').value='';$('#pArtifactSearch').value='';$('#pRadiantSearch').value='';$('#pAugmentSearch').value='';augmentSearch='';augmentMode='chosen';augmentRarity='all';augmentTierFilter='all';save();renderOpening();};
  $('#openSampleAD').onclick=function(){example('ad');};$('#openSampleAP').onclick=function(){example('ap');};$('#openSampleFae').onclick=function(){example('fae');};$('#openSampleRammus').onclick=function(){example('rammus');};renderOpening();save();
 }
 window.renderOpening=renderOpening;
