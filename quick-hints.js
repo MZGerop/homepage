@@ -47,9 +47,9 @@
     '<span class="hint-art-fallback">'+esc(name.slice(0,1))+'</span>';
  }
  function artifactArt(name){
-  const url=api.artifactImage(name);
-  return url?'<img src="'+esc(url)+'" alt="" loading="lazy" onerror="this.remove()">':
-    '<span class="hint-art-fallback">✦</span>';
+  // Reuse the existing two-step Artifact image fallback from the full guide.
+  const image=api.artifactImgTag(name);
+  return image||'<span class="hint-art-fallback">✦</span>';
  }
  function gearCard(name,kind){
   const item=itemInfo(name),desc=kind==='artifact'?'Rare artifact · only if obtained':
