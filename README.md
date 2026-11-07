@@ -35,6 +35,17 @@ The browser's context menu is suppressed **only for these interactive planner co
 
 For touchscreen, keyboard, or accessibility use, visible **−** controls and direct 1★ / 2★ / 3★ buttons remain. The selected champion row has **×** to remove a champion entirely.
 
+## Radiant item selection (v1.9)
+
+- Added a dedicated **gold-bordered Radiant items** icon picker beside completed items and Artifacts, covering **36 regular Radiant upgrades** in Set 18. The separate single-use Radiant potions and Lucky Item Chest are intentionally excluded from this equipment picker.
+- **Left click** adds one Radiant item; **right click** subtracts one. Counts cannot go negative, multiple copies are allowed, and a visible **−** button remains for touch. The same left/right controls work in the item/Artifact/**Radiant** tier list.
+- Radiants have their own `opening.radiants` inventory field, stored in the existing local browser storage object. Existing selections migrate safely, and Clear opening resets Radiants too.
+- A Radiant is **not a component recipe and not interchangeable with a normal copy in the inventory**. If a composition or champion would use the normal item, its Radiant counterpart receives an appropriate recommendation boost.
+- Champion-specific cards show useful Radiant versions, with selected Radiants marked in green. Early/midgame item holders, shop targets and endgame fit rankings also recognize Radiants.
+- The combo matcher accepts a Radiant upgrade as fulfilling the corresponding normal-item part, while displaying the upgraded icon in matched combinations.
+- Radiant icon filenames are explicitly mapped for **30 entries**, using preserved historical CommunityDragon Riot imagery; newer items without confirmed Radiant artwork use the existing standard icon with a prominent golden Radiant marker, rather than broken-image placeholders.
+- Radiant **S/A/B/C** tiers are based on a [Set 18 reference](https://tftguide.org/en/items/radiants) from a previous patch and should be treated as contextual, not live 18.6 win-rate rankings. Their source is linked in the page.
+
 ## Round-aware planner, tier lists, and strong combos (v1.8)
 
 The visual Opening Planner retains its existing icons and saved selections, with three new decision aids:
