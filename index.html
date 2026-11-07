@@ -306,6 +306,19 @@
 .aug-legal-note{font-size:11px;margin:10px 0 0}
 @media(max-width:1060px){.aug-offer-cards{grid-template-columns:1fr 1fr}}
 @media(max-width:650px){.aug-offer-cards{grid-template-columns:1fr}.aug-guide-head{flex-direction:column}.aug-tier-row{gap:6px;padding:7px}.aug-tier-icons{grid-template-columns:repeat(auto-fill,minmax(70px,1fr))}}
+
+/* Consistent explain-on-hover/focus, plus a tap-friendly Help Mode. */
+.help-toggle-row{display:flex;gap:8px;flex-wrap:wrap}
+#explainIcons[aria-pressed="true"]{border:1px solid #d6bc72;background:#6d532d;color:#fff1bc}
+.visual-tooltip{position:fixed;z-index:9999;max-width:min(390px,calc(100vw - 28px));white-space:pre-line;
+ border:1px solid #83abc7;border-radius:11px;background:#102239;color:#eef7ff;
+ box-shadow:0 12px 34px #020b1ecb;padding:12px 14px;font-size:12px;line-height:1.52;
+ pointer-events:none;overflow-wrap:anywhere;max-height:min(310px,65vh);overflow:hidden}
+.visual-tooltip[hidden]{display:none}
+[data-explain]:focus-visible{outline:2px solid #ffe099;outline-offset:2px}
+[data-explain]{cursor:help}
+.pick-main[data-explain],button[data-explain]{cursor:pointer}
+@media(max-width:600px){.visual-tooltip{max-width:calc(100vw - 24px);font-size:13px}}
 </style>
 </head>
 <body>
@@ -327,7 +340,7 @@
 </section>
 
 <section class="section" id="opening">
-<div class="section-head"><div><div class="eyebrow">NEW · Decide from what you find</div><h2>Opening Planner</h2><p>Enter your current items, components, champions, and Augments. See which builds fit <em>your</em> start — and why.</p><p><b>Mouse:</b> left-click <b>+</b> · right-click <b>−</b> (no context menu). <b>Touch:</b> use the visible − and star buttons.</p></div><button class="btn" type="button" id="openingClear">Clear opening</button></div>
+<div class="section-head"><div><div class="eyebrow">NEW · Decide from what you find</div><h2>Opening Planner</h2><p>Enter your current items, components, champions, and Augments. See which builds fit <em>your</em> start — and why.</p><p><b>Mouse:</b> left-click <b>+</b> · right-click <b>−</b> (no context menu). <b>Touch:</b> use the visible − and star buttons.</p></div><div class="help-toggle-row"><button class="btn" type="button" id="explainIcons" aria-pressed="false" title="Explain icons by tapping instead of changing your selections">ⓘ Explain icons: OFF</button><button class="btn" type="button" id="openingClear">Clear opening</button></div></div>
 
 <section class="round-panel" aria-label="Current round and shop level">
   <div class="round-panel-title"><div class="eyebrow">Step 1 · Where are you in the match?</div><h3>Round & shop level</h3><p class="muted">Change the round and level to focus on champions you can realistically find now.</p></div>
@@ -569,8 +582,8 @@ function championImg(name){
 function itemImg(id){
   return 'https://hexcomps.com/img/items/'+(ITEM_ICON_OVERRIDES[id]||'DA_'+id+'.webp');
 }
-function portrait(name,showName=true){const cost=Object.entries(ROSTER_BY_COST).find(([,v])=>v.includes(name))?.[0]||'?';const abbr=name.split(/\s+/).map(s=>s[0]).join('').slice(0,2).toUpperCase();return `<div class="champ-sm" title="${esc(name)}"><span class="portrait"><span class="abbr">${abbr}</span><img src="${championImg(name)}" loading="lazy" alt="" onerror="this.remove()"><span class="cost">${cost}g</span></span>${showName?`<span class="champ-label">${esc(name)}</span>`:''}</div>`}
-function itemMark(name,short=false){const x=ITEMS.find(i=>i[0]===name),icon=x?itemImg(x[5]):null;return `<span class="itemmark" title="${esc(name)}"><span class="sicon">${esc(name[0])}${icon?`<img src="${icon}" loading="lazy" alt="" onerror="this.remove()">`:''}</span>${short?'':esc(name)}</span>`}
+function portrait(name,showName=true){const cost=Object.entries(ROSTER_BY_COST).find(([,v])=>v.includes(name))?.[0]||'?';const abbr=name.split(/\s+/).map(s=>s[0]).join('').slice(0,2).toUpperCase();return `<div class="champ-sm" data-champion="${esc(name)}" tabindex="0" title="${esc(name)}"><span class="portrait"><span class="abbr">${abbr}</span><img src="${championImg(name)}" loading="lazy" alt="" onerror="this.remove()"><span class="cost">${cost}g</span></span>${showName?`<span class="champ-label">${esc(name)}</span>`:''}</div>`}
+function itemMark(name,short=false){const x=ITEMS.find(i=>i[0]===name),icon=x?itemImg(x[5]):null;return `<span class="itemmark" data-item-name="${esc(name)}" tabindex="0" title="${esc(name)}"><span class="sicon">${esc(name[0])}${icon?`<img src="${icon}" loading="lazy" alt="" onerror="this.remove()">`:''}</span>${short?'':esc(name)}</span>`}
 let compFilter='all';
 function renderComps(){const q=$('#compSearch').value.toLowerCase(),sort=$('#compSort').value;let list=COMP_LIST.filter(c=>(compFilter==='all'||(compFilter==='fav'?state.favorites.includes(c.id):(compFilter==='fast9'?c.lvl===9:c.type===compFilter)))&&([c.name,c.headline,c.when,...c.traits,...c.units].join(' ').toLowerCase().includes(q)));
 list.sort((a,b)=>sort==='name'?a.name.localeCompare(b.name):sort==='level'?a.lvl-b.lvl:sort==='fav'?Number(state.favorites.includes(b.id))-Number(state.favorites.includes(a.id)):({S:0,A:1,B:2}[a.tier]-{S:0,A:1,B:2}[b.tier]));
@@ -580,7 +593,7 @@ function toggleFav(id){state.favorites=state.favorites.includes(id)?state.favori
 function toggleDetails(b){const el=b.nextElementSibling;el.hidden=!el.hidden;b.textContent=el.hidden?'View final board, items & transitions ▾':'Hide details ▴'}
 function unitTier(n){return SPLUS.includes(n)?'S+':STIER.includes(n)?'S':ATIER.includes(n)?'A':CTIER.includes(n)?'C':'B'}
 function renderRoster(){const q=$('#unitSearch').value.toLowerCase(),cost=$('#costFilter').value,tier=$('#tierFilter').value;const list=Object.entries(ROSTER_BY_COST).flatMap(([c,ns])=>ns.map(n=>({n,c,t:unitTier(n)}))).filter(x=>(cost==='all'||x.c===cost)&&(tier==='all'||x.t===tier)&&x.n.toLowerCase().includes(q));$('#roster').innerHTML=list.map(x=>`<div class="unit" title="${esc(x.n)} — ${esc(ROLES[x.n]||'Trait-specific unit')}">${portrait(x.n,false)}<div style="min-width:0"><b>${esc(x.n)}</b><span class="meta">${x.c}g · <span style="color:${x.t==='S+'?'#f5cb6c':x.t==='S'?'#72e9bc':'#a8b9db'}">${x.t}</span> · ${esc(ROLES[x.n]||'Situational')}</span></div></div>`).join('')||'<p class="muted">No matching champions.</p>';$('#countUnits').textContent=Object.values(ROSTER_BY_COST).flat().length}
-function renderItems(){const q=$('#itemSearch').value.toLowerCase(),cat=$('#itemCategory').value;$('#itemsGrid').innerHTML=ITEMS.filter(i=>(cat==='all'||i[3]===cat)&&i.join(' ').toLowerCase().includes(q)).map(i=>`<div class="card item-card"><span class="sicon" style="width:48px;height:48px;font-size:19px">${esc(i[0][0])}<img src="${itemImg(i[5])}" loading="lazy" alt="" onerror="this.remove()"></span><div><b>${esc(i[0])}</b><div class="recipe">${esc(i[1])} + ${esc(i[2])} · ${i[3]}</div><p>${esc(i[4])}</p></div></div>`).join('');$('#countItems').textContent=ITEMS.length}
+function renderItems(){const q=$('#itemSearch').value.toLowerCase(),cat=$('#itemCategory').value;$('#itemsGrid').innerHTML=ITEMS.filter(i=>(cat==='all'||i[3]===cat)&&i.join(' ').toLowerCase().includes(q)).map(i=>`<div class="card item-card" data-item-name="${esc(i[0])}" tabindex="0"><span class="sicon" style="width:48px;height:48px;font-size:19px">${esc(i[0][0])}<img src="${itemImg(i[5])}" loading="lazy" alt="" onerror="this.remove()"></span><div><b>${esc(i[0])}</b><div class="recipe">${esc(i[1])} + ${esc(i[2])} · ${i[3]}</div><p>${esc(i[4])}</p></div></div>`).join('');$('#countItems').textContent=ITEMS.length}
 function recipeCalc(){let a=$('#component1').value,b=$('#component2').value;const x=ITEMS.find(i=>(i[1]===a&&i[2]===b)||(i[1]===b&&i[2]===a));$('#recipeAnswer').innerHTML=x?`<b>${esc(x[0])}</b><div class="muted" style="font-size:11px">${esc(x[4])}</div>`:'No standard completed item in this list.'}
 function renderTimeline(){$('#timeline').innerHTML=TIMELINE.map(([stage,lvl,desc])=>`<div class="level-card"><span class="stage">${stage}</span><div class="lv">${lvl}</div><div class="remark">${desc}</div></div>`).join('')}
 function decisionCalc(){const hp=$('#decisionHp').value,board=$('#decisionBoard').value,gold=$('#decisionGold').value;let result;if(hp==='low')result='<b>ROLL TO SURVIVE.</b> Your next losses can eliminate you. Upgrade frontline and carry; do not save for an imaginary Level 9.';else if(board==='weak')result='<b>STABILIZE ON 8.</b> Roll for your core 2★ frontline and carry before saving for Level 9.';else if(gold==='high'&&hp==='high')result='<b>PLAN LEVEL 9.</b> Protect your economy, then level with enough gold left to buy and upgrade new units.';else if(gold==='low')result='<b>REBUILD ECONOMY.</b> Keep your strong board; avoid expensive panic levels. Roll only if losing too much HP.';else result='<b>SAVE CAUTIOUSLY.</b> You can plan Level 9, but scout opponents and spend on important upgrades if fights worsen.';$('#decisionResult').innerHTML=result}
@@ -830,7 +843,7 @@ function comboIcon(kind,name,has){
  const isChampion=kind==='champion',isArtifact=kind==='artifact',isRadiant=kind==='radiant';
  const item=getItem(name),url=isChampion?championImg(name):isArtifact?artifactImage(name):isRadiant?radiantImage(name):item?itemImg(item[5]):'';
  const img=isArtifact?artifactImgTag(name):isRadiant?radiantImgTag(name):'<img src="'+url+'" alt="" loading="lazy" onerror="this.remove()">';
- return '<span class="combo-icon'+(has?' have':'')+'" title="'+esc(name)+'"><span class="fallback">'+esc(name.slice(0,2))+img+'</span><span>'+esc(name)+'</span></span>';
+ return '<span class="combo-icon'+(has?' have':'')+'" data-help-kind="'+kind+'" data-help-name="'+esc(name)+'" tabindex="0" title="'+esc(name)+'"><span class="fallback">'+esc(name.slice(0,2))+img+'</span><span>'+esc(name)+'</span></span>';
 }
 function renderPowerCombos(){
  const o=openingState(),inventoryItems=counted(o.items),inventoryArtifacts=counted(o.artifacts),inventoryRadiants=counted(o.radiants);
@@ -947,7 +960,7 @@ function augmentOfferSummary(o){
  }
  $('#augmentOffersSummary').innerHTML=matches.map((row,i)=>{
   const a=row.a,notActive=a.inactive,why=row.why.slice(0,2).join(' '),warn=row.caution.slice(0,2).join(' ');
-  return '<article class="aug-offer-card'+(i===0&&!notActive?' best':'')+'"><div class="aug-offer-top">'+
+  return '<article class="aug-offer-card'+(i===0&&!notActive?' best':'')+'" data-help-kind="augment" data-help-name="'+esc(a.id)+'" tabindex="0"><div class="aug-offer-top">'+
   '<img src="'+augmentImage(a.id)+'" alt="" loading="lazy" onerror="this.remove()"><div><b>'+esc(a.id)+'</b>'+
   '<small>'+esc(a.rarity)+' · <span class="aug-pill '+esc(a.tier.toLowerCase())+'">'+esc(a.tier)+' tier</span>'+
   (i===0&&!notActive?' · Best fit of your offers':'')+'</small></div></div>'+
@@ -982,6 +995,120 @@ function bindAugmentGuide(){
  $('#augmentTierBoard').addEventListener('click',e=>{const b=e.target.closest('[data-aug-select]');if(b){augmentMode='offers';toggleAugment(b.dataset.augSelect,false);}});
  $('#augmentTierBoard').addEventListener('contextmenu',e=>{const b=e.target.closest('[data-aug-select]');if(b){e.preventDefault();augmentMode='offers';toggleAugment(b.dataset.augSelect,true);}});
  $('#augmentOffersSummary').addEventListener('click',e=>{const b=e.target.closest('[data-aug-take]');if(!b)return;const id=b.dataset.augTake,o=openingState();if(!o.augments.includes(id)&&o.augments.length<3){o.augments.push(id);save();renderOpening();}});
+}
+
+
+/* Universal visual help: the same small explanation across items, heroes,
+ * Augments, Artifacts, Radiants, tier cards, combo cards and shop targets.
+ * Tooltips are optional: they never alter selections unless Help Mode is off. */
+let explainMode=false,tooltipPinned=false;
+function helpText(kind,name){
+ if(!name)return '';
+ if(kind==='unit'||kind==='champion'){
+  const cost=holderCost(name),role=ROLES[name]||heroItemProfile(name).role||'Situational';
+  const holder=HOLDER_PATHS.find(x=>x[0]===name),items=heroItemProfile(name).items.slice(0,3);
+  return name+' · '+(cost||'?')+'-cost champion · '+role+
+   '\nGood items: '+(items.join(', ')||'Depends on build')+
+   (holder?'\nUse: '+holder[7]:'\nSee full composition for positioning and trait breakpoints.');
+ }
+ if(kind==='item'){
+  const i=getItem(name);
+  return i?name+' · '+tierFor(name,'item')+' tier · '+i[3]+
+   '\nEffect: '+i[4]+'\nRecipe: '+COMPONENTS[i[1]]+' + '+COMPONENTS[i[2]]+
+   '\nLeft-click +1 · right-click −1.':'';
+ }
+ if(kind==='component'){
+  const choices=ITEMS.filter(i=>i[1]===name||i[2]===name).slice(0,5).map(i=>i[0]);
+  return (COMPONENTS[name]||name)+' · Component\nCombine two components into one completed item.'+
+    (choices.length?'\nExamples: '+choices.join(', '):'')+'\nLeft-click +1 · right-click −1.';
+ }
+ if(kind==='artifact'){
+  const a=ARTIFACTS[name];if(!a)return '';
+  const champs=Object.entries(HERO_ARTIFACTS).filter(([,arr])=>arr.includes(name)).map(([n])=>n).slice(0,5);
+  return name+' · '+tierFor(name,'artifact')+' tier Artifact\n'+a.desc+
+   (champs.length?'\nGood holders: '+champs.join(', '):'')+'\nSpecial item: cannot craft.';
+ }
+ if(kind==='radiant'){
+  const a=RADIANT_ITEMS[name];
+  return a?name+' · '+tierFor(name,'radiant')+' tier Radiant\n'+a.desc+
+  '\nAn upgraded special version of '+a.base+'; cannot craft.':'';
+ }
+ if(kind==='augment'){
+  const a=augmentMeta(name);return a?
+    name+' · '+a.rarity+' Augment · '+a.tier+' tier\n'+a.desc+
+    (a.inactive?'\nNot verified as available in Patch 18.6.':'\nTier is general; compare your three actual offers for board fit.'):
+    '';
+ }
+ if(kind==='combo'){const c=POWER_COMBOS.find(x=>x.id===name);return c?c.title+'\n'+c.why+'\n'+c.plan:'';}
+ return '';
+}
+function explainForNode(el){
+ const d=el.dataset||{};
+ if(d.kind)return helpText(d.kind,d.id);
+ if(d.tierKind)return helpText(d.tierKind,d.tierName);
+ if(d.augSelect)return helpText('augment',d.augSelect);
+ if(d.augTake)return helpText('augment',d.augTake);
+ if(d.helpKind)return helpText(d.helpKind,d.helpName);
+ if(d.champion)return helpText('unit',d.champion);
+ if(d.itemName)return helpText('item',d.itemName);
+ return '';
+}
+function refreshVisualHelp(){
+ const queries=[
+  '[data-kind]','[data-tier-kind]','[data-aug-select]','[data-aug-take]',
+  '[data-help-kind]','[data-champion]','[data-item-name]'
+ ];
+ document.querySelectorAll(queries.join(',')).forEach(el=>{
+  const msg=explainForNode(el);if(!msg)return;
+  el.dataset.explain=msg;
+  el.setAttribute('title',msg.replace(/\n/g,' · '));
+  if(el.tagName!=='BUTTON'&&!el.hasAttribute('tabindex'))el.setAttribute('tabindex','0');
+ });
+ // Older cards have text, but not item-specific explanatory fields.
+ document.querySelectorAll('.shop-target').forEach(el=>{
+  const text=el.querySelector('.shop-target-name b')?.textContent;
+  if(text){el.dataset.explain=helpText('unit',text)+'\nYour shop level controls which cost tiers are possible.';el.setAttribute('tabindex','0');}
+ });
+}
+function visualTooltipElement(){return $('#visualTooltip');}
+function hideVisualTooltip(force){
+ if(tooltipPinned&&!force)return;
+ const tip=visualTooltipElement();tip.hidden=true;if(force)tooltipPinned=false;
+}
+function showVisualTooltip(target,pinned){
+ const str=target?.dataset?.explain||explainForNode(target);
+ if(!str)return;
+ const tip=visualTooltipElement();
+ tip.textContent=str;tip.hidden=false;tooltipPinned=!!pinned;
+ const bounds=target.getBoundingClientRect(),w=window.innerWidth||1000,h=window.innerHeight||800;
+ const estimatedWidth=Math.min(390,w-24);
+ const left=Math.max(12,Math.min(bounds.left,w-estimatedWidth-12));
+ const below=bounds.bottom+12;
+ tip.style.left=left+'px';tip.style.top=(below+220<h?below:Math.max(12,bounds.top-235))+'px';
+}
+function bindVisualHelp(){
+ document.addEventListener('mouseover',e=>{if(tooltipPinned)return;const el=e.target.closest('[data-explain]');if(el)showVisualTooltip(el,false);});
+ document.addEventListener('mouseout',e=>{if(!tooltipPinned&&e.target.closest('[data-explain]'))hideVisualTooltip(true);});
+ document.addEventListener('focusin',e=>{const el=e.target.closest('[data-explain]');if(el)showVisualTooltip(el,false);});
+ document.addEventListener('focusout',()=>hideVisualTooltip(true));
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'){hideVisualTooltip(true);}});
+ // Capture clicks to avoid changing items or champion stars while Help Mode is on.
+ document.addEventListener('click',e=>{
+  if(!explainMode)return;
+  const target=e.target.closest('[data-explain]');
+  if(!target)return;
+  e.preventDefault();e.stopPropagation();
+  showVisualTooltip(target,true);
+ },true);
+ document.addEventListener('contextmenu',e=>{
+  if(!explainMode)return;const target=e.target.closest('[data-explain]');
+  if(!target)return;e.preventDefault();e.stopPropagation();showVisualTooltip(target,true);
+ },true);
+ $('#explainIcons').onclick=function(){
+  explainMode=!explainMode;this.setAttribute('aria-pressed',String(explainMode));
+  this.textContent='ⓘ Explain icons: '+(explainMode?'ON':'OFF');
+  if(!explainMode)hideVisualTooltip(true);
+ };
 }
 
 function openingState(){
@@ -1270,7 +1397,7 @@ function heroItemRecipeIcon(part){
 function heroItemRow(pair,o){
  const recipe=getItem(pair.name),status=pair.status;
  if(!recipe)return '';
- return '<div class="hero-picks-item '+status.className+'"'+(status.missing?' title="'+esc('Missing: '+status.missing)+'"':'')+'>'+
+ return '<div class="hero-picks-item '+status.className+'" data-item-name="'+esc(pair.name)+'" tabindex="0"'+(status.missing?' title="'+esc('Missing: '+status.missing)+'"':'')+'>'+
  '<span class="hero-picks-item-icon">'+esc(pair.name[0])+'<img src="'+itemImg(recipe[5])+'" alt="" loading="lazy" onerror="this.remove()"></span>'+
  '<div><span class="hero-picks-item-name">'+esc(pair.name)+'</span><div class="hero-picks-recipe">'+heroItemRecipeIcon(recipe[1])+
  '<span>+</span>'+heroItemRecipeIcon(recipe[2])+'</div></div>'+
@@ -1288,7 +1415,7 @@ function heroRadiantAdvice(name,o){
  if(!choice.length)return '';
  return '<div class="hero-radiants"><h5>Recommended Radiant items</h5><div class="hero-artifact-row">'+choice.map(base=>{
    const n=radiantName(base),has=!!owned[n];
-   return '<span class="hero-artifact-choice'+(has?' owned':'')+'" title="'+esc(n+' · Special item, not craftable')+
+   return '<span class="hero-artifact-choice'+(has?' owned':'')+'" data-help-kind="radiant" data-help-name="'+esc(n)+'" tabindex="0" title="'+esc(n+' · Special item, not craftable')+
    '"><span class="letter">'+radiantImgTag(n)+'</span><span>'+esc(base)+(has?' · Have ×'+owned[n]:'')+'</span></span>';
  }).join('')+'</div><div class="radiant-legend">Gold = Radiant upgrade · Green = in your inventory · cannot be crafted</div></div>';
 }
@@ -1325,7 +1452,7 @@ function renderHeroItems(){
 
 
 function artifactTag(name,owned){
- return '<span class="hero-artifact-choice'+(owned?' owned':'')+'" title="'+esc((ARTIFACTS[name]?.desc||'')+' · Artifact, cannot craft')+'">'+
+ return '<span class="hero-artifact-choice'+(owned?' owned':'')+'" data-help-kind="artifact" data-help-name="'+esc(name)+'" tabindex="0" title="'+esc((ARTIFACTS[name]?.desc||'')+' · Artifact, cannot craft')+'">'+
  '<span class="letter">'+esc(name.slice(0,2).toUpperCase())+artifactImgTag(name)+'</span>'+
  '<span>'+esc(name)+(owned?' · Have':'')+'</span></span>';
 }
@@ -1429,13 +1556,13 @@ function showComposition(id){
  renderComps();document.querySelector('#comps').scrollIntoView({behavior:'smooth',block:'start'});
 }
 function renderOpening(){
- var o=openingState();renderVisual(o);renderArtifactHolders();renderHeroItems();renderHolders();
+ var o=openingState();renderVisual(o);renderArtifactHolders();renderHeroItems();renderHolders();refreshVisualHelp();
  var hasAny=o.items.length+o.components.length+o.units.length+o.augments.length+o.artifacts.length+o.radiants.length;
  if(!hasAny){
   $('#openIntro').textContent='Add an item, an upgraded champion, or an Augment — or try a sample opening above.';
   $('#openCount').textContent='Waiting for your opening';
   $('#openResults').innerHTML='<div class="card panel" style="grid-column:1/-1"><h3>Start with what you know</h3><p class="muted">Even one completed item or an Augment can narrow the options. Add a 2★ champion to improve the recommendations further.</p></div>';
-  return;
+  refreshVisualHelp();return;
  }
  var ranked=COMP_LIST.map(relevance).sort(function(a,b){return b.score-a.score;}).slice(0,5);
  $('#openIntro').textContent='Round '+o.stage+'-'+o.round+' · Level '+o.level+'. Endgame builds below are destinations; shop odds determine your near-term options.';
@@ -1463,9 +1590,10 @@ function example(type){
  if(type==='fae'){o.items=['Jeweled Gauntlet'];o.components=['Bow','Rod'];o.units=[{name:'Xayah',stars:2},{name:'Rakan',stars:2}];o.augments=['Embiggen'];}
  if(type==='rammus'){o.items=['Gargoyle Stoneplate'];o.components=['Belt','Rod'];o.units=[{name:'Rammus',stars:2},{name:'Azir',stars:1}];o.stage='4';o.round=1;o.level=7;}
  state.opening=o;save();renderOpening();
+ refreshVisualHelp();
 }
 function initOpening(){
- bindVisual();bindValueTiers();bindCombos();bindAugmentGuide();
+ bindVisual();bindValueTiers();bindCombos();bindAugmentGuide();bindVisualHelp();
  $('#openingClear').onclick=function(){state.opening={items:[],components:[],units:[],augments:[],augmentOffers:[],artifacts:[],radiants:[],stage:'3',round:2,level:6,levelManual:false};visualFilter={item:'all',unit:'early',augment:'all',artifact:'all',radiant:'all'};visualSearch={item:'',unit:'',artifact:'',radiant:''};$('#pItemSearch').value='';$('#pUnitSearch').value='';$('#pArtifactSearch').value='';$('#pRadiantSearch').value='';$('#pAugmentSearch').value='';augmentSearch='';augmentMode='chosen';augmentRarity='all';augmentTierFilter='all';save();renderOpening();};
  $('#openSampleAD').onclick=function(){example('ad');};$('#openSampleAP').onclick=function(){example('ap');};$('#openSampleFae').onclick=function(){example('fae');};$('#openSampleRammus').onclick=function(){example('rammus');};renderOpening();save();
 }
@@ -1474,4 +1602,5 @@ initOpening();
 })();
 
 </script>
+<div id="visualTooltip" role="tooltip" class="visual-tooltip" hidden></div>
 </body></html>
