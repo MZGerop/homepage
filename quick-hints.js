@@ -154,7 +154,7 @@
  function sortedCombos(){
   const combos=data.powerCombos.slice().sort((a,b)=>{
     const ai=featured.indexOf(a.id),bi=featured.indexOf(b.id);
-    return (ai<0?999:ai)-(bi<0?999);
+    return (ai<0?999:ai)-(bi<0?999:bi);
   });
   if(state.comboFilter==='featured')return combos.slice(0,6);
   if(state.comboFilter==='standard')return combos.filter(c=>!c.artifacts.length);
