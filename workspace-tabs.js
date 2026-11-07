@@ -95,6 +95,16 @@
     }
     activate(kind,{focusRegion:false});
   }
+  // A permanent header action that uses the same reset as the original
+  // "New game" button. Personal notes and match history are untouched.
+  const resetButton=document.getElementById('tftResetGame');
+  if(resetButton)resetButton.addEventListener('click',function(){
+    const clear=document.getElementById('openingClear');
+    if(!clear){window.alert('Game reset is unavailable. Refresh the page and try again.');return;}
+    if(!window.confirm('Start a new game? This clears your current champions, items, augments, emblems and round, but keeps your notes and match history.'))return;
+    clear.click();
+    activate('start');
+  });
   window.switchTFTTab=activate;
   window.openTFTTab=activate;
   bar.addEventListener('click',function(event){
