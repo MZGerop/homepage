@@ -461,7 +461,7 @@
   <section class="next-dashboard" aria-label="Your next best decisions">
     <div class="next-dashboard-head">
       <div><div class="eyebrow">THE RECOMMENDATION LOOP</div><h2>Look for these next</h2><p id="nextContextLine" class="muted">Suggestions update when you record a find.</p></div>
-      <div class="next-controls"><button type="button" id="nextShowAll" class="btn">＋ Add a find</button><button type="button" id="nextReset" class="btn plain">↺ New game</button></div>
+      <div class="next-controls"><button class="btn" type="button" id="explainIcons" aria-pressed="false" title="Explain icons by tapping instead of changing your selections">ⓘ Explain icons: OFF</button><button type="button" id="nextShowAll" class="btn">＋ Add a find</button><button type="button" id="nextReset" class="btn plain">↺ New game</button></div>
     </div>
     <div id="nextPrimary" class="next-reco-grid" aria-live="polite"></div>
     <div class="next-divider-head"><h3>Then work toward</h3><span class="muted">A direction, not a forced composition</span></div>
@@ -475,7 +475,7 @@
 </section>
 
 <section class="section" id="opening">
-<div class="section-head"><div><div class="eyebrow">RECORD A FIND</div><h2>I found something</h2><p>Pick a portrait below or tap a recommended target above. You can always change your mind.</p></div><div class="help-toggle-row"><button class="btn" type="button" id="explainIcons" aria-pressed="false" title="Explain icons by tapping instead of changing your selections">ⓘ Explain icons: OFF</button><button class="btn" type="button" id="openingClear">Clear opening</button></div></div>
+<div class="section-head"><div><div class="eyebrow">RECORD A FIND</div><h2>I found something</h2><p>Pick a portrait below or tap a recommended target above. You can always change your mind.</p></div><div class="help-toggle-row"><button class="btn" type="button" id="openingClear">Clear opening</button></div></div>
 
 
 
@@ -1146,7 +1146,7 @@ function bindAugmentGuide(){
  $('#augTierFilters').addEventListener('click',e=>{const b=e.target.closest('[data-aug-tier]');if(b){augmentTierFilter=b.dataset.augTier;renderOpening();}});
  $('#augmentTierBoard').addEventListener('click',e=>{const b=e.target.closest('[data-aug-select]');if(b){augmentMode='offers';toggleAugment(b.dataset.augSelect,false);}});
  $('#augmentTierBoard').addEventListener('contextmenu',e=>{const b=e.target.closest('[data-aug-select]');if(b){e.preventDefault();augmentMode='offers';toggleAugment(b.dataset.augSelect,true);}});
- $('#augmentOffersSummary').addEventListener('click',e=>{const b=e.target.closest('[data-aug-take]');if(!b)return;const id=b.dataset.augTake,o=openingState();if(!o.augments.includes(id)&&o.augments.length<3){o.augments.push(id);save();renderOpening();}});
+ $('#augmentOffersSummary').addEventListener('click',e=>{const b=e.target.closest('[data-aug-take]');if(!b)return;const id=b.dataset.augTake,o=openingState();if(!o.augments.includes(id)&&o.augments.length<3){o.augments.push(id);o.augmentOffers=[];save();renderOpening();}});
 }
 
 
@@ -1529,7 +1529,7 @@ function markNextAugment(name){
  const o=openingState();if(!augmentMeta(name))return;
  if(o.augments.includes(name))return;
  if(o.augments.length>=3){toast('You already chose three Augments');return;}
- o.augments.push(name);save();renderOpening();
+ o.augments.push(name);o.augmentOffers=[];save();renderOpening();
 }
 function bindNext(){
  $('#finderFollowButton').onclick=()=>{
