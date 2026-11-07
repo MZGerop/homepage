@@ -594,6 +594,13 @@
  </div></div>
  <div class="picker-filters" id="pAugmentFilters" role="group" aria-label="Augment categories"><button data-af="all" class="active">All</button><button data-af="Trait">Trait</button><button data-af="Economy">Economy</button><button data-af="Team">Team</button><button data-af="Item">Item</button></div>
  <div class="picker-grid picker-augments" id="pAugments" role="group" aria-label="Choose up to three Augments"></div>
+ <form class="missing-augment-form" id="pMissingAugmentForm" autocomplete="off">
+  <div class="missing-augment-heading"><b>Can't find an Augment?</b><small>The ranked picker is a curated subset. Record an unlisted offer by name.</small></div>
+  <div class="missing-augment-fields"><input id="pMissingAugmentName" name="name" class="searchbar" type="text" maxlength="90" placeholder="Exact Augment name…" required aria-label="Missing Augment name">
+  <select id="pMissingAugmentRarity" aria-label="Missing Augment rarity"><option>Silver</option><option selected>Gold</option><option>Prismatic</option></select>
+  <button class="btn primary" type="submit">＋ Add to my offers</button></div>
+  <small class="muted">Manual entries stay available between games but remain <b>unranked</b> until verified.</small>
+ </form>
  
  <small class="muted">Curated Patch 18.6 Augments. Icons show rarity and tier; hover, focus or use the info button for explanations.</small>
 </section>
@@ -913,6 +920,14 @@ function augmentImgTag(id){
 function augmentMeta(id){return AUGMENT_HINTS.find(a=>a.id===id);}
 AUGMENT_HINTS.forEach(a=>{const m=AUGMENT_BASE_META[a.id];if(m){a.rarity=m[0];a.tier=m[1];a.desc=m[2];a.style=a.style||m[3];a.inactive=m[1]==='?';}});
 AUGMENT_EXTRA.forEach(e=>AUGMENT_HINTS.push({id:e[0],label:e[0],rarity:e[1],tier:e[2],group:e[3],desc:e[4],style:e[5]}));
+// Manually entered Augments are persisted between matches, without fake ratings.
+if(!Array.isArray(state.extraAugments))state.extraAugments=[];
+state.extraAugments.forEach(a=>{
+ if(a && typeof a.id==='string' && a.id.length<=90 && ['Silver','Gold','Prismatic'].includes(a.rarity) &&
+   !AUGMENT_HINTS.some(x=>x.id.toLowerCase()===a.id.toLowerCase()))
+  AUGMENT_HINTS.push({id:a.id,label:a.id,rarity:a.rarity,tier:'?',group:'Other',
+    desc:'Manually entered; verify its effect in-game.',style:'',manual:true,inactive:false});
+});
 
 const SHOP_ODDS={3:[75,25,0,0,0],4:[55,30,15,0,0],5:[45,33,20,2,0],6:[30,40,25,5,0],7:[16,30,43,10,1],8:[15,20,32,30,3],9:[10,17,25,33,15],10:[5,10,20,40,25]};
 function levelForRound(stage,round){
@@ -1090,6 +1105,7 @@ function bindCombos(){
 
 /* Real-time, explainable augment advice. This is a heuristic, not estimated win rate. */
 function augmentMatch(a,o){
+ if(a.manual)return {score:0,why:['Unranked manual entry: no verified rating available.'],caution:['Compare its actual effect in-game. It cannot be reliably ranked against verified Augments.']};
  let score={S:28,A:21,B:14,C:8,'?':0}[a.tier]||0;
  const why=[],caution=[];
  if(a.inactive){return {score:-100,why:['Not verified in current patch.'],caution:['Legacy entry: do not use this as a live recommendation.']};}
@@ -1177,10 +1193,10 @@ function augmentOfferSummary(o){
  }
  $('#augmentOffersSummary').innerHTML=matches.map((row,i)=>{
   const a=row.a,notActive=a.inactive,why=row.why.slice(0,2).join(' '),warn=row.caution.slice(0,2).join(' ');
-  return '<article class="aug-offer-card'+(i===0&&!notActive?' best':'')+'" data-help-kind="augment" data-help-name="'+esc(a.id)+'" tabindex="0"><div class="aug-offer-top">'+
+  return '<article class="aug-offer-card'+(i===0&&!notActive&&!a.manual?' best':'')+'" data-help-kind="augment" data-help-name="'+esc(a.id)+'" tabindex="0"><div class="aug-offer-top">'+
   augmentImgTag(a.id)+'<div><b>'+esc(a.id)+'</b>'+
   '<small>'+esc(a.rarity)+' · <span class="aug-pill '+esc(a.tier.toLowerCase())+'">'+esc(a.tier)+' tier</span>'+
-  (i===0&&!notActive?' · Best fit of your offers':'')+'</small></div></div>'+
+  (i===0&&!notActive&&!a.manual?' · Best fit of your offers':'')+'</small></div></div>'+
   '<p><b>Effect:</b> '+esc(a.desc)+'</p><p><b>Why:</b> '+esc(why)+'</p>'+
   (warn?'<p><b>Watch out:</b> '+esc(warn)+'</p>':'')+
   '<button type="button" data-aug-take="'+esc(a.id)+'" '+(o.augments.includes(a.id)||notActive?'disabled':'')+'>'+
@@ -1204,7 +1220,30 @@ function renderAugmentTiers(o){
  document.querySelectorAll('#augTierFilters button').forEach(b=>{const yes=b.dataset.augTier===augmentTierFilter;b.classList.toggle('active',yes);b.setAttribute('aria-pressed',String(yes));});
 }
 function renderAugmentGuide(o){augmentOfferSummary(o);renderAugmentTiers(o);}
+function addManualAugment(event){
+ event.preventDefault();
+ const input=$('#pMissingAugmentName'),name=input.value.trim().replace(/\s+/g,' ');
+ const rarity=$('#pMissingAugmentRarity').value;
+ if(name.length<2||name.length>90||!['Silver','Gold','Prismatic'].includes(rarity)){
+  toast('Enter the Augment name and rarity');return;
+ }
+ let a=AUGMENT_HINTS.find(x=>x.id.toLowerCase()===name.toLowerCase());
+ if(!a){
+  a={id:name,label:name,rarity,tier:'?',group:'Other',
+    desc:'Manually entered; verify its effect in-game.',style:'',manual:true,inactive:false};
+  AUGMENT_HINTS.push(a);state.extraAugments.push({id:name,rarity});
+ }
+ const o=openingState();
+ if(!o.augmentOffers.includes(a.id)){
+  if(o.augmentOffers.length>=3){toast('Remove one of your 3 offers first');return;}
+  o.augmentOffers.push(a.id);
+ }
+ augmentMode='offers';augmentSearch='';augmentRarity='all';visualFilter.augment='all';
+ $('#pAugmentSearch').value='';input.value='';
+ save();renderOpening();toast('Added '+a.id+' to your offers');
+}
 function bindAugmentGuide(){
+ $('#pMissingAugmentForm').addEventListener('submit',addManualAugment);
  $('#augModeButtons').addEventListener('click',e=>{const b=e.target.closest('[data-aug-mode]');if(b){augmentMode=b.dataset.augMode;renderOpening();}});
  $('#pAugmentRarities').addEventListener('click',e=>{const b=e.target.closest('[data-aug-rarity]');if(b){augmentRarity=b.dataset.augRarity;renderOpening();}});
  $('#pAugmentSearch').addEventListener('input',e=>{augmentSearch=e.target.value.trim().toLowerCase();renderOpening();});
