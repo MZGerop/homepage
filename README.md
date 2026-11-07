@@ -35,6 +35,43 @@ The browser's context menu is suppressed **only for these interactive planner co
 
 For touchscreen, keyboard, or accessibility use, visible **−** controls and direct 1★ / 2★ / 3★ buttons remain. The selected champion row has **×** to remove a champion entirely.
 
+## Round-aware planner, tier lists, and strong combos (v1.8)
+
+The visual Opening Planner retains its existing icons and saved selections, with three new decision aids:
+
+### Round and level selector
+
+- Choose **Stage 2–6**, the **round within that stage (1–7)**, and **your current player level (3–10)** using buttons at the top. Switching the stage suggests a typical level; selecting a level manually overrides it.
+- View **shop cost-tier percentages** (chance per slot to roll a 1/2/3/4/5-cost champion) with a brief roll-versus-level recommendation.
+- A **six-champion shortlist** prioritizes units whose cost is realistically obtainable now, with extra weight for the items/Artifacts and star-upgraded champions you already have. It doesn't claim a probability for any specific champion, and cannot see contested shops.
+- The complete endgame build rankings still show long-term destinations, but expensive Level 9 boards receive a small early-game score penalty.
+
+Source for Set 18 shop odds: [TFTClimb shop odds](https://www.tftclimb.com/cheatsheet/tft-shop-odds). Some third-party reference tables differ on Level 7 odds; verify against the current client if precision is critical.
+
+### Item and Artifact tiers
+
+- View **35 standard items** and **30 Artifacts** grouped into **S / A / B / C** with actual item artwork, as a **Patch 18.6 snapshot**.
+- Filter by item type, tier, or **Mine / craftable**, which highlights the items you own or can make.
+- You can click an item directly in this tier list to add a copy to your planner, using the existing picker storage.
+- The same tier letters appear on icon tiles so you can judge your choices without opening another page.
+- Tiers are general guidance, not universal best-in-slot. A B-tier Artifact may be the correct choice for a specific champion.
+
+Source: [PivotTFT items, 18.6](https://www.pivottft.com/items/).
+
+### High-synergy combinations
+
+- **14 curated interactions** connect a specific champion with normal items and/or Artifacts. Examples: Kayle + Flickerblades + Guinsoo, Master Yi + Wit's End + Edge of Night, Veigar + Dawncore + Jeweled Gauntlet, Rammus + Gargoyle + Lightshield Crest.
+- A rare **Aegis of Dawn + Aegis of Dusk** pairing is included because the two Artifacts explicitly accelerate each other's effects.
+- Combo cards show portraits and item artwork, mark owned or craftable pieces, show **how many pieces of the combination you have**, and link to a related endgame build.
+- Choose **Matches my opening** to focus on actionable combinations rather than every available interaction.
+- A combo is a situational play suggestion, not a promised win, exploit, or a live win-rate ranking.
+
+Source for Artifact effects and holders: [Mobalytics Set 18 Artifacts](https://mobalytics.gg/tft/items/artifacts) and [Artifact Guide](https://mobalytics.gg/tft/guides/set-18-artifact-guide).
+
+### Artifact images
+
+Artifact icons now use the **actual Set 18 image filenames** from Mobalytics' item image library rather than generating guessed HexComps filenames. All 30 images have explicit slug mappings, including special cases like `flickerblade`, `wits-end1` and `luden's-tempest1`. The browser retains visible initials if an external host is unavailable.
+
 ## Artifact support (v1.7)
 
 The Opening Planner now has a separate **Artifact** visual picker below Augments, with all **30 Set 18 Artifacts** and searchable AD / AP / Tank / Utility filters. These are special Armory/Anvil items and **cannot be crafted from components**.
@@ -99,6 +136,6 @@ The visual Opening Planner lives in a second inline `<script>` near the end of t
 
 ## Versioning and limitations
 
-Current reference patch: **Set 18, Patch 18.6 (November 2026)**. This is a manually curated snapshot, not a live meta feed. Source links are in the page; confirm tiers and numbers after patch updates. Item and Augment recommendations are contextual, not universal best-in-slot.
+Current reference patch: **Set 18, Patch 18.6 (November 7, 2026)**. This is a manually curated snapshot, not a live meta feed. Source links are in the page; confirm tiers and numbers after patch updates. Item and Augment recommendations are contextual, not universal best-in-slot.
 
 Unofficial fan-made reference. Not affiliated with Riot Games.
