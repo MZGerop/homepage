@@ -323,30 +323,116 @@
 .tier-champion{display:inline-flex;align-items:center;gap:6px;padding:3px 7px 3px 3px!important;border:1px solid #465f7a;border-radius:8px!important}
 .tier-champion img{width:30px;height:30px;object-fit:cover;border-radius:6px;flex-shrink:0}
 .tier-champion span{font-size:11px;color:#d9e9fa}
+
+/* v3: action-first dashboard, compact live decision loop */
+.decision-home{scroll-margin-top:18px}
+.decision-hero{background:radial-gradient(ellipse at 10% 8%,#265865a8,transparent 75%),linear-gradient(120deg,#172d45,#101b32 70%);border:1px solid #466881;border-radius:19px;padding:27px;display:grid;grid-template-columns:1.3fr .72fr;gap:24px}
+.decision-hero .eyebrow{color:#8de1c9}
+.decision-hero h1{font-size:clamp(31px,4vw,54px);letter-spacing:-.055em;margin:0 0 13px}
+.decision-hero h1 em{color:#f4d590;font-style:normal}
+.decision-hero-left>p{font-size:15px;color:#c4d7e9;max-width:670px;margin:0 0 19px}
+.decision-how{display:flex;gap:7px;flex-wrap:wrap}
+.decision-how span{display:inline-flex;gap:7px;align-items:center;border:1px solid #38556b;background:#0b2135bb;border-radius:8px;padding:6px 9px;font-size:11px;color:#cbe0ef}
+.decision-how b{background:#b4e5c9;color:#11352e;width:20px;height:20px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center}
+.decision-hero-right{background:linear-gradient(150deg,#1c4147,#13293e);border:1px solid #488579;border-radius:13px;padding:17px;align-self:stretch;display:flex;flex-direction:column;justify-content:center}
+.decision-hero-right strong{font-size:22px;line-height:1.2;color:#fff;display:block;margin:12px 0 7px;letter-spacing:-.02em}
+.decision-hero-right p{font-size:12px;color:#c0d9e1;margin:0 0 16px}
+.decision-live-indicator{font-size:10px;letter-spacing:.09em;font-weight:800;color:#9eecd3}
+.decision-live-dot{display:inline-block;width:7px;height:7px;background:#82eab4;border-radius:50%;margin-right:5px}
+.decision-hero-button{background:#d0f0e0;color:#12382f;border-color:#a9dec6;width:fit-content}
+.decision-stage-heading{margin:26px 0 10px;display:flex;justify-content:space-between;align-items:center;gap:13px}
+.decision-stage-heading h2{font-size:19px;margin:0}.decision-stage-heading span{font-size:11px}
+.decision-home .round-panel{margin-bottom:0}
+.decision-home .round-panel-title{display:none}
+.decision-home .shop-targets{display:none}
+.next-dashboard{margin-top:25px}
+.next-dashboard-head{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-bottom:13px}
+.next-dashboard-head h2{font-size:26px;margin:0 0 4px}
+.next-dashboard-head .eyebrow{margin-bottom:3px}.next-dashboard-head p{margin:0;font-size:12px}
+.next-controls{display:flex;gap:7px;flex-wrap:wrap}
+.next-reco-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.next-reco-card{background:linear-gradient(155deg,#192d45,#111e33);border:1px solid #354f6c;border-radius:14px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.next-reco-card.priority{border-color:#5d9d8b}
+.next-reco-header{display:flex;gap:10px;align-items:center;padding:15px 14px 11px}
+.next-reco-icon{position:relative;flex:0 0 59px;width:59px;height:59px;border-radius:11px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:linear-gradient(135deg,#435877,#20394f);border:2px solid var(--next-border,#6592b8);font-size:20px;font-weight:900;color:#f9ddb0}
+.next-reco-icon img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.next-reco-meta{flex:1;min-width:0}.next-reco-meta b{font-size:15px;line-height:1.25;display:block;margin:2px 0 4px}
+.next-reco-meta small{font-size:10px;display:block;color:#a9c7df}
+.next-reco-rank{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#8ce7c7;font-weight:800}
+.next-reco-why{padding:0 14px 12px;font-size:12px;color:#c7d9eb;line-height:1.5;flex:1}
+.next-reco-action{display:flex;gap:7px;align-items:center;margin:0 12px 12px}
+.next-reco-action button{flex:1;border:1px solid #62b79f;color:#d6fff0;background:#215749;padding:9px 8px;border-radius:8px;font-size:12px;font-weight:800;text-align:center}
+.next-reco-action button:hover{background:#32715e}
+.next-reco-action .next-why{flex:0 0 auto;width:36px;padding:9px 0;background:#243f58;border-color:#53738d}
+.next-divider-head{display:flex;justify-content:space-between;align-items:center;gap:9px;margin:21px 0 10px}
+.next-divider-head h3{font-size:17px;margin:0}
+.next-later-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.next-later-card{display:flex;align-items:center;gap:11px;background:#14283e;border:1px solid #344e67;border-radius:11px;padding:12px;min-width:0}
+.next-later-card .next-reco-icon{flex-basis:45px;width:45px;height:45px;border-radius:9px}
+.next-later-card .text{flex:1;min-width:0}.next-later-card b{font-size:13px;display:block}
+.next-later-card small{font-size:11px;color:#a9c5d7;display:block;margin-top:3px}
+.next-later-card button{background:#213c55;border:1px solid #4b7090;border-radius:7px;padding:7px 9px;color:#d9eefa;font-size:11px;font-weight:750}
+.next-inventory{margin:25px 0 0;padding:14px 17px;background:#122239;border:1px solid #2c4660;border-radius:14px}
+.next-inventory-heading{display:flex;gap:10px;justify-content:space-between;align-items:center;margin-bottom:12px}
+.next-inventory-heading h2{font-size:17px;margin:0}.next-inventory-heading span{font-size:11px}
+.next-finds{display:flex;gap:7px;flex-wrap:wrap;min-height:48px;align-items:center}
+.next-find{display:inline-flex;align-items:center;gap:7px;padding:4px 5px 4px 6px;border:1px solid #49617b;background:#1c354e;border-radius:8px;font-size:11px;max-width:240px}
+.next-find img{width:31px;height:31px;border-radius:6px;object-fit:cover}
+.next-find .name{max-width:126px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.next-find button{background:#31485d;border:0;color:#d8edff;width:23px;height:25px;border-radius:5px;font-size:17px;line-height:1}
+.next-find.unit{border-color:#6c89ae}.next-find.artifact{border-color:#a28abb}.next-find.radiant{border-color:#e1bf72}
+.next-finds-empty{font-size:12px;color:#a7c0d9}
+#opening.section{margin-top:27px}
+#opening>.section-head{margin-bottom:9px}
+#opening>.section-head h2{font-size:20px}
+#opening>.section-head p{font-size:12px;margin:0}
+.finder-details,.deep-dive,.library-drawer{border:1px solid #37526e;border-radius:13px;background:#112037;margin:13px 0;scroll-margin-top:15px}
+.finder-details>summary,.deep-dive>summary,.library-drawer>summary{list-style:none;display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;color:#e3efff}
+.finder-details>summary::-webkit-details-marker,.deep-dive>summary::-webkit-details-marker,.library-drawer>summary::-webkit-details-marker{display:none}
+.finder-details>summary b,.deep-dive>summary b,.library-drawer>summary b{font-size:15px;display:block}
+.finder-details>summary small,.deep-dive>summary small,.library-drawer>summary small{font-size:11px;color:#aec5d9;display:block}
+.finder-summary-icon{display:flex;align-items:center;justify-content:center;flex:0 0 34px;width:34px;height:34px;background:#254b55;color:#b2f4d9;border-radius:9px;font-size:20px;font-weight:900}
+.finder-summary-arrow{margin-left:auto;font-size:24px;color:#9fc6df}
+.finder-details[open]>.finder-tabs{display:flex}
+.finder-tabs{display:none;flex-wrap:wrap;gap:6px;padding:0 15px 12px}
+.finder-tabs button{border:1px solid #405a76;border-radius:8px;color:#cee0f1;background:#1a304a;padding:9px 12px;font-size:12px;font-weight:800}
+.finder-tabs button.active{background:#246b60;color:#dffff1;border-color:#78c9b1}
+#openingGrid{padding:0 14px 13px}
+#openingGrid>.opening-panel{display:none;grid-column:span 12!important}
+#openingGrid>.opening-panel.is-current{display:block}
+.finder-details>.opening-samples{padding:0 16px 15px}
+.deep-dive[open],.library-drawer[open]{padding-bottom:13px}
+.deep-dive>section,.deep-dive>.opening-results-head,.deep-dive>#openResults,.deep-dive>.muted,.library-drawer>section{margin-left:14px;margin-right:14px}
+.deep-dive .opening-results{grid-template-columns:repeat(2,minmax(0,1fr))}
+.library-drawer>section:first-of-type{margin-top:12px}
+.library-drawer>section{scroll-margin-top:12px}
+@media(max-width:1120px){.decision-hero{grid-template-columns:1fr}.next-reco-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:670px){.decision-hero{padding:18px;gap:12px}.decision-hero h1{font-size:34px}.next-dashboard-head,.decision-stage-heading,.next-inventory-heading{align-items:flex-start;flex-direction:column}.next-reco-grid,.next-later-grid{grid-template-columns:1fr}.next-reco-icon{width:54px;height:54px;flex-basis:54px}.next-finds{gap:5px}.next-inventory{padding:12px}.finder-tabs button{flex:1 1 27%}.deep-dive .opening-results{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="shell">
-<aside class="sidebar" aria-label="Sections"><div class="brand"><div class="rune">✦ <b>TFT FIELD GUIDE</b></div><small>SET 18 · V2.0</small></div>
-<a class="nav" href="#overview"><span class="n">◈</span> Overview</a><a class="nav" href="#opening"><span class="n">✧</span> Opening Planner</a><a class="nav" href="#comps"><span class="n">♛</span> Endgame comps</a><a class="nav" href="#champions"><span class="n">✧</span> Champions</a><a class="nav" href="#items"><span class="n">⚒</span> Items & recipes</a><a class="nav" href="#economy"><span class="n">◉</span> Leveling & economy</a><a class="nav" href="#training"><span class="n">◎</span> Win checklist</a><a class="nav" href="#notes"><span class="n">✎</span> My notes</a>
+<aside class="sidebar" aria-label="Sections"><div class="brand"><div class="rune">✦ <b>TFT FIELD GUIDE</b></div><small>SET 18 · V3.0</small></div>
+<a class="nav" href="#overview"><span class="n">◎</span> Next move</a><a class="nav" href="#opening"><span class="n">＋</span> Log a find</a><a class="nav" href="#deepDive"><span class="n">◈</span> Deep dive</a><a class="nav" href="#referenceLibrary"><span class="n">▤</span> Full library</a>
 <div class="foot">Local-first & editable<br>Patch reference: 18.6<br>Updated: 06 Nov 2026</div></aside>
 <main>
-<section id="overview">
-<div class="mast"><div><div class="eyebrow">Your expandable TFT playbook</div><h1>From top four <span style="color:var(--gold)">to first place.</span></h1><p class="lead">A practical, searchable guide for flex play. Start with your items, find an early or midgame champion to hold them, then transition into the best endgame build.</p></div><div class="hero-actions"><button class="btn primary" onclick="document.querySelector('#opening').scrollIntoView()">Plan my opening ↗</button><button class="btn" onclick="window.print()">Print / PDF</button></div></div>
-<div class="stats"><div class="stat"><strong id="countComps">12</strong><span>Endgame routes</span></div><div class="stat"><strong id="countUnits">65</strong><span>Shop-roster champions</span></div><div class="stat"><strong id="countItems">30+</strong><span>Buildable core items</span></div><div class="stat"><strong>8 → 9</strong><span>Critical endgame transition</span></div></div>
-<div class="callout"><strong>The winning mindset:</strong> Items amplify a good board. They cannot replace upgraded units, good traits, a second damage threat, and positioning. A strong level 8 board beats a weak level 9 board.</div>
-<div class="hero-tip" style="margin-top:16px"><div class="glow">✦</div><div>
-<h3>Patch 18.6 · What changed? <small style="font-weight:normal">05 Nov 2026</small></h3>
-<p><b>Buffs:</b> Blossom 7/9, Sprykin ranged BFF 5/7, Nidalee, Sentinel shields, Malphite, Kobuko, Rek'Sai and Murkwolf. <b>Nerf:</b> Elderwood 9 bonus HP. Rammus received <b>no direct buff</b>; Sprykin teams are the interesting change.</p>
-<p style="margin-top:8px"><b>Watch:</b> Riftbeast Elder Dragon, Elder Dragon + Draven, Sprykin Rammus + Azir, Invoker Ahri + Morgana, and Blossom Master Yi. Strong options, not builds to force when contested.</p>
-<p style="margin-top:8px;font-size:12px"><a href="https://teamfighttactics.leagueoflegends.com/en-us/news/game-updates/teamfight-tactics-patch-18-6/" target="_blank" rel="noopener">Riot 18.6 patch notes ↗</a> · <a href="https://tftcodex.com/comps/" target="_blank" rel="noopener">Live composition rankings ↗</a></p>
-</div></div>
-</section>
-
-<section class="section" id="opening">
-<div class="section-head"><div><div class="eyebrow">NEW · Decide from what you find</div><h2>Opening Planner</h2><p>Enter your current items, components, champions, and Augments. See which builds fit <em>your</em> start — and why.</p><p><b>Mouse:</b> left-click <b>+</b> · right-click <b>−</b> (no context menu). <b>Touch:</b> use the visible − and star buttons.</p></div><div class="help-toggle-row"><button class="btn" type="button" id="explainIcons" aria-pressed="false" title="Explain icons by tapping instead of changing your selections">ⓘ Explain icons: OFF</button><button class="btn" type="button" id="openingClear">Clear opening</button></div></div>
-
-<section class="round-panel" aria-label="Current round and shop level">
+<section id="overview" class="decision-home">
+  <div class="decision-hero">
+    <div class="decision-hero-left">
+      <div class="eyebrow">TFT SET 18 · LIVE DECISION GUIDE</div>
+      <h1>What should I <em>look for next?</em></h1>
+      <p>Choose what you find in your game. Your next shop targets, item choices, and build direction will change with every pick.</p>
+      <div class="decision-how"><span><b>1</b> Set your round</span><span><b>2</b> Add what you find</span><span><b>3</b> Follow the next target</span></div>
+    </div>
+    <div class="decision-hero-right">
+      <span class="decision-live-indicator"><span class="decision-live-dot"></span> YOUR CURRENT PLAN</span>
+      <strong id="nextFocusTitle">Stay flexible</strong>
+      <p id="nextFocusText">Start with an upgraded champion, usable components, or a strong flexible item.</p>
+      <button id="nextOpenFinder" class="btn decision-hero-button" type="button">＋ Log something I found</button>
+    </div>
+  </div>
+  <div class="decision-stage-heading"><h2>Where are you in the match?</h2><span class="muted">The shop level determines which champion costs you can realistically see.</span></div>
+  <section class="round-panel" aria-label="Current round and shop level">
   <div class="round-panel-title"><div class="eyebrow">Step 1 · Where are you in the match?</div><h3>Round & shop level</h3><p class="muted">Change the round and level to focus on champions you can realistically find now.</p></div>
   <div class="round-controls">
     <div><strong>Stage</strong><div class="picker-filters" id="pStages" role="group" aria-label="Stage"><button data-stage="2">2</button><button data-stage="3" class="active">3</button><button data-stage="4">4</button><button data-stage="5">5</button><button data-stage="6">6+</button></div></div>
@@ -356,34 +442,65 @@
   <div id="roundGuidance" class="round-guidance" aria-live="polite"></div>
 <div class="shop-targets"><div class="shop-targets-head"><b>Realistic champions to look for</b><span class="muted">Based on your round, shop level and selected gear</span></div><div id="shopTargets" class="shop-target-grid" aria-live="polite"></div></div>
 </section>
+  <section class="next-dashboard" aria-label="Your next best decisions">
+    <div class="next-dashboard-head">
+      <div><div class="eyebrow">THE RECOMMENDATION LOOP</div><h2>Look for these next</h2><p id="nextContextLine" class="muted">Suggestions update when you record a find.</p></div>
+      <div class="next-controls"><button type="button" id="nextShowAll" class="btn">＋ Add a find</button><button type="button" id="nextReset" class="btn plain">↺ New game</button></div>
+    </div>
+    <div id="nextPrimary" class="next-reco-grid" aria-live="polite"></div>
+    <div class="next-divider-head"><h3>Then work toward</h3><span class="muted">A direction, not a forced composition</span></div>
+    <div id="nextLater" class="next-later-grid" aria-live="polite"></div>
+  </section>
+  <section class="next-inventory" aria-label="Already found">
+    <div class="next-inventory-heading"><h2>What you already found</h2><span class="muted">Click − to reduce; right-click an icon to undo.</span></div>
+    <div id="nextFinds" class="next-finds" aria-live="polite"></div>
+  </section>
+</section>
 
-<div class="opening-grid">
-<section class="card panel opening-panel">
+<section class="section" id="opening">
+<div class="section-head"><div><div class="eyebrow">RECORD A FIND</div><h2>I found something</h2><p>Pick a portrait below or tap a recommended target above. You can always change your mind.</p></div><div class="help-toggle-row"><button class="btn" type="button" id="explainIcons" aria-pressed="false" title="Explain icons by tapping instead of changing your selections">ⓘ Explain icons: OFF</button><button class="btn" type="button" id="openingClear">Clear opening</button></div></div>
+
+
+
+
+<details class="finder-details" id="pickerDetails">
+  <summary><span class="finder-summary-icon">＋</span><span><b>Open my champion & item picker</b><small>Select anything you actually found. All previous selections are preserved.</small></span><span class="finder-summary-arrow">⌄</span></summary>
+  <div class="finder-tabs" id="finderTabs" role="group" aria-label="What did you find?">
+    <button type="button" data-find-category="unit" class="active">Champions</button>
+    <button type="button" data-find-category="component">Components</button>
+    <button type="button" data-find-category="item">Items</button>
+    <button type="button" data-find-category="artifact">Artifacts</button>
+    <button type="button" data-find-category="radiant">Radiant</button>
+    <button type="button" data-find-category="augment">Augments</button>
+    <button type="button" data-find-category="all">Show all</button>
+  </div>
+<div class="opening-grid" id="openingGrid">
+<section class="card panel opening-panel" data-finder-kind="item">
  <div class="picker-head"><div><h3>1 · Completed items <span class="picker-total" id="pItemCount">0</span></h3><p>Left-click +1 · right-click −1. Numbers show copies.</p></div><input id="pItemSearch" class="picker-search" type="search" placeholder="Search items…" aria-label="Search items"></div>
  <div class="picker-filters" id="pItemFilters" role="group" aria-label="Item categories"><button data-if="all" class="active">All</button><button data-if="AD">AD</button><button data-if="AP">AP</button><button data-if="Tank">Tank</button><button data-if="Utility">Utility</button></div>
  <div class="picker-grid" id="pItems" role="group" aria-label="Tap an item to add it"></div>
 </section>
-<section class="card panel opening-panel artifact-picker-panel">
+<section class="card panel opening-panel artifact-picker-panel" data-finder-kind="artifact">
   <div class="picker-head"><div><h3>2 · Artifacts <span class="picker-total" id="pArtifactCount">0</span></h3><p>Non-craftable items from the Armory or Anvil. Left-click +1 · right-click −1.</p></div><input id="pArtifactSearch" class="picker-search" type="search" placeholder="Search Artifacts…" aria-label="Search Artifacts"></div>
   <div class="picker-filters" id="pArtifactFilters" role="group" aria-label="Artifact categories"><button class="active" data-artf="all">All</button><button data-artf="AD">AD</button><button data-artf="AP">AP</button><button data-artf="Tank">Tank</button><button data-artf="Utility">Utility</button></div>
   <div class="picker-grid artifact-gallery" id="pArtifacts" role="group" aria-label="Click an Artifact to add, right-click to remove"></div>
 </section>
-<section class="card panel opening-panel radiant-picker-panel">
+<section class="card panel opening-panel radiant-picker-panel" data-finder-kind="radiant">
  <div class="picker-head"><div><h3>3 · Radiant items <span class="picker-total" id="pRadiantCount">0</span></h3><p>Golden upgraded items. Left-click +1 · right-click −1. <b>Not craftable.</b></p></div><input type="search" id="pRadiantSearch" class="picker-search" placeholder="Search Radiant items…" aria-label="Search Radiant items"></div>
  <div class="picker-filters" id="pRadiantFilters" role="group" aria-label="Radiant categories"><button data-radf="all" class="active">All</button><button data-radf="AD">AD</button><button data-radf="AP">AP</button><button data-radf="Tank">Tank</button><button data-radf="Utility">Utility</button></div>
  <div class="picker-grid radiant-gallery" id="pRadiants" role="group" aria-label="Radiant items: left-click add and right-click remove"></div>
 </section>
-<section class="card panel opening-panel">
+<section class="card panel opening-panel" data-finder-kind="component">
  <div class="picker-head"><div><h3>4 · Components <span class="picker-total" id="pComponentCount">0</span></h3><p>Left-click +1 · right-click −1. Numbers show copies.</p></div></div>
  <div class="picker-grid picker-components" id="pComponents" role="group" aria-label="Available components"></div>
 </section>
-<section class="card panel opening-panel">
+<section class="card panel opening-panel" data-finder-kind="unit">
  <div class="picker-head"><div><h3>5 · Champions <span class="picker-total" id="pUnitCount">0</span></h3><p>Left-click: ★ up · right-click: ★ down. Touch: star buttons.</p></div><input id="pUnitSearch" class="picker-search" type="search" placeholder="Search champions…" aria-label="Search champions"></div>
  <div class="picker-filters" id="pUnitFilters" role="group" aria-label="Champion costs"><button data-uf="early" class="active">Early 1–3g</button><button data-uf="all">All</button><button data-uf="1">1g</button><button data-uf="2">2g</button><button data-uf="3">3g</button><button data-uf="4">4g</button><button data-uf="5">5g</button></div>
  <div id="pChosenUnits" class="picker-chosen" aria-label="Selected champions"></div>
  <div class="picker-grid" id="pUnits" role="group" aria-label="Tap a champion to add, then choose star level"></div>
 </section>
-<section class="card panel opening-panel">
+<section class="card panel opening-panel" data-finder-kind="augment">
  <div class="picker-head"><div><h3>6 · Augments <span class="picker-total" id="pAugmentCount">0 / 3</span></h3><p>Click icons to add a chosen Augment, or switch to <b>Compare 3 offers</b>.</p></div></div>
  
  <div class="aug-mode-row" id="augModeButtons" role="group" aria-label="Augment input mode">
@@ -402,8 +519,11 @@
 
 </div>
 <div class="opening-samples"><strong>Try an example:</strong><button class="chip" id="openSampleAD" type="button">AD + Guinsoo + Kayle</button><button class="chip" id="openSampleAP" type="button">AP + Teemo 2★</button><button class="chip" id="openSampleFae" type="button">Embiggen + Fae</button><button class="chip" id="openSampleRammus" type="button">Rammus reroll</button></div>
+</details>
 
 
+
+<details id="deepDive" class="deep-dive"><summary><span class="finder-summary-icon">◎</span><span><b>Detailed reasoning, tier lists & complete build comparisons</b><small>Open when you need more than the next move.</small></span><span class="finder-summary-arrow">⌄</span></summary>
 <section class="augment-guide" aria-label="Augment recommendations and tier list">
  <div class="aug-guide-head"><div><div class="eyebrow">Choose for your actual board</div><h3>Which Augment should I take?</h3><p class="muted">Enter the three offered Augments above. Ratings combine their patch tier with your items, units, level and game plan.</p></div>
  <a href="https://www.pivottft.com/augments/" rel="noopener" target="_blank">Full Patch 18.6 source ↗</a></div>
@@ -439,7 +559,9 @@
 <div class="opening-results-head"><div><h3>Best directions for your opening</h3><p id="openIntro" class="muted">Select something above to see recommendations.</p></div><span class="tag" id="openCount">No opening selected</span></div>
 <div id="openResults" class="grid opening-results" aria-live="polite"></div>
 <p class="muted" style="font-size:11px;margin-top:12px">Fit scores are explainable planning heuristics, <b>not</b> match win probabilities or live competitive win rates. Reroll viability depends on available copies and whether other players contest the same units.</p>
+</details>
 </section>
+<details class="library-drawer" id="referenceLibrary"><summary><span class="finder-summary-icon">▤</span><span><b>Full TFT library</b><small>Endgame builds · Every champion · Item recipes · Economy · Notes</small></span><span class="finder-summary-arrow">⌄</span></summary>
 <section class="section" id="comps"><div class="section-head"><div><div class="eyebrow">01 · What to build</div><h2>Endgame composition library</h2><p>Pick based on your opener and items. The cards are plans, not guaranteed best-in-slot boards.</p></div><div class="controls"><input id="compSearch" class="searchbar" type="search" placeholder="Search comp, carry or trait…" aria-label="Search compositions"/><select id="compSort" aria-label="Sort compositions"><option value="tier">Sort: strength</option><option value="name">Sort: name</option><option value="level">Sort: level</option><option value="fav">Sort: favorites first</option></select></div></div>
 <div class="chiprow" id="compFilters" style="margin-bottom:15px"><button class="chip active" data-filter="all">All comps</button><button class="chip" data-filter="ad">AD</button><button class="chip" data-filter="ap">AP</button><button class="chip" data-filter="reroll">Reroll</button><button class="chip" data-filter="fast9">Fast 9</button><button class="chip" data-filter="fav">★ Saved</button></div><div class="grid" id="compsGrid"></div>
 </section>
@@ -456,6 +578,7 @@
 <section class="section" id="training"><div class="section-head"><div><div class="eyebrow">05 · Get first place</div><h2>Endgame winning checklist</h2><p>Use this during stages 4–6, not just after a loss.</p></div><button class="btn" onclick="resetChecklist()">Reset checks</button></div><div class="split"><div class="card panel"><div class="checklist" id="checklist"></div></div><div class="card panel"><h3>Spot the actual win condition</h3><ul><li><b>Vertical:</b> reach a meaningful trait threshold (e.g. 7 Riftbeast, 5/7 Elderwood) rather than adding random trait counts.</li><li><b>Horizontal:</b> combine individually strong units and useful smaller trait bonuses.</li><li><b>Secondary carry:</b> another threat makes your board less dependent on one champion.</li><li><b>Positioning:</b> scout your final opponents and move your carry / tanks to improve matchups.</li><li><b>Spending:</b> when the next loss eliminates you, unused gold generally has no value.</li></ul><div class="callout" style="margin-top:15px"><strong>Important:</strong> A 3★ 4-cost is a huge win condition; do not confuse it with a 3★ 1-cost. You usually cannot chase both a 3★ expensive carry and a fast Level 9 without unusual economy.</div></div></div></section>
 <section class="section notes-section" id="notes"><div class="section-head"><div><div class="eyebrow">06 · Make it yours</div><h2>My notes & match journal</h2><p>Saved automatically in this browser. Export a backup before switching devices or clearing browser data.</p></div><div class="hero-actions"><button class="btn" onclick="exportData()">Export my data</button><label class="btn" style="cursor:pointer">Import data <input type="file" accept="application/json" id="importFile" hidden></label></div></div>
 <div class="split"><div class="card panel"><h3>Personal strategy notes</h3><textarea class="notes" id="myNotes" placeholder="What worked? Favorite comps, difficult transitions, favorite item holders, patch observations…"></textarea><p class="muted" style="font-size:11px">Autosaved locally • No sign-in or backend needed</p></div><div class="card panel"><h3>Log a match</h3><div class="match"><select id="matchPlace"><option value="1">1st</option><option value="2">2nd</option><option value="3">3rd</option><option value="4">4th</option><option value="5">5th</option><option value="6">6th</option><option value="7">7th</option><option value="8">8th</option></select><select id="matchComp"></select><input class="searchbar" id="matchLearning" placeholder="One thing I learned…"><button class="btn primary" onclick="saveMatch()">Add</button></div><div id="matchHistory" style="margin-top:15px"></div></div></div></section>
+</details>
 <footer class="mutebar"><b>Patch note:</b> curated reference for Set 18, patch 18.6, as of 05 Nov 2026. Champion rankings and compositions can change. Official notes: <a target="_blank" rel="noopener" href="https://teamfighttactics.leagueoflegends.com/en-us/news/game-updates/teamfight-tactics-patch-18-6/">Riot 18.6</a>. Source material: <a target="_blank" rel="noopener" href="https://hexcomps.com/">HexComps</a> · <a target="_blank" rel="noopener" href="https://tftcodex.com/comps/">TFT Codex</a> · <a target="_blank" rel="noopener" href="https://tft.ninja/">TFT Ninja</a> · <a target="_blank" rel="noopener" href="https://teamfighttactics.leagueoflegends.com/en-us/news/game-updates/teamfight-tactics-patch-18-2/">Riot patch notes</a>. Champion and item portraits require an internet connection; the guide remains usable without them. Unofficial fan guide, not affiliated with Riot Games.</footer>
 </main></div><div class="toast" id="toast"></div>
 <script>
