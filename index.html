@@ -251,11 +251,26 @@
 .value-icon .value-fallback,.combo-icon .fallback{position:relative;overflow:hidden;flex:0 0 auto}
 .value-icon .value-fallback img,.combo-icon .fallback img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .combo-icon .fallback{width:36px;height:36px}
+
+.radiant-picker-panel{grid-column:span 12!important}
+.radiant-gallery{grid-template-columns:repeat(auto-fill,minmax(83px,1fr));max-height:345px}
+.radiant-gallery .pick-art{border:2px solid #f0cd6b;background:#5b4629}
+.radiant-gallery .pick-main[aria-pressed="true"]{border-color:#ffd67c;background:#574528}
+.radiant-gallery .pick-number{background:#ffdc81;color:#37270d}
+.radiant-art{height:100%;width:100%;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:5px;background:linear-gradient(130deg,#77582c,#433f5c)}
+.radiant-art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.radiant-art:after{content:"✦";position:absolute;right:0;bottom:0;background:#c88a27;color:#fff2bb;font-size:10px;font-weight:900;padding:2px 3px;border-radius:3px 0 3px 0}
+.hero-radiants{border-top:1px solid #775d2f;margin-top:10px;padding-top:10px}
+.hero-radiants h5{color:#f5d585;font-size:12px;margin:0 0 7px}
+.hero-radiants .hero-artifact-choice{border-color:#aa853f;background:#493b29;color:#ffedbd}
+.hero-radiants .hero-artifact-choice.owned{border-color:#60c69e;background:#1f4c3e}
+.hero-radiants .letter{background:#71582a}
+@media(max-width:600px){.radiant-gallery{grid-template-columns:repeat(auto-fill,minmax(73px,1fr))}}
 </style>
 </head>
 <body>
 <div class="shell">
-<aside class="sidebar" aria-label="Sections"><div class="brand"><div class="rune">✦ <b>TFT FIELD GUIDE</b></div><small>SET 18 · V1.8.1</small></div>
+<aside class="sidebar" aria-label="Sections"><div class="brand"><div class="rune">✦ <b>TFT FIELD GUIDE</b></div><small>SET 18 · V1.9</small></div>
 <a class="nav" href="#overview"><span class="n">◈</span> Overview</a><a class="nav" href="#opening"><span class="n">✧</span> Opening Planner</a><a class="nav" href="#comps"><span class="n">♛</span> Endgame comps</a><a class="nav" href="#champions"><span class="n">✧</span> Champions</a><a class="nav" href="#items"><span class="n">⚒</span> Items & recipes</a><a class="nav" href="#economy"><span class="n">◉</span> Leveling & economy</a><a class="nav" href="#training"><span class="n">◎</span> Win checklist</a><a class="nav" href="#notes"><span class="n">✎</span> My notes</a>
 <div class="foot">Local-first & editable<br>Patch reference: 18.6<br>Updated: 06 Nov 2026</div></aside>
 <main>
@@ -296,18 +311,23 @@
   <div class="picker-filters" id="pArtifactFilters" role="group" aria-label="Artifact categories"><button class="active" data-artf="all">All</button><button data-artf="AD">AD</button><button data-artf="AP">AP</button><button data-artf="Tank">Tank</button><button data-artf="Utility">Utility</button></div>
   <div class="picker-grid artifact-gallery" id="pArtifacts" role="group" aria-label="Click an Artifact to add, right-click to remove"></div>
 </section>
+<section class="card panel opening-panel radiant-picker-panel">
+ <div class="picker-head"><div><h3>3 · Radiant items <span class="picker-total" id="pRadiantCount">0</span></h3><p>Golden upgraded items. Left-click +1 · right-click −1. <b>Not craftable.</b></p></div><input type="search" id="pRadiantSearch" class="picker-search" placeholder="Search Radiant items…" aria-label="Search Radiant items"></div>
+ <div class="picker-filters" id="pRadiantFilters" role="group" aria-label="Radiant categories"><button data-radf="all" class="active">All</button><button data-radf="AD">AD</button><button data-radf="AP">AP</button><button data-radf="Tank">Tank</button><button data-radf="Utility">Utility</button></div>
+ <div class="picker-grid radiant-gallery" id="pRadiants" role="group" aria-label="Radiant items: left-click add and right-click remove"></div>
+</section>
 <section class="card panel opening-panel">
- <div class="picker-head"><div><h3>3 · Components <span class="picker-total" id="pComponentCount">0</span></h3><p>Left-click +1 · right-click −1. Numbers show copies.</p></div></div>
+ <div class="picker-head"><div><h3>4 · Components <span class="picker-total" id="pComponentCount">0</span></h3><p>Left-click +1 · right-click −1. Numbers show copies.</p></div></div>
  <div class="picker-grid picker-components" id="pComponents" role="group" aria-label="Available components"></div>
 </section>
 <section class="card panel opening-panel">
- <div class="picker-head"><div><h3>4 · Champions <span class="picker-total" id="pUnitCount">0</span></h3><p>Left-click: ★ up · right-click: ★ down. Touch: star buttons.</p></div><input id="pUnitSearch" class="picker-search" type="search" placeholder="Search champions…" aria-label="Search champions"></div>
+ <div class="picker-head"><div><h3>5 · Champions <span class="picker-total" id="pUnitCount">0</span></h3><p>Left-click: ★ up · right-click: ★ down. Touch: star buttons.</p></div><input id="pUnitSearch" class="picker-search" type="search" placeholder="Search champions…" aria-label="Search champions"></div>
  <div class="picker-filters" id="pUnitFilters" role="group" aria-label="Champion costs"><button data-uf="early" class="active">Early 1–3g</button><button data-uf="all">All</button><button data-uf="1">1g</button><button data-uf="2">2g</button><button data-uf="3">3g</button><button data-uf="4">4g</button><button data-uf="5">5g</button></div>
  <div id="pChosenUnits" class="picker-chosen" aria-label="Selected champions"></div>
  <div class="picker-grid" id="pUnits" role="group" aria-label="Tap a champion to add, then choose star level"></div>
 </section>
 <section class="card panel opening-panel">
- <div class="picker-head"><div><h3>5 · Augments <span class="picker-total" id="pAugmentCount">0 / 3</span></h3><p>Left-click to select · right-click to remove. Up to 3.</p></div></div>
+ <div class="picker-head"><div><h3>6 · Augments <span class="picker-total" id="pAugmentCount">0 / 3</span></h3><p>Left-click to select · right-click to remove. Up to 3.</p></div></div>
  <div class="picker-filters" id="pAugmentFilters" role="group" aria-label="Augment categories"><button data-af="all" class="active">All</button><button data-af="Trait">Trait</button><button data-af="Economy">Economy</button><button data-af="Team">Team</button><button data-af="Item">Item</button></div>
  <div class="picker-grid picker-augments" id="pAugments" role="group" aria-label="Choose up to three Augments"></div>
  
@@ -319,7 +339,7 @@
 
 <section class="value-guide" aria-label="Current item and Artifact tier lists">
  <div class="value-guide-top"><div><div class="eyebrow">Patch 18.6 · Snapshot 7 November 2026</div><h3>Item & Artifact tier list</h3><p class="muted">S = most flexible / powerful · A = strong · B = situational · C = niche. A perfect holder can make a B-tier Artifact excellent.</p></div><a href="https://www.pivottft.com/items/" target="_blank" rel="noopener">Source: PivotTFT 18.6 ↗</a></div>
- <div class="value-filters"><div id="valueKindFilters" class="picker-filters" role="group" aria-label="Select item class"><button data-value-kind="item" class="active">Completed items</button><button data-value-kind="artifact">Artifacts</button></div><div id="valueTierFilters" class="picker-filters" role="group" aria-label="Filter by tier"><button data-value-tier="all" class="active">All tiers</button><button data-value-tier="S">S</button><button data-value-tier="A">A</button><button data-value-tier="B">B</button><button data-value-tier="C">C</button><button data-value-tier="inventory">Mine / craftable</button></div></div>
+ <div class="value-filters"><div id="valueKindFilters" class="picker-filters" role="group" aria-label="Select item class"><button data-value-kind="item" class="active">Completed items</button><button data-value-kind="artifact">Artifacts</button><button data-value-kind="radiant">Radiant</button></div><div id="valueTierFilters" class="picker-filters" role="group" aria-label="Filter by tier"><button data-value-tier="all" class="active">All tiers</button><button data-value-tier="S">S</button><button data-value-tier="A">A</button><button data-value-tier="B">B</button><button data-value-tier="C">C</button><button data-value-tier="inventory">Mine / craftable</button></div></div>
  <div id="valueTierBoard" class="value-tier-board" aria-live="polite"></div>
  <p class="muted" style="font-size:11px;margin-top:9px">This is a manually curated patch snapshot, not a live win-rate model. Tiers reflect broad effectiveness; don't force an S-tier item onto the wrong champion. Artifact icons are sourced from the Set 18 image library.</p>
 </section>
@@ -551,6 +571,28 @@ function artifactImgTag(name){
   ' loading="lazy" decoding="async" alt="" onerror="if(this.dataset.backup&&!this.dataset.usedBackup){this.dataset.usedBackup=1;this.src=this.dataset.backup}else{this.remove()}">';
 }
 
+
+/* 36 core Set 18 Radiant items. Historic Riot artwork is used where its
+ * filename is known. Newer Radiants show their normal item with a gold marker.
+ * Do not craft Radiants from components. */
+const RADIANT_ICON_ROOT='https://raw.communitydragon.org/13.23/game/assets/maps/particles/tft/item_icons/radiant/';
+const RADIANT_FILES={"Adaptive Helm":"adaptive_helm_radiant.png","Archangel's Staff":"archangel_staff_radiant.png","Bloodthirster":"bloodthirster_radiant.png","Blue Buff":"blue_buff_radiant.png","Bramble Vest":"bramble_vest_radiant.png","Crownguard":"crownguard_radiant.png","Deathblade":"death_blade_radiant.png","Dragon's Claw":"dragons_claw_radiant.png","Edge of Night":"edge_of_night_radiant.png","Evenshroud":"evenshroud_radiant.png","Gargoyle Stoneplate":"gargoyle_stoneplate_radiant.png","Giant Slayer":"giant_slayer_radiant.png","Guinsoo's Rageblade":"guinsoos_rageblade_radiant.png","Hand of Justice":"hand_of_justice_radiant.png","Hextech Gunblade":"hextech_gunblade_radiant.png","Infinity Edge":"infinity_edge_radiant.png","Ionic Spark":"ionic_spark_radiant.png","Jeweled Gauntlet":"jeweled_gauntlet_radiant.png","Last Whisper":"last_whisper_radiant.png","Morellonomicon":"morellonomicon_radiant.png","Nashor's Tooth":"nashors_tooth_radiant.png","Quicksilver":"quicksilver_radiant.png","Rabadon's Deathcap":"rabadons_deathcap_radiant.png","Red Buff":"redbuff_radiant.png","Spear of Shojin":"spear_of_shojin_radiant.png","Sterak's Gage":"steraks_gage_radiant.png","Sunfire Cape":"sunfire_cape_radiant.png","Thief's Gloves":"thieves_gloves_radiant.png","Titan's Resolve":"titans_resolve_radiant.png","Warmog's Armor":"warmogs_armor_radiant.png"};
+const RADIANT_ITEMS={};
+for(const normal of ITEMS){
+ const base=normal[0];
+ RADIANT_ITEMS['Radiant '+base]={base:base,category:normal[3],desc:'Enhanced '+base+'. '+normal[4],normalIcon:itemImg(normal[5])};
+}
+RADIANT_ITEMS["Radiant Sterak's Gage"]={base:"Sterak's Gage",category:'AD',desc:'Melee damage and an emergency shield.',normalIcon:RADIANT_ICON_ROOT+RADIANT_FILES["Sterak's Gage"]};
+function radiantName(base){return 'Radiant '+base;}
+function radiantImage(name){const data=RADIANT_ITEMS[name];if(!data)return '';const path=RADIANT_FILES[data.base];return path?RADIANT_ICON_ROOT+path:data.normalIcon;}
+function radiantImgTag(name){
+ const data=RADIANT_ITEMS[name];if(!data)return '';
+ const url=radiantImage(name),backup=data.normalIcon;
+ return '<span class="radiant-art">'+esc(data.base.slice(0,2).toUpperCase())+
+ '<img src="'+url+'"'+(url!==backup?' data-fallback="'+backup+'"':'')+
+ '" loading="lazy" alt="" onerror="if(this.dataset.fallback&&!this.dataset.triedFallback){this.dataset.triedFallback=1;this.src=this.dataset.fallback}else{this.remove()}"></span>';
+}
+
 var AUGMENT_HINTS=[
  {id:'Embiggen',label:'Embiggen · Fae',group:'Trait',desc:'Bigger Fae Pixies; gives Xayah and Rakan. Fae 2/4 become attractive.',boost:{'fae-flex':13,'kayle':5,'alune':4,'aphelios':2}},
  {id:'Beast Within',label:'Beast Within · Primal',group:'Trait',desc:'Primal grants another Blessing; favors Primal boards.',boost:{'primal-nidalee':12,'aphelios':3}},
@@ -729,7 +771,7 @@ function bindCombos(){
 function openingState(){
  if(!state.opening||typeof state.opening!=='object')state.opening={};
  var o=state.opening;
- ['items','components','units','augments','artifacts'].forEach(function(k){if(!Array.isArray(o[k]))o[k]=[];});
+ ['items','components','units','augments','artifacts','radiants'].forEach(function(k){if(!Array.isArray(o[k]))o[k]=[];});
  if(!['2','3','4','5','6'].includes(String(o.stage)))o.stage='3';
  if(!Number.isInteger(Number(o.round))||Number(o.round)<1||Number(o.round)>7)o.round=2;
  o.round=Number(o.round);
@@ -811,7 +853,7 @@ const AUGMENT_ART={
 };
 const COMPONENT_ART={Sword:'DA_Component_BFSword.webp',Bow:'DA_Component_RecurveBow.webp',Rod:'DA_Component_NeedlesslyLargeRod.webp',Tear:'DA_Component_TearOfTheGoddess.webp',Vest:'DA_Component_ChainVest.webp',Cloak:'DA_Component_NegatronCloak.webp',Belt:'DA_Component_GiantsBelt.webp',Gloves:'DA_Component_SparringGloves.webp'};
 const COST_COLORS={1:'#a9b8c8',2:'#59d79a',3:'#72a8f5',4:'#b98bfa',5:'#f0c45b'};
-let visualFilter={item:'all',unit:'early',augment:'all',artifact:'all'},visualSearch={item:'',unit:'',artifact:''};
+let visualFilter={item:'all',unit:'early',augment:'all',artifact:'all',radiant:'all'},visualSearch={item:'',unit:'',artifact:'',radiant:''};
 function renderTile(type,id,label,src,n,more){
  const found=n>0;const cost=more&&more.cost;
  const img='<span class="pick-art"'+(cost?' style="border-bottom:3px solid '+COST_COLORS[cost]+'"':'')+'>'+esc(label.slice(0,2).toUpperCase())+'<img src="'+src+'" loading="lazy" alt="" onerror="this.remove()">'+(cost?'<span class="pick-cost">'+cost+'g</span>':'')+'</span>';
@@ -842,6 +884,26 @@ function renderArtifacts(o){
  document.querySelectorAll('#pArtifactFilters button').forEach(b=>{let on=b.dataset.artf===visualFilter.artifact;b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on));});
 }
 
+
+function renderRadiants(o){
+ const container=$('#pRadiants'),scroll=container.scrollTop||0,counts=counted(o.radiants);
+ container.innerHTML=Object.entries(RADIANT_ITEMS)
+ .filter(([name,data])=>(visualFilter.radiant==='all'||data.category===visualFilter.radiant)&&name.toLowerCase().includes(visualSearch.radiant))
+ .sort((a,b)=>a[1].base.localeCompare(b[1].base))
+ .map(([name,data])=>{
+  const qty=counts[name]||0;
+  return '<div class="pick-cell"><button type="button" class="pick-main" data-kind="radiant" data-id="'+esc(name)+
+   '" aria-pressed="'+!!qty+'" aria-label="'+esc(name+', '+qty+' owned, left click to add, right click to remove')+
+   '" title="'+esc(name+' — '+data.desc)+'"><span class="pick-art">'+radiantImgTag(name)+'</span>'+
+   (qty?'<span class="pick-number">'+qty+'</span>':'')+
+   '<span class="pick-quick-tier">'+tierFor(name,'radiant')+'</span><span class="pick-name">'+esc(data.base)+'</span></button>'+
+   (qty?'<button type="button" class="pick-minus" data-minus="radiant" data-id="'+esc(name)+'" aria-label="Remove '+esc(name)+'">−</button>':'')+'</div>';
+ }).join('');
+ container.scrollTop=scroll;
+ $('#pRadiantCount').textContent=o.radiants.length;
+ document.querySelectorAll('#pRadiantFilters button').forEach(b=>{const selected=b.dataset.radf===visualFilter.radiant;b.classList.toggle('active',selected);b.setAttribute('aria-pressed',String(selected));});
+}
+
 function renderVisual(o){
  const scrollIds=['#pItems','#pComponents','#pUnits','#pAugments'],scrolls=scrollIds.map(id=>$(id).scrollTop||0);
  const ci=counted(o.items),cc=counted(o.components);
@@ -851,7 +913,7 @@ function renderVisual(o){
  $('#pUnits').innerHTML=units.map(x=>{const u=o.units.find(u=>u.name===x.name);return renderTile('unit',x.name,x.name,championImg(x.name),u?u.stars:0,x);}).join('');
  $('#pChosenUnits').innerHTML=o.units.map(u=>'<span class="chosen"><img src="'+championImg(u.name)+'" alt="" onerror="this.remove()">'+esc(u.name)+' <span class="goldstars">'+('★'.repeat(u.stars))+'</span><button type="button" data-clear-unit="'+esc(u.name)+'" aria-label="Remove '+esc(u.name)+' entirely">×</button></span>').join('');
  $('#pAugments').innerHTML=AUGMENT_HINTS.filter(x=>visualFilter.augment==='all'||x.group===visualFilter.augment).map(x=>renderTile('augment',x.id,x.id,'https://hexcomps.com/img/augments/'+AUGMENT_ART[x.id],o.augments.includes(x.id)?1:0,x)).join('');
- renderArtifacts(o);
+ renderArtifacts(o);renderRadiants(o);
  renderValueTiers();renderPowerCombos();
  $('#pItemCount').textContent=o.items.length;$('#pComponentCount').textContent=o.components.length;$('#pUnitCount').textContent=o.units.length;$('#pAugmentCount').textContent=o.augments.length+' / 3';
  scrollIds.forEach((id,i)=>$(id).scrollTop=scrolls[i]);
@@ -862,6 +924,7 @@ function chooseIcon(kind,id){
  const o=openingState();
  if(kind==='item')o.items.push(id);
  else if(kind==='artifact'){if(ARTIFACTS[id])o.artifacts.push(id);}
+ else if(kind==='radiant'){if(RADIANT_ITEMS[id])o.radiants.push(id);}
  else if(kind==='component')o.components.push(id);
  else if(kind==='unit'){const u=o.units.find(u=>u.name===id);if(!u)o.units.push({name:id,stars:1});else u.stars=Math.min(3,u.stars+1);}
  else if(kind==='augment'){if(o.augments.includes(id))o.augments=o.augments.filter(x=>x!==id);else if(o.augments.length<3)o.augments.push(id);else {toast('Maximum three Augments');return;}}
@@ -875,7 +938,7 @@ function removeIcon(kind,id){
   if(u.stars>1)u.stars-=1;
   else o.units=o.units.filter(x=>x.name!==id);
  } else {
-  const k=kind==='item'?'items':kind==='component'?'components':kind==='artifact'?'artifacts':'augments';
+  const k=kind==='item'?'items':kind==='component'?'components':kind==='artifact'?'artifacts':kind==='radiant'?'radiants':'augments';
   const i=o[k].indexOf(id);
   if(i<0)return;
   o[k].splice(i,1);
@@ -908,7 +971,7 @@ function iconRightClick(e){
  if(tile)removeIcon(tile.dataset.kind,tile.dataset.id);
 }
 function bindVisual(){
- ['#pItems','#pComponents','#pUnits','#pAugments','#pArtifacts','#pChosenUnits'].forEach(id=>{
+ ['#pItems','#pComponents','#pUnits','#pAugments','#pArtifacts','#pRadiants','#pChosenUnits'].forEach(id=>{
   $(id).addEventListener('click',iconClick);
   $(id).addEventListener('contextmenu',iconRightClick);
  });
@@ -917,6 +980,8 @@ function bindVisual(){
  $('#pUnitSearch').addEventListener('input',e=>{visualSearch.unit=e.target.value.trim().toLowerCase();if(visualSearch.unit)visualFilter.unit='all';renderOpening();});
  $('#pArtifactFilters').addEventListener('click',e=>{const b=e.target.closest('button');if(b){visualFilter.artifact=b.dataset.artf;renderOpening();}});
  $('#pArtifactSearch').addEventListener('input',e=>{visualSearch.artifact=e.target.value.trim().toLowerCase();renderOpening();});
+ $('#pRadiantFilters').addEventListener('click',e=>{const b=e.target.closest('[data-radf]');if(b){visualFilter.radiant=b.dataset.radf;renderOpening();}});
+ $('#pRadiantSearch').addEventListener('input',e=>{visualSearch.radiant=e.target.value.trim().toLowerCase();renderOpening();});
  bindRound();
 }
 
@@ -1122,7 +1187,7 @@ function showComposition(id){
 }
 function renderOpening(){
  var o=openingState();renderVisual(o);renderArtifactHolders();renderHeroItems();renderHolders();
- var hasAny=o.items.length+o.components.length+o.units.length+o.augments.length+o.artifacts.length;
+ var hasAny=o.items.length+o.components.length+o.units.length+o.augments.length+o.artifacts.length+o.radiants.length;
  if(!hasAny){
   $('#openIntro').textContent='Add an item, an upgraded champion, or an Augment — or try a sample opening above.';
   $('#openCount').textContent='Waiting for your opening';
@@ -1149,7 +1214,7 @@ function renderOpening(){
  document.querySelectorAll('#openResults [data-open-comp]').forEach(function(b){b.onclick=function(){showComposition(b.dataset.openComp);};});
 }
 function example(type){
- var o={items:[],components:[],units:[],augments:[],artifacts:[],stage:'3',round:2,level:6,levelManual:false};
+ var o={items:[],components:[],units:[],augments:[],artifacts:[],radiants:[],stage:'3',round:2,level:6,levelManual:false};
  if(type==='ad'){o.items=["Guinsoo's Rageblade"];o.components=['Sword','Gloves'];o.units=[{name:'Kayle',stars:2},{name:'Alistar',stars:2}];}
  if(type==='ap'){o.items=['Spear of Shojin'];o.components=['Rod','Gloves'];o.units=[{name:'Teemo',stars:2},{name:'Alistar',stars:2}];}
  if(type==='fae'){o.items=['Jeweled Gauntlet'];o.components=['Bow','Rod'];o.units=[{name:'Xayah',stars:2},{name:'Rakan',stars:2}];o.augments=['Embiggen'];}
@@ -1158,7 +1223,7 @@ function example(type){
 }
 function initOpening(){
  bindVisual();bindValueTiers();bindCombos();
- $('#openingClear').onclick=function(){state.opening={items:[],components:[],units:[],augments:[],artifacts:[],stage:'3',round:2,level:6,levelManual:false};visualFilter={item:'all',unit:'early',augment:'all',artifact:'all'};visualSearch={item:'',unit:'',artifact:''};$('#pItemSearch').value='';$('#pUnitSearch').value='';$('#pArtifactSearch').value='';save();renderOpening();};
+ $('#openingClear').onclick=function(){state.opening={items:[],components:[],units:[],augments:[],artifacts:[],radiants:[],stage:'3',round:2,level:6,levelManual:false};visualFilter={item:'all',unit:'early',augment:'all',artifact:'all',radiant:'all'};visualSearch={item:'',unit:'',artifact:'',radiant:''};$('#pItemSearch').value='';$('#pUnitSearch').value='';$('#pArtifactSearch').value='';$('#pRadiantSearch').value='';save();renderOpening();};
  $('#openSampleAD').onclick=function(){example('ad');};$('#openSampleAP').onclick=function(){example('ap');};$('#openSampleFae').onclick=function(){example('fae');};$('#openSampleRammus').onclick=function(){example('rammus');};renderOpening();
 }
 window.renderOpening=renderOpening;
