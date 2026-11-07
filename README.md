@@ -1,10 +1,26 @@
 # TFT Field Guide — Set 18
 
-A self-contained, dependency-free Teamfight Tactics guide with an interactive **Opening Planner** to decide what to play from the items, champions, and Augments you actually find.
+A self-contained, dependency-free Teamfight Tactics guide built around **what to look for next**. Record the champions, components, items, and Augments you actually find and the next suggestions update automatically.
 
 ## Open
 
 Open `index.html` in a modern browser or visit [GitHub Pages](https://mzgerop.github.io/homepage/) (if enabled). The app works without a server. Champion and item portraits are loaded from external sources and require internet access; text labels remain if they fail.
+
+## New main workflow — What should I look for next? (v3.0)
+
+The site is now a **live decision loop**, rather than a catalogue-first reference page. The homepage answers one actionable question: **What should I look for next?**
+
+1. **Set your current stage, round and level** at the top. The guide uses the existing shop cost-tier probabilities, never a fabricated probability for one particular champion.
+2. **Look at the three or four highlighted next targets**. They include obtainable champions, an item to build, a missing component, and the best offered Augment where appropriate. Each target has an image, a short explanation and a button such as **I found it**.
+3. **Log what you actually find**, either from the recommendation card or by opening **＋ Add a find** and selecting the appropriate icon gallery: Champions, Components, Items, Artifacts, Radiants, or Augments. Champions can be set to ★, ★★, or ★★★; item counts support duplicates. If you craft a recommended item from two components, the **I crafted it** action consumes those two components in the planner and records the completed item.
+4. **Recommendations recalculate immediately.** The homepage changes its shop targets, useful item recipes, and likely composition directions from your actual selections. The compact **What you already found** strip allows decrementing/removing a find without returning to the picker. When using the expanded picker, a sticky **See what to look for next** button returns to the updated plan.
+5. **Then work toward** shows two plausible eventual builds, not a forced fixed comp. The complete composition guide opens on demand.
+
+An Augment choice comes from **the three offers you enter**, not a fictional offer list; choosing it clears the obsolete three-offer selection for the next augment round.
+
+The previous v2 controls and all stored data are still supported. Standard/right-click decrement, selection, star upgrades, Augment comparison, contextual icon explanations, the item/Artifact/Radiant tier lists, item-holder handoffs, full comp library, economy, notes, and match journal remain available under expandable **Log a find**, **Deep dive**, and **Full library** sections.
+
+**Limits:** this is a curated heuristic using your inputs, not a live match tracker or win-rate forecast. It cannot see your actual shop, opponents, HP, gold, trait contesting, or real augment choices unless you record them. A target is something to consider when it appears, not a promise that the shop will offer it.
 
 ## Opening Planner — icon-based controls (v1.3)
 
