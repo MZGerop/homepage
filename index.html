@@ -1264,6 +1264,292 @@ function bindVisualHelp(){
  };
 }
 
+
+/* Decision loop, v3.0
+   INPUTS = only what the player reports finding.
+   OUTPUTS = probable shop targets, craft paths, and future build directions.
+   No invented per-champion drop odds or AI-computed win percentages. */
+let activeFinderCategory='unit';
+const NEXT_CATEGORIES=['unit','component','item','artifact','radiant','augment','all'];
+function showFinder(category){
+ activeFinderCategory=NEXT_CATEGORIES.includes(category)?category:'unit';
+ const details=$('#pickerDetails');
+ details.open=true;
+ applyFinderCategory();
+ document.querySelector('#opening').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function applyFinderCategory(){
+ const wrapper=$('#openingGrid');
+ if(!wrapper)return;
+ document.querySelectorAll('#openingGrid > .opening-panel').forEach(panel=>{
+  const active=activeFinderCategory==='all'||panel.dataset.finderKind===activeFinderCategory;
+  panel.classList.toggle('is-current',active);
+ });
+ document.querySelectorAll('#finderTabs [data-find-category]').forEach(btn=>{
+  const yes=btn.dataset.findCategory===activeFinderCategory;
+  btn.classList.toggle('active',yes);
+  btn.setAttribute('aria-pressed',String(yes));
+ });
+}
+function countFinds(o){
+ return o.units.length+o.items.length+o.components.length+
+ o.artifacts.length+o.radiants.length+o.augments.length;
+}
+function nextIcon(kind,name){
+ if(kind==='unit')return championImg(name);
+ if(kind==='item'){const item=getItem(name);return item?itemImg(item[5]):'';}
+ if(kind==='component')return 'https://hexcomps.com/img/items/'+COMPONENT_ART[name];
+ if(kind==='artifact')return artifactImage(name);
+ if(kind==='radiant')return radiantImage(name);
+ if(kind==='augment')return augmentImage(name);
+ return '';
+}
+function nextIconHTML(kind,name){
+ const image=nextIcon(kind,name);
+ const art=kind==='artifact'?artifactImgTag(name):
+  kind==='radiant'?radiantImgTag(name):
+  kind==='augment'?augmentImgTag(name):
+  image?'<img src="'+image+'" alt="" loading="lazy" onerror="this.remove()">':'';
+ const cost=kind==='unit'?holderCost(name):0;
+ const rim=kind==='radiant'?'#dfbd70':kind==='artifact'?'#b995cd':cost?COST_COLORS[cost]:'#6996b1';
+ return '<span class="next-reco-icon" style="--next-border:'+rim+'">'+
+ esc(name.slice(0,2).toUpperCase())+art+'</span>';
+}
+function nextFindChip(kind,name,quantity,stars){
+ const icon=nextIconHTML(kind,name);
+ const display=(kind==='unit'?name+' '+('★'.repeat(stars||1)):kind==='component'?(COMPONENTS[name]||name):name)+(quantity>1?' ×'+quantity:'');
+ return '<span class="next-find '+kind+'" data-help-kind="'+kind+'" data-help-name="'+esc(name)+'" tabindex="0" title="'+esc(display)+'">'+
+ '<span class="next-find-art">'+icon+'</span><span class="name">'+esc(display)+'</span>'+
+ '<button type="button" data-next-remove="'+kind+'" data-next-id="'+esc(name)+'" aria-label="Remove one '+esc(name)+'">−</button></span>';
+}
+function renderNextFinds(o){
+ const kinds=[['unit',o.units],['item',o.items],['component',o.components],['artifact',o.artifacts],['radiant',o.radiants],['augment',o.augments]];
+ const content=[];
+ for(const [kind,entries] of kinds){
+  if(kind==='unit'){for(const u of entries)content.push(nextFindChip(kind,u.name,1,u.stars));}
+  else {for(const [name,n] of Object.entries(counted(entries)))content.push(nextFindChip(kind,name,n));}
+ }
+ $('#nextFinds').innerHTML=content.join('')||
+ '<div class="next-finds-empty">Nothing logged yet. Pick a recommendation above, or tap <b>＋ Add a find</b> to record a champion, component, or item from your game.</div>';
+}
+function findNextChamps(o,routes){
+ const owned=new Map(o.units.map(u=>[u.name,u]));
+ const currentItems=counted(o.items),rads=counted(o.radiants),arts=counted(o.artifacts);
+ const hasSignal=countFinds(o)>0;
+ const all=[...new Set(SHOP_CANDIDATES.concat(routes.flatMap(x=>x.comp.units)))];
+ const candidates=all.map(name=>{
+  const cost=holderCost(name),chance=shopChance(o,cost),existing=owned.get(name);
+  if(!cost||chance<=0)return null;
+  if(existing&&existing.stars>=2)return null;
+  const profile=heroItemProfile(name),kind=(ROLES[name]||profile.role||'').toLowerCase();
+  const carry=/carry|caster|damage|attack|reroll/.test(kind)||/ad |ap /i.test(kind);
+  let score=chance/6;
+  const matching=profile.items.filter(item=>currentItems[item]||rads[radiantName(item)]);
+  const artifacts=(HERO_ARTIFACTS[name]||[]).filter(a=>arts[a]);
+  score+=matching.length*11+artifacts.length*11;
+  routes.forEach((r,i)=>{
+    const comp=r.comp,w=1-(i*.25);
+    if(comp.carry.includes(name))score+=15*w;
+    else if(comp.front.includes(name))score+=11*w;
+    else if(comp.units.includes(name))score+=6*w;
+  });
+  if(existing){score+=23; }
+  if(!hasSignal){ // Favor a mixture of sturdy frontline and usable early damage, not arbitrary endgame stars.
+    score+=(cost<=2?5:cost===3?1:0);
+    if(/tank|front/.test(kind))score+=4;
+    if(/attack|caster|carry/.test(kind))score+=3;
+  }
+  if(cost>=4&&o.level<=7)score-=5;
+  return {kind:'unit',id:name,cost,chance,score,existing,role:ROLES[name]||profile.role||'Flexible',matching,artifacts,
+    purpose:existing?'Upgrade':'Champion',isFront:/tank|front|support/.test(kind),isCarry:carry};
+ }).filter(Boolean).sort((a,b)=>b.score-a.score||a.cost-b.cost);
+ // Avoid offering three almost identical carry types when there is no known board.
+ const shown=[];
+ for(const c of candidates){
+  if(shown.length>=3)break;
+  if(!hasSignal&&shown.length===1&&shown.every(x=>x.isFront===c.isFront))continue;
+  shown.push(c);
+ }
+ for(const c of candidates){if(shown.length>=3)break;if(!shown.includes(c))shown.push(c);}
+ return shown;
+}
+function getNextItem(o,routes){
+ const existing=counted(o.items),rads=counted(o.radiants);
+ const wanted=new Map();
+ const push=(name,weight,source)=>{
+  if(!getItem(name)||existing[name]||rads[radiantName(name)])return;
+  const old=wanted.get(name)||{name,weight:0,reason:source};
+  old.weight+=weight;wanted.set(name,old);
+ };
+ const first=routes[0]?.comp;
+ if(first){first.carryItems.forEach((n,i)=>push(n,15-i*2,'Supports '+first.name));
+  first.tankItems.forEach((n,i)=>push(n,11-i*2,'Frontline for '+first.name));}
+ for(const unit of o.units){
+  const p=heroItemProfile(unit.name);
+  p.items.slice(0,5).forEach((n,i)=>push(n,unit.stars===3?17-i:13-i,'Good on your '+unit.name+' '+('★'.repeat(unit.stars))));
+ }
+ if(!wanted.size){['Spear of Shojin',"Guinsoo's Rageblade","Gargoyle Stoneplate","Warmog's Armor"].forEach(n=>push(n,6,'Flexible early item')); }
+ const arr=[...wanted.values()].map(row=>{
+  const have=canCraft(row.name,o.components);
+  const item=getItem(row.name),parts=item?[item[1],item[2]]:[];
+  const c=counted(o.components),req=counted(parts);
+  const missing=parts.flatMap(p=>Array(Math.max(0,(req[p]||0)-(c[p]||0))).fill(p));
+  return {...row,kind:'item',id:row.name,craftable:have,missing:[...new Set(missing)],
+    score:row.weight+(have?22:o.components.length?8-Math.min(6,missing.length*3):0)};
+ }).sort((a,b)=>b.score-a.score);
+ return arr.slice(0,2);
+}
+function getNextComponent(o,items){
+ if(!o.components.length)return null;
+ const suggestions=[];
+ for(const item of items){
+  if(!item.missing?.length)continue;
+  for(const component of item.missing){
+   const weight=item.score+(COMPONENTS[component]?1:0);
+   suggestions.push({kind:'component',id:component,score:weight,for:item.id});
+  }
+ }
+ return suggestions.sort((a,b)=>b.score-a.score)[0]||null;
+}
+function nextOffer(o){
+ return o.augmentOffers.map(id=>augmentMeta(id)).filter(a=>a&&!o.augments.includes(a.id)&&!a.inactive)
+ .map(a=>({kind:'augment',id:a.id,score:augmentMatch(a,o).score,info:a}))
+ .sort((a,b)=>b.score-a.score)[0]||null;
+}
+function nextCardData(row,o){
+ if(row.kind==='unit'){
+  const type=row.existing?'Upgrade':'Shop target';
+  const msg=row.existing?
+   'Upgrade '+row.id+' to 2★ only when you actually complete the upgrade. A stronger holder helps stabilize the board.':
+   (row.matching.length?'Your selected items fit: '+row.matching.slice(0,2).join(' + ')+'. ':
+    row.artifacts.length?'Your Artifact fits this champion. ':'')+
+   'Look for '+row.id+' in the shop when the '+row.cost+'-cost tier appears ('+row.chance+'% of slots at Level '+o.level+').';
+  return {label:type,heading:row.id,desc:msg,button:row.existing?'I made 2★':'I found '+row.id,action:'unit',id:row.id,
+   sub:row.cost+' gold · '+row.role};
+ }
+ if(row.kind==='item'){
+  const item=getItem(row.id);
+  const recipe=item?COMPONENTS[item[1]]+' + '+COMPONENTS[item[2]]:'';
+  return {label:row.craftable?'Craft this now':'Item to build',heading:row.id,
+   desc:(row.craftable?'You have both components. ':'Look for '+recipe+' to make this item. ')+row.reason+'.',
+   button:row.craftable?'I crafted it':'I got this item',action:row.craftable?'craft':'item',id:row.id,sub:recipe};
+ }
+ if(row.kind==='component')return {label:'Missing component',heading:COMPONENTS[row.id]||row.id,
+  desc:'This completes an important recipe for '+row.for+'. Log it when it appears in an item shop or carousel.',
+  button:'I found this component',action:'component',id:row.id,sub:'Component'};
+ if(row.kind==='augment'){
+  const match=augmentMatch(row.info,o);
+  return {label:'Best of your offers',heading:row.id,
+   desc:row.info.desc+' '+match.why.slice(0,1).join(' ')+(match.caution.length?' Watch out: '+match.caution[0]:''),
+   button:'I chose this Augment',action:'augment',id:row.id,sub:row.info.rarity+' · '+row.info.tier+' tier · Contextual fit'};
+ }
+ return null;
+}
+function nextCard(row,o,index){
+ const d=nextCardData(row,o);if(!d)return '';
+ const image=nextIconHTML(row.kind,row.id);
+ const title='Why look for '+d.heading+'? '+d.desc;
+ return '<article class="next-reco-card'+(index===0?' priority':'')+'" data-help-kind="'+row.kind+'" data-help-name="'+esc(row.id)+'" tabindex="0">'+
+ '<div class="next-reco-header">'+image+'<div class="next-reco-meta"><span class="next-reco-rank">'+esc((index===0?'FIRST PRIORITY · ':'')+d.label)+'</span>'+
+ '<b>'+esc(d.heading)+'</b><small>'+esc(d.sub)+'</small></div></div>'+
+ '<div class="next-reco-why">'+esc(d.desc)+'</div><div class="next-reco-action">'+
+ '<button type="button" data-next-action="'+d.action+'" data-next-id="'+esc(row.id)+'">'+esc(d.button)+'</button>'+
+ '<button type="button" class="next-why" data-next-explain="'+esc(row.id)+'" title="'+esc(title)+'" aria-label="Explain '+esc(row.id)+'">ⓘ</button></div></article>';
+}
+function laterBuildCard(comp,reason){
+ const main=comp.carry[0]||comp.units[0];
+ return '<div class="next-later-card">'+nextIconHTML('unit',main)+
+ '<div class="text"><b>'+esc(comp.name)+'</b><small>'+esc(reason)+'</small></div>'+
+ '<button type="button" data-next-open-build="'+esc(comp.id)+'">Explore ↗</button></div>';
+}
+function renderNext(o){
+ renderNextFinds(o);
+ const count=countFinds(o),hasInfo=count>0;
+ const ranked=COMP_LIST.map(relevance).sort((a,b)=>b.score-a.score);
+ const routes=hasInfo?ranked.slice(0,3):[];
+ const best=routes[0];
+ const champs=findNextChamps(o,routes);
+ const items=getNextItem(o,routes);
+ const component=getNextComponent(o,items);
+ const offer=nextOffer(o);
+ const results=[];
+ if(offer)results.push(offer);
+ // Balance champion suggestions with actionable recipes, not endless 3-cost targets.
+ if(champs[0])results.push(champs[0]);
+ if(items[0]&&(items[0].craftable||o.items.length||o.components.length||o.units.length))results.push(items[0]);
+ if(champs[1])results.push(champs[1]);
+ if(component&&results.length<4)results.push(component);
+ if(champs[2]&&results.length<4)results.push(champs[2]);
+ if(!hasInfo&&results.length<3){const base=[{kind:'component',id:'Sword',for:'flexible damage items'}, {kind:'component',id:'Belt',for:'frontline items'}];for(const x of base)if(results.length<3)results.push(x);}
+ $('#nextPrimary').innerHTML=results.slice(0,4).map((x,i)=>nextCard(x,o,i)).join('');
+ const title=hasInfo&&best?best.comp.name:'Stay flexible';
+ $('#nextFocusTitle').textContent=title;
+ $('#nextFocusText').textContent=hasInfo&&best?
+  'Your current finds point toward '+best.comp.carry.slice(0,2).join(' / ')+'. Keep a strong frontline and change plans if better units appear.':
+  'Don’t force a composition yet. Record what you actually find, and keep your early items useful.';
+ $('#nextContextLine').textContent=
+   'Round '+o.stage+'-'+o.round+' · Level '+o.level+' · '+count+' selections. The next cards are targets, not guaranteed shop offers.';
+ const later=hasInfo?ranked.slice(0,2).map(x=>{
+  const advice=x.reasons?.[0]||'Long-term direction if upgrades arrive.';
+  return laterBuildCard(x.comp,advice);
+ }):[
+  '<div class="next-later-card"><span class="next-reco-icon">🛡</span><div class="text"><b>Keep your frontline upgraded</b><small>Your tank buys time for any carry to deal damage.</small></div><button type="button" data-next-open-picker="unit">Add</button></div>',
+  '<div class="next-later-card"><span class="next-reco-icon">⚒</span><div class="text"><b>Make useful items</b><small>Good early slams usually beat waiting for a perfect late-game recipe.</small></div><button type="button" data-next-open-picker="component">Add</button></div>'
+ ];
+ $('#nextLater').innerHTML=later.join('');
+}
+function craftNextItem(name){
+ const item=getItem(name);if(!item)return;
+ const o=openingState(),required=[item[1],item[2]];
+ if(!canCraft(name,o.components)){toast('Those two components are not available yet');return;}
+ for(const part of required){const index=o.components.indexOf(part);if(index>=0)o.components.splice(index,1);}
+ o.items.push(name);save();renderOpening();toast('Crafted '+name+' in the planner');
+}
+function markNextAugment(name){
+ const o=openingState();if(!augmentMeta(name))return;
+ if(o.augments.includes(name))return;
+ if(o.augments.length>=3){toast('You already chose three Augments');return;}
+ o.augments.push(name);save();renderOpening();
+}
+function bindNext(){
+ $('#nextShowAll').onclick=()=>showFinder('unit');
+ $('#nextOpenFinder').onclick=()=>showFinder('unit');
+ $('#nextReset').onclick=()=>$('#openingClear').onclick();
+ $('#finderTabs').addEventListener('click',e=>{
+  const b=e.target.closest('[data-find-category]');
+  if(b){activeFinderCategory=b.dataset.findCategory;applyFinderCategory();}
+ });
+ const found=$('#nextFinds');
+ found.addEventListener('click',e=>{
+  const b=e.target.closest('[data-next-remove]');if(b)removeIcon(b.dataset.nextRemove,b.dataset.nextId);
+ });
+ found.addEventListener('contextmenu',e=>{
+  const chip=e.target.closest('[data-help-kind][data-help-name]');
+  if(!chip)return;
+  e.preventDefault();removeIcon(chip.dataset.helpKind,chip.dataset.helpName);
+ });
+ $('#nextPrimary').addEventListener('click',e=>{
+  const b=e.target.closest('[data-next-action]');
+  if(b){
+   const kind=b.dataset.nextAction,id=b.dataset.nextId;
+   if(kind==='craft')craftNextItem(id);
+   else if(kind==='augment')markNextAugment(id);
+   else chooseIcon(kind,id);
+   return;
+  }
+  const more=e.target.closest('[data-next-explain]');
+  if(more){const card=more.closest('.next-reco-card');const detail=card?.querySelector('.next-reco-why')?.textContent||'';
+   toast(detail||'See this target and the reason in its card.');}
+ });
+ $('#nextLater').addEventListener('click',e=>{
+  const go=e.target.closest('[data-next-open-build]');
+  if(go){showComposition(go.dataset.nextOpenBuild);return;}
+  const pick=e.target.closest('[data-next-open-picker]');
+  if(pick)showFinder(pick.dataset.nextOpenPicker);
+ });
+ applyFinderCategory();
+}
+
 function openingState(){
  if(!state.opening||typeof state.opening!=='object')state.opening={};
  var o=state.opening;
@@ -1704,12 +1990,13 @@ function renderHolders(){
 }
 
 function showComposition(id){
+ $('#referenceLibrary').open=true;
  $('#compSearch').value=COMP_LIST.find(function(c){return c.id===id;}).name;
  compFilter='all';document.querySelectorAll('#compFilters .chip').forEach(function(b){b.classList.toggle('active',b.dataset.filter==='all');});
  renderComps();document.querySelector('#comps').scrollIntoView({behavior:'smooth',block:'start'});
 }
 function renderOpening(){
- var o=openingState();renderVisual(o);renderArtifactHolders();renderHeroItems();renderHolders();refreshVisualHelp();
+ var o=openingState();renderVisual(o);renderArtifactHolders();renderHeroItems();renderHolders();renderNext(o);refreshVisualHelp();
  var hasAny=o.items.length+o.components.length+o.units.length+o.augments.length+o.artifacts.length+o.radiants.length;
  if(!hasAny){
   $('#openIntro').textContent='Add an item, an upgraded champion, or an Augment — or try a sample opening above.';
@@ -1746,7 +2033,7 @@ function example(type){
  refreshVisualHelp();
 }
 function initOpening(){
- bindVisual();bindValueTiers();bindCombos();bindAugmentGuide();bindVisualHelp();
+ bindVisual();bindValueTiers();bindCombos();bindAugmentGuide();bindVisualHelp();bindNext();
  $('#openingClear').onclick=function(){state.opening={items:[],components:[],units:[],augments:[],augmentOffers:[],artifacts:[],radiants:[],stage:'3',round:2,level:6,levelManual:false};visualFilter={item:'all',unit:'early',augment:'all',artifact:'all',radiant:'all'};visualSearch={item:'',unit:'',artifact:'',radiant:''};$('#pItemSearch').value='';$('#pUnitSearch').value='';$('#pArtifactSearch').value='';$('#pRadiantSearch').value='';$('#pAugmentSearch').value='';augmentSearch='';augmentMode='chosen';augmentRarity='all';augmentTierFilter='all';save();renderOpening();};
  $('#openSampleAD').onclick=function(){example('ad');};$('#openSampleAP').onclick=function(){example('ap');};$('#openSampleFae').onclick=function(){example('fae');};$('#openSampleRammus').onclick=function(){example('rammus');};renderOpening();save();
 }
