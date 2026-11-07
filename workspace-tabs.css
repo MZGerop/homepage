@@ -1,0 +1,133 @@
+
+/* TFT Field Guide tabbed workspace, Set 18.
+   Existing content remains in place so its event handlers and local saved state survive. */
+body[data-tft-tab] .shell{display:block;max-width:none}
+body[data-tft-tab] .sidebar{display:none}
+body[data-tft-tab] main{max-width:1580px;margin:0 auto;padding:14px clamp(14px,2.5vw,42px) 48px}
+.tft-tabs-wrap{position:sticky;top:0;z-index:80;background:#080e1cef;border:1px solid #2f4560;border-radius:16px;padding:10px 11px 0;margin-bottom:22px;backdrop-filter:blur(18px);box-shadow:0 10px 30px #050d1d66}
+.tft-tabs-brand{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:2px 8px 9px}
+.tft-tabs-brand strong{font-size:13px;letter-spacing:.1em;color:#f5cb6c}
+.tft-tabs-brand small{font-size:11px;color:#9fb4d0}
+.tft-tabs{display:flex;gap:5px;overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-width:thin;scrollbar-color:#344d6c transparent}
+.tft-tab{flex:0 0 auto;min-width:94px;display:flex;flex-direction:column;gap:2px;align-items:flex-start;justify-content:center;padding:11px 14px 10px;background:transparent;color:#b0bfd5;border:0;border-bottom:3px solid transparent;border-radius:10px 10px 0 0;transition:color .15s,background .15s,border-color .15s;text-align:left}
+.tft-tab .tft-tab-label{font-size:13px;font-weight:850;white-space:nowrap}
+.tft-tab .tft-tab-sub{font-size:10px;color:#8da5bd;white-space:nowrap}
+.tft-tab:hover{color:#fff;background:#192840}
+.tft-tab[aria-selected="true"]{background:#1a3645;color:#f7fff9;border-bottom-color:#6de0b4}
+.tft-tab[aria-selected="true"] .tft-tab-sub{color:#99ddcf}
+.tft-tab:focus-visible{outline:2px solid #f5cb6c;outline-offset:-2px}
+.tft-tab-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px 16px;margin-bottom:19px}
+.tft-tab-header h1{font-size:clamp(23px,2.7vw,34px);margin:2px 0 6px}
+.tft-tab-header p{max-width:740px;color:#aabed8;font-size:13px;margin:0}
+.tft-tab-actions{display:flex;gap:7px;flex-wrap:wrap}
+.tft-tab-actions button{background:#173047;color:#d9f2ec;border:1px solid #416b79;border-radius:9px;padding:9px 12px;font-size:12px;font-weight:750}
+.tft-tab-actions button:hover{border-color:#79b9a7;background:#224858}
+.tft-tab-actions button.main{background:#267d72;border-color:#64bdab;color:#fff}
+.tft-tab-panel{outline:none;min-height:48vh}
+.tft-tab-panel > .section,.tft-tab-panel > details{margin-top:0}
+body[data-tft-tab] #opening{margin:0}
+body[data-tft-tab] #deepDive,body[data-tft-tab] #referenceLibrary{margin:0}
+body[data-tft-tab] #deepDive > summary,body[data-tft-tab] #referenceLibrary > summary,body[data-tft-tab="finds"] #pickerDetails > summary{display:none!important}
+body[data-tft-tab="finds"] #pickerDetails{border:0;padding:0;background:none}
+body[data-tft-tab="finds"] #opening > .section-head{margin-bottom:12px}
+body[data-tft-tab] #referenceLibrary > .section{margin-top:0;margin-bottom:27px}
+body[data-tft-tab] #referenceLibrary > .section + .section{border-top:1px solid #293d54;padding-top:24px}
+body[data-tft-tab] #deepDive > section{margin-top:0;margin-bottom:20px}
+body[data-tft-tab="start"] #guidedOpening{margin-top:0}
+body[data-tft-tab="start"] #guidedOpening .guide-intro{display:none!important}
+body[data-tft-tab="start"] #guidedOpening .guide-columns{grid-template-columns:1fr}
+body[data-tft-tab="augments"] #guidedOpening .guide-columns{display:block!important}
+body[data-tft-tab="augments"] #guidedOpening .guide-columns > .guide-panel:nth-child(2){max-width:none}
+body[data-tft-tab="start"] #guidedOpening > .guide-panel{margin-bottom:14px}
+body[data-tft-tab="emblems"] .guide-emblem-section{margin-top:0}
+body[data-tft-tab="next"] #overview .decision-hero{display:none!important}
+body[data-tft-tab="next"] #advancedRounds{margin-top:16px}
+body[data-tft-tab="next"] #nextPrimary{margin-bottom:16px}
+body[data-tft-tab="next"] #overview .next-dashboard{margin-top:0}
+body[data-tft-tab="next"] #overview .next-inventory{margin-top:19px}
+body[data-tft-tab="builds"] #deepDive > .opening-results-head{margin-top:0}
+body[data-tft-tab="builds"] #deepDive > #openResults{margin-bottom:22px}
+body[data-tft-tab="strategy"] #notes{scroll-margin-top:130px}
+@media (max-width:900px){
+ body[data-tft-tab] main{padding:9px 13px 36px}
+ .tft-tabs-wrap{margin-bottom:15px;padding:8px 7px 0;border-radius:12px}
+ .tft-tab{min-width:85px;padding:9px 11px 8px}
+ .tft-tab-header{margin-bottom:15px}
+}
+@media (max-width:600px){
+ .tft-tabs-brand{padding-bottom:6px}
+ .tft-tabs-brand small{display:none}
+ .tft-tab-sub{display:none}
+ .tft-tab{min-width:74px;align-items:center;padding:11px 10px}
+ .tft-tab .tft-tab-label{font-size:12px}
+ .tft-tab-header{display:block}
+ .tft-tab-actions{margin-top:10px}
+ .tft-tab-actions button{flex:1 1 auto}
+ .tft-tab-header h1{font-size:23px}
+}
+/* Visibility is controlled by top-level tab, without moving nodes out of legacy
+   #overview, #opening, #deepDive, or #referenceLibrary event delegation roots. */
+body[data-tft-tab] #overview,
+body[data-tft-tab] #opening,
+body[data-tft-tab] #referenceLibrary{display:none!important}
+body[data-tft-tab="start"] #overview,
+body[data-tft-tab="next"] #overview,
+body[data-tft-tab="augments"] #overview,
+body[data-tft-tab="emblems"] #overview,
+body[data-tft-tab="finds"] #opening,
+body[data-tft-tab="augments"] #opening,
+body[data-tft-tab="items"] #opening,
+body[data-tft-tab="builds"] #opening,
+body[data-tft-tab="items"] #referenceLibrary,
+body[data-tft-tab="builds"] #referenceLibrary,
+body[data-tft-tab="strategy"] #referenceLibrary{display:block!important}
+body[data-tft-tab] #overview > *,
+body[data-tft-tab] #guidedOpening > *,
+body[data-tft-tab] #opening > *,
+body[data-tft-tab] #deepDive > *,
+body[data-tft-tab] #referenceLibrary > *{display:none!important}
+/* Opening: only the stage guide, starter and context-sensitive early shop targets */
+body[data-tft-tab="start"] #overview > #guidedOpening,
+body[data-tft-tab="start"] #guidedOpening > .guide-panel,
+body[data-tft-tab="start"] #guidedOpening > .guide-columns{display:block!important}
+body[data-tft-tab="start"] #guidedOpening .guide-columns > .guide-panel:nth-child(2){display:none!important}
+/* Current recommendations and already-found strip */
+body[data-tft-tab="next"] #overview > .next-dashboard,
+body[data-tft-tab="next"] #overview > .next-inventory,
+body[data-tft-tab="next"] #overview > #advancedRounds{display:block!important}
+/* Find picker: stays nested in its original section so delegated click handlers work */
+body[data-tft-tab="finds"] #opening > .section-head{display:flex!important}
+body[data-tft-tab="finds"] #opening > #pickerDetails{display:block!important}
+/* Contextual augment panel and ranked offer comparison */
+body[data-tft-tab="augments"] #overview > #guidedOpening,
+body[data-tft-tab="augments"] #guidedOpening > .guide-columns,
+body[data-tft-tab="augments"] #opening > #deepDive,
+body[data-tft-tab="augments"] #deepDive > .augment-guide{display:block!important}
+body[data-tft-tab="augments"] #guidedOpening .guide-columns > .guide-panel:first-child{display:none!important}
+/* Item ranks, holders, combos and the old full item catalogue */
+body[data-tft-tab="items"] #opening > #deepDive,
+body[data-tft-tab="items"] #deepDive > .value-guide,
+body[data-tft-tab="items"] #deepDive > .combo-guide,
+body[data-tft-tab="items"] #deepDive > .artifact-choices,
+body[data-tft-tab="items"] #deepDive > .hero-picks,
+body[data-tft-tab="items"] #deepDive > .holder-section,
+body[data-tft-tab="items"] #referenceLibrary > #items{display:block!important}
+/* Emblems: dedicated optional-branch exploration without changing normal watchlists */
+body[data-tft-tab="emblems"] #overview > #guidedOpening,
+body[data-tft-tab="emblems"] #guidedOpening > .guide-emblem-section{display:block!important}
+/* Builds and roster */
+body[data-tft-tab="builds"] #opening > #deepDive,
+body[data-tft-tab="builds"] #deepDive > .opening-results-head,
+body[data-tft-tab="builds"] #deepDive > #openResults,
+body[data-tft-tab="builds"] #deepDive > p.muted,
+body[data-tft-tab="builds"] #referenceLibrary > #comps,
+body[data-tft-tab="builds"] #referenceLibrary > #champions{display:block!important}
+/* Economy / late-game checklist / personal notes */
+body[data-tft-tab="strategy"] #referenceLibrary > #economy,
+body[data-tft-tab="strategy"] #referenceLibrary > #training,
+body[data-tft-tab="strategy"] #referenceLibrary > #notes{display:block!important}
+body[data-tft-tab="builds"] #deepDive > #openResults{display:grid!important}
+body[data-tft-tab="finds"] #opening > #pickerDetails{display:block!important}
+@media print{
+ body[data-tft-tab] .tft-tabs-wrap,body[data-tft-tab] .tft-tab-header{display:none!important}
+}
