@@ -429,9 +429,9 @@
 </head>
 <body>
 <div class="shell">
-<aside class="sidebar" aria-label="Sections"><div class="brand"><div class="rune">✦ <b>TFT FIELD GUIDE</b></div><small>SET 18 · V3.0</small></div>
+<aside class="sidebar" aria-label="Sections"><div class="brand"><div class="rune">✦ <b>TFT FIELD GUIDE</b></div><small>SET 18 · V4.0</small></div>
 <a class="nav" href="#overview"><span class="n">◎</span> Next move</a><a class="nav" href="#opening"><span class="n">＋</span> Log a find</a><a class="nav" href="#deepDive"><span class="n">◈</span> Deep dive</a><a class="nav" href="#referenceLibrary"><span class="n">▤</span> Full library</a>
-<div class="foot">Local-first & editable<br>Patch reference: 18.6<br>Updated: 06 Nov 2026</div></aside>
+<div class="foot">Local-first & editable<br>Patch reference: 18.6<br>Updated: 07 Nov 2026</div></aside>
 <main>
 <section id="overview" class="decision-home">
   <div class="decision-hero">
@@ -493,6 +493,7 @@
     <div class="guide-emblem-status" id="guideEmblemChips" aria-label="Selected emblems"></div>
     <p class="guide-warning" id="guideEmblemStatus">No emblem selected. This section will not recommend getting one.</p>
     <div class="guide-emblem-ideas" id="guideEmblemIdeas" aria-live="polite"></div>
+    <div class="guide-panel" id="guideEmblemFollowUp" aria-live="polite"></div>
   </section>
 </section>
 
@@ -2109,7 +2110,7 @@ function example(type){
 }
 function initOpening(){
  bindVisual();bindValueTiers();bindCombos();bindAugmentGuide();bindVisualHelp();bindNext();
- $('#openingClear').onclick=function(){state.opening={items:[],components:[],units:[],augments:[],augmentOffers:[],artifacts:[],radiants:[],emblems:[],starter:'',openingSignal:'',stage:'2',round:1,level:4,levelManual:false};visualFilter={item:'all',unit:'early',augment:'all',artifact:'all',radiant:'all'};visualSearch={item:'',unit:'',artifact:'',radiant:''};$('#pItemSearch').value='';$('#pUnitSearch').value='';$('#pArtifactSearch').value='';$('#pRadiantSearch').value='';$('#pAugmentSearch').value='';augmentSearch='';augmentMode='chosen';augmentRarity='all';augmentTierFilter='all';save();renderOpening();};
+ $('#openingClear').onclick=function(){state.opening={items:[],components:[],units:[],augments:[],augmentOffers:[],artifacts:[],radiants:[],emblems:[],starter:'',openingSignal:'',emblemPlan:'',stage:'2',round:1,level:4,levelManual:false};visualFilter={item:'all',unit:'early',augment:'all',artifact:'all',radiant:'all'};visualSearch={item:'',unit:'',artifact:'',radiant:''};$('#pItemSearch').value='';$('#pUnitSearch').value='';$('#pArtifactSearch').value='';$('#pRadiantSearch').value='';$('#pAugmentSearch').value='';augmentSearch='';augmentMode='chosen';augmentRarity='all';augmentTierFilter='all';save();renderOpening();};
  $('#openSampleAD').onclick=function(){example('ad');};$('#openSampleAP').onclick=function(){example('ap');};$('#openSampleFae').onclick=function(){example('fae');};$('#openSampleRammus').onclick=function(){example('rammus');};renderOpening();save();
 }
 window.TFTGuide={openingState,chooseIcon,removeIcon,save,renderOpening,showFinder,augmentMeta,augmentMatch,augmentHints:AUGMENT_HINTS,augmentImgTag,championImg,getItem,shopChance,holderCost,levelForRound};
