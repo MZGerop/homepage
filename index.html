@@ -338,7 +338,7 @@
 <div class="opening-samples"><strong>Try an example:</strong><button class="chip" id="openSampleAD" type="button">AD + Guinsoo + Kayle</button><button class="chip" id="openSampleAP" type="button">AP + Teemo 2★</button><button class="chip" id="openSampleFae" type="button">Embiggen + Fae</button><button class="chip" id="openSampleRammus" type="button">Rammus reroll</button></div>
 
 <section class="value-guide" aria-label="Current item and Artifact tier lists">
- <div class="value-guide-top"><div><div class="eyebrow">Patch 18.6 · Snapshot 7 November 2026</div><h3>Item, Artifact & Radiant tiers</h3><p class="muted">S = most flexible / powerful · A = strong · B = situational · C = niche. A perfect holder can make a B-tier Artifact excellent.</p></div><a href="https://www.pivottft.com/items/" target="_blank" rel="noopener">Standard / Artifact: PivotTFT ↗</a></div>
+ <div class="value-guide-top"><div><div class="eyebrow">Patch 18.6 · Snapshot 7 November 2026</div><h3>Item, Artifact & Radiant tiers</h3><p class="muted">S = most flexible / powerful · A = strong · B = situational · C = niche. Left-click icons to add, right-click to remove. A perfect holder can make a B-tier Artifact excellent.</p></div><a href="https://www.pivottft.com/items/" target="_blank" rel="noopener">Standard / Artifact: PivotTFT ↗</a></div>
  <div class="value-filters"><div id="valueKindFilters" class="picker-filters" role="group" aria-label="Select item class"><button data-value-kind="item" class="active">Completed items</button><button data-value-kind="artifact">Artifacts</button><button data-value-kind="radiant">Radiant</button></div><div id="valueTierFilters" class="picker-filters" role="group" aria-label="Filter by tier"><button data-value-tier="all" class="active">All tiers</button><button data-value-tier="S">S</button><button data-value-tier="A">A</button><button data-value-tier="B">B</button><button data-value-tier="C">C</button><button data-value-tier="inventory">Mine / craftable</button></div></div>
  <div id="valueTierBoard" class="value-tier-board" aria-live="polite"></div>
  <p class="muted" style="font-size:11px;margin-top:9px">Radiant tiers are from an older Set 18 reference and may differ from Patch 18.6. This is a manually curated patch snapshot, not a live win-rate model. Tiers reflect broad effectiveness; don't force an S-tier item onto the wrong champion. Artifact icons are sourced from the Set 18 image library.</p>
@@ -703,7 +703,7 @@ function tierIcon(name,kind,o){
  const owned=counted(inventory)[name]||0;
  const craft=!artifact&&!radiant&&!owned&&canCraft(name,o.components);
  const icon=radiant?radiantImgTag(name):artifact?artifactImgTag(name):
-  '<span class="radiant-art">'+esc(name.slice(0,2).toUpperCase())+'<img src="'+itemImg(info[5])+'" alt="" loading="lazy" onerror="this.remove()"></span>';
+  '<img src="'+itemImg(info[5])+'" alt="" loading="lazy" onerror="this.remove()">';
  const detail=artifact?info.desc:radiant?info.desc:info[4];
  return '<button class="value-icon'+(owned?' owned':craft?' can-craft':'')+'" type="button" data-tier-kind="'+kind+'" data-tier-name="'+esc(name)+
   '" title="'+esc(name+' — '+detail+(owned?' · Have ×'+owned:craft?' · Can craft':''))+'">'+
@@ -1200,7 +1200,7 @@ function holderCard(m){
  +(firstComp?'<button type="button" class="holder-open" data-holder-comp="'+esc(firstId)+'">See '+esc(firstComp.name)+' ↗</button>':'')+'</article>';
 }
 function renderHolders(){
- const o=openingState(),inputCount=o.items.length+o.components.length+o.units.length;
+ const o=openingState(),inputCount=o.items.length+o.components.length+o.units.length+o.radiants.length;
  if(!inputCount){
   $('#holderStatus').textContent='Add items above';
   $('#holderEarly').innerHTML='<div class="holder-empty">Select your starting items to find a cheap holder.</div>';
