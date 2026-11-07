@@ -68,9 +68,19 @@ Source: [PivotTFT items, 18.6](https://www.pivottft.com/items/).
 
 Source for Artifact effects and holders: [Mobalytics Set 18 Artifacts](https://mobalytics.gg/tft/items/artifacts) and [Artifact Guide](https://mobalytics.gg/tft/guides/set-18-artifact-guide).
 
-### Artifact images
+### Artifact images (fixed in v1.8.1)
 
-Artifact icons now use the **actual Set 18 image filenames** from Mobalytics' item image library rather than generating guessed HexComps filenames. All 30 images have explicit slug mappings, including special cases like `flickerblade`, `wits-end1` and `luden's-tempest1`. The browser retains visible initials if an external host is unavailable.
+The previous v1.8 icon links were incorrect: a speculative Mobalytics URL returned no images on the live site. Replaced it with **30 explicit paths verified from CommunityDragon's Riot image directory**:
+
+- Primary: `raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/assets/maps/tft/icons/items/hexcore/`.
+- For Hullcrusher and Lich Bane: verified icons in CommunityDragon's `game/assets/maps/particles/tft/item_icons/ornn_items/`.
+- **28 separately verified TFTPlus icon URLs** serve as automatic backup if an image cannot be loaded.
+- Known non-obvious Riot filenames are explicitly mapped: Flickerblades = `tft_item_artifact_navoriflickerplade.png`, Statikk Shiv = `tft_item_artifact_stattikshiv.png`, and Manazane = `tft4_item_ornnmuramana.png`.
+- The shared `artifactImgTag()` function is used in the Artifact picker, tier board, champion recommendations, holder suggestions, and synergy cards. All views use the same corrected paths.
+- If both hosts are unavailable, visible text initials remain rather than a broken-image icon.
+
+The URLs and filenames are verified from the provider's directory and a sample of directly opened images. A full browser/network test of all 30 images on the deployed GitHub Pages site is still recommended.
+
 
 ## Artifact support (v1.7)
 
