@@ -1186,6 +1186,7 @@ function holderStep(n){
  return '<span class="holder-step"><img src="'+championImg(n)+'" alt="" loading="lazy" onerror="this.remove()">'+esc(n)+'</span>';
 }
 function holderCard(m){
+ const o=openingState();
  const p=m.path,name=p[0],cost=holderCost(name);
  const rim={1:'#9ba8bd',2:'#70cf9d',3:'#6ca7ee',4:'#ad81eb',5:'#f4c66f'}[cost]||'#7891ad';
  const source=(name,idx)=>{const i=getItem(name),radiant=o.radiants.includes(radiantName(name));return '<span class="holder-item">'+(radiant?radiantImgTag(radiantName(name)):'<img src="'+(i?itemImg(i[5]):'')+'" alt="" loading="lazy" onerror="this.remove()">')+esc((radiant?'Radiant ':'')+name)+(idx?' (craft)':'')+'</span>';};
