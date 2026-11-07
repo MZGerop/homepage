@@ -5,11 +5,13 @@
 (function(){
   'use strict';
   const tabs=[
-    {id:'start',label:'Opening',sub:'Starter & rounds',title:'Play your opening',desc:'Pick your starter and follow the first rounds. Tap only what actually appears in your shop.',
-      actions:[['Log a find','finds',1],['See next moves','next']]},
-    {id:'next',label:'Next Move',sub:'Live priorities',title:'What should I look for next?',desc:'Recommendations recalculate from your champions, augments, items and current stage.',
+    {id:'hints',label:'Quick Hints',sub:'No board tracking',title:'What is worth looking out for?',desc:'Quick hero, item and starting-board tips. No need to enter your entire match.',
+      actions:[['Browse builds','builds'],['Track a match (optional)','start']]},
+    {id:'start',label:'Live Opening',sub:'Optional tracker',title:'Track your opening (optional)',desc:'If you want detailed, personalized suggestions, enter a few champions and your stage. Otherwise just use Quick Hints.',
+      actions:[['Log a find','finds',1],['Quick Hints','hints']]},
+    {id:'next',label:'Live Plan',sub:'Requires finds',title:'What should I look for next?',desc:'Recommendations recalculate from your champions, augments, items and current stage.',
       actions:[['Log a find','finds',1],['Compare augments','augments']]},
-    {id:'finds',label:'My Finds',sub:'Log your board',title:'Record what you actually found',desc:'Select champions, components, items, artifacts, radiants or your real augment offers. Your choices stay saved.',
+    {id:'finds',label:'Log Finds',sub:'Optional input',title:'Record what you actually found',desc:'Select champions, components, items, artifacts, radiants or your real augment offers. Your choices stay saved.',
       actions:[['See updated plan','next',1],['Compare chosen offers','augments']]},
     {id:'augments',label:'Augments',sub:'Rank real offers',title:'Choose between the augments offered',desc:'Review your current three choices, their contextual fit, and the curated tier list.',
       actions:[['Enter my 3 offers','offers',1],['Back to opening','start']]},
@@ -30,9 +32,9 @@
   const region=document.getElementById('tabWorkspace');
   if(!bar||!region)return;
 
-  let active='start';
+  let active='hints';
   const legacyHashes={
-    overview:'start',guidedOpening:'start',opening:'finds',pickerDetails:'finds',
+    quickHints:'hints',hintLookupPanel:'hints',overview:'start',guidedOpening:'start',opening:'finds',pickerDetails:'finds',
     deepDive:'augments',augmentTierBoard:'augments',
     nextPrimary:'next',nextFinds:'next',advancedRounds:'next',
     items:'items',valueTierBoard:'items',holderEarly:'items',
@@ -103,7 +105,7 @@
     if(!clear){window.alert('Game reset is unavailable. Refresh the page and try again.');return;}
     if(!window.confirm('Start a new game? This clears your current champions, items, augments, emblems and round, but keeps your notes and match history.'))return;
     clear.click();
-    activate('start');
+    activate('hints');
   });
   window.switchTFTTab=activate;
   window.openTFTTab=activate;
@@ -136,7 +138,7 @@
       (hash.startsWith('tab-')&&ids.has(hash.slice(4))?hash.slice(4):null);
     if(tab)activate(tab,{keepHash:true,scroll:false});
   },true);
-  let initial=tabForHash()||'start';
+  let initial=tabForHash()||'hints';
   activate(initial,{scroll:false,keepHash:true,revealTab:false});
   const targetId=location.hash.slice(1);
   if(legacyHashes[targetId])requestAnimationFrame(function(){
