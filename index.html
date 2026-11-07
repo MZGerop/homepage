@@ -609,6 +609,54 @@ function bindValueTiers(){
  $('#valueTierBoard').addEventListener('click',e=>{const b=e.target.closest('[data-tier-name]');if(b){chooseIcon(b.dataset.tierKind,b.dataset.tierName);}});
 }
 
+
+const POWER_COMBOS=[{"id":"kayle-flicker","title":"Infinite scaling autos","champion":"Kayle","items":["Guinsoo's Rageblade"],"artifacts":["Flickerblades"],"why":"Both effects reward repeated attacks. Kayle 3★ can keep them for the whole reroll game.","plan":"Reroll Kayle at Level 6 if you already have copies; otherwise hand attack items to Aphelios or Draven.","comp":"kayle","tag":"Attack speed"},{"id":"yi-wits","title":"Yi's on-hit engine","champion":"Master Yi","items":["Edge of Night"],"artifacts":["Wit's End"],"why":"Wit's End brings on-hit magic damage and healing; Edge of Night helps a melee carry survive focus.","plan":"Look for Yi and Vi pairs at Level 7. Stop chasing 3★ if too contested.","comp":"yi","tag":"Melee carry"},{"id":"veigar-dawn","title":"Rapid-fire Veigar","champion":"Veigar","items":["Jeweled Gauntlet"],"artifacts":["Dawncore"],"why":"Dawncore cuts Veigar's Mana requirement over repeated casts, while spell crit improves each hit.","plan":"Keep an upgraded Veigar if a reroll is viable; later move items to a stronger AP carry.","comp":"veigar","tag":"Caster"},{"id":"cassio-blight","title":"Magic-resist shred loop","champion":"Cassiopeia","items":["Morellonomicon"],"artifacts":["Blighting Jewel"],"why":"Repeated magic damage and damage-over-time can help wear down high-MR enemies. Make sure Cassiopeia keeps casting.","plan":"Use Cassiopeia as a Level 7 AP holder and protect her with an upgraded frontline.","comp":"rammus","tag":"Damage over time"},{"id":"rammus-shield","title":"Armor into shields","champion":"Rammus","items":["Gargoyle Stoneplate"],"artifacts":["Lightshield Crest"],"why":"Gargoyle increases Rammus's resists when attacked; Lightshield Crest turns those resists into ally shields.","plan":"Consider Rammus/Azir reroll at Level 7 if you have pairs and enough defensive items.","comp":"rammus","tag":"Tank utility"},{"id":"aegis-duo","title":"Twin Aegis interaction","champion":"Rammus","items":[],"artifacts":["Aegis of Dawn","Aegis of Dusk"],"why":"The two Artifacts explicitly amplify each other: their effects trigger every 1.25 seconds rather than every 2.5 seconds.","plan":"Very rare two-Artifact setup. Put both on a durable frontliner that survives long fights.","comp":"rammus","tag":"Special pair"},{"id":"hatchet-vi","title":"Health-fueled melee","champion":"Vi","items":["Bloodthirster"],"artifacts":["Hellfire Hatchet"],"why":"The Hatchet converts max Health into attack damage and gains speed when injured; Bloodthirster provides a lifesaving shield.","plan":"Use Vi during Stage 3–4; hand melee gear to Nidalee or a 3★ fighter later.","comp":"yi","tag":"Bruiser"},{"id":"luden-burst","title":"Splash caster","champion":"Veigar","items":["Rabadon's Deathcap"],"artifacts":["Luden's Tempest"],"why":"High spell damage can create large overkill hits that spill into nearby enemies.","plan":"Works on a strong upgraded Veigar, then can transfer to Ahri or Alune.","comp":"veigar","tag":"Burst magic"},{"id":"akali-lich","title":"Cast → empowered attack","champion":"Akali","items":["Hand of Justice"],"artifacts":["Lich Bane"],"why":"Lich Bane empowers an attack after a spell. The combination favors repeated casting and staying alive long enough to attack.","plan":"Only reroll Akali with early copies; the Artifact alone isn't a reason to force her.","comp":"ahri","tag":"Spell/attack"},{"id":"double-stun","title":"Stun into lightning","champion":"Vi","items":[],"artifacts":["Silvermere Dawn","Horizon Focus"],"why":"Silvermere Dawn stuns on attacks and Horizon Focus rewards stunning a target. Beware Silvermere Dawn's fixed slow attack speed.","plan":"Very rare two-Artifact trick, not a generic best-in-slot. Play it only if both are offered.","comp":"yi","tag":"Special pair"},{"id":"xayah-speed","title":"Economy attack engine","champion":"Xayah","items":["Guinsoo's Rageblade"],"artifacts":["Gambler's Blade"],"why":"Repeated attacks can generate extra gold; Guinsoo helps her attack more often.","plan":"Great when you already have Xayah 2★ early; transfer items later if she falls behind.","comp":"draven","tag":"Economy"},{"id":"nidalee-bleed","title":"Melee dive survival","champion":"Nidalee","items":["Bloodthirster","Edge of Night"],"artifacts":["Infinity Force"],"why":"Infinity Force supplies broad combat stats; Bloodthirster and Edge of Night help a diving carry survive enemy focus.","plan":"A possible late-game Nidalee package. Prioritize her upgrade and frontline, not just the three items.","comp":"primal-nidalee","tag":"Melee carry"},{"id":"teemo-cast","title":"Reliable early AP","champion":"Teemo","items":["Spear of Shojin","Jeweled Gauntlet"],"artifacts":[],"why":"Mana generation plus spell critical damage lets upgraded Teemo cast often and deal meaningful damage.","plan":"Stay at Level 6 for 3★ Teemo only with many copies; otherwise transfer gear to Morgana or Alune.","comp":"teemo","tag":"Standard items"},{"id":"ornn-tank","title":"Survive the frontline","champion":"Ornn","items":["Gargoyle Stoneplate","Warmog's Armor"],"artifacts":[],"why":"Gargoyle scales with enemies targeting Ornn, while Warmog supplies the Health needed to use those resists.","plan":"A safe early tank slam; move the items to a better upgraded tank later.","comp":"draven","tag":"Standard items"}];
+let comboFilter='all';
+function comboScore(combo,o){
+ let score=0,matched=0;
+ const owns=o.units.find(u=>u.name===combo.champion);
+ if(owns){matched++;score+=owns.stars===3?11:owns.stars===2?9:6;}
+ const itemCounts=counted(o.items),artifactCounts=counted(o.artifacts);
+ for(const n of combo.items){
+  if(itemCounts[n]){matched++;score+=5;}
+  else if(canCraft(n,o.components)){matched++;score+=2;}
+ }
+ for(const n of combo.artifacts)if(artifactCounts[n]){matched++;score+=10;}
+ const cost=holderCost(combo.champion),odds=shopChance(o,cost);
+ if(odds===0&&!owns)score-=6;else score+=Math.min(4,odds/10);
+ return {combo,score,matched,owns,odds,cost};
+}
+function comboIcon(kind,name,has){
+ const isChampion=kind==='champion',isArtifact=kind==='artifact';
+ const item=getItem(name),url=isChampion?championImg(name):isArtifact?artifactImage(name):item?itemImg(item[5]):'';
+ const img=isArtifact?artifactImgTag(name):'<img src="'+url+'" alt="" loading="lazy" onerror="this.remove()">';
+ return '<span class="combo-icon'+(has?' have':'')+'" title="'+esc(name)+'"><span class="fallback">'+esc(name.slice(0,2))+img+'</span><span>'+esc(name)+'</span></span>';
+}
+function renderPowerCombos(){
+ const o=openingState(),inventoryItems=counted(o.items),inventoryArtifacts=counted(o.artifacts);
+ const sorted=POWER_COMBOS.map(c=>comboScore(c,o)).filter(x=>comboFilter==='all'||x.matched>0).sort((a,b)=>b.score-a.score||b.matched-a.matched);
+ const visible=sorted.slice(0,8);
+ $('#comboCards').innerHTML=visible.map(x=>{
+  const c=x.combo,champOwn=!!x.owns;
+  const parts=[comboIcon('champion',c.champion,champOwn)]
+   .concat(c.items.map(n=>comboIcon('item',n,!!inventoryItems[n]||canCraft(n,o.components))))
+   .concat(c.artifacts.map(n=>comboIcon('artifact',n,!!inventoryArtifacts[n])));
+  const count=c.items.length+c.artifacts.length+1;
+  const match=x.matched?x.matched+' of '+count+' pieces matched':'No pieces yet';
+  const availability=x.odds===0&&!champOwn?'Not in your current shop':x.odds<=2?'Rare at Level '+o.level:'Possible at Level '+o.level;
+  return '<article class="combo-card'+(x.matched?' matched':'')+'"><div class="combo-card-head"><h4>'+esc(c.title)+'</h4><span class="combo-class">'+esc(c.tag)+'</span></div>'+
+   '<div class="combo-icons">'+parts.join('')+'</div>'+
+   '<div class="combo-match">'+esc(match)+' · '+esc(availability)+'</div>'+
+   '<p>'+esc(c.why)+'</p><p><b>Play it:</b> '+esc(c.plan)+'</p>'+
+   '<button type="button" class="combo-build-link" data-combo-build="'+esc(c.comp)+'">View related build ↗</button></article>';
+ }).join('')||'<div class="value-empty">No combos match your opening yet. Try selecting a champion, item or Artifact above.</div>';
+ document.querySelectorAll('#comboFilters button').forEach(b=>{let a=b.dataset.comboFilter===comboFilter;b.classList.toggle('active',a);b.setAttribute('aria-pressed',String(a));});
+ document.querySelectorAll('#comboCards [data-combo-build]').forEach(b=>b.onclick=()=>showComposition(b.dataset.comboBuild));
+}
+function bindCombos(){
+ $('#comboFilters').addEventListener('click',e=>{const b=e.target.closest('[data-combo-filter]');if(b){comboFilter=b.dataset.comboFilter;renderPowerCombos();}});
+}
+
 function openingState(){
  if(!state.opening||typeof state.opening!=='object')state.opening={};
  var o=state.opening;
@@ -735,7 +783,7 @@ function renderVisual(o){
  $('#pChosenUnits').innerHTML=o.units.map(u=>'<span class="chosen"><img src="'+championImg(u.name)+'" alt="" onerror="this.remove()">'+esc(u.name)+' <span class="goldstars">'+('★'.repeat(u.stars))+'</span><button type="button" data-clear-unit="'+esc(u.name)+'" aria-label="Remove '+esc(u.name)+' entirely">×</button></span>').join('');
  $('#pAugments').innerHTML=AUGMENT_HINTS.filter(x=>visualFilter.augment==='all'||x.group===visualFilter.augment).map(x=>renderTile('augment',x.id,x.id,'https://hexcomps.com/img/augments/'+AUGMENT_ART[x.id],o.augments.includes(x.id)?1:0,x)).join('');
  renderArtifacts(o);
- renderValueTiers();
+ renderValueTiers();renderPowerCombos();
  $('#pItemCount').textContent=o.items.length;$('#pComponentCount').textContent=o.components.length;$('#pUnitCount').textContent=o.units.length;$('#pAugmentCount').textContent=o.augments.length+' / 3';
  scrollIds.forEach((id,i)=>$(id).scrollTop=scrolls[i]);
  [['#pItemFilters','if','item'],['#pUnitFilters','uf','unit'],['#pAugmentFilters','af','augment']].forEach(([sel,k,filter])=>document.querySelectorAll(sel+' button').forEach(b=>{const on=b.dataset[k]===visualFilter[filter];b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on));}));
@@ -1040,7 +1088,7 @@ function example(type){
  state.opening=o;save();renderOpening();
 }
 function initOpening(){
- bindVisual();bindValueTiers();
+ bindVisual();bindValueTiers();bindCombos();
  $('#openingClear').onclick=function(){state.opening={items:[],components:[],units:[],augments:[],artifacts:[],stage:'3',round:2,level:6,levelManual:false};visualFilter={item:'all',unit:'early',augment:'all',artifact:'all'};visualSearch={item:'',unit:'',artifact:''};$('#pItemSearch').value='';$('#pUnitSearch').value='';$('#pArtifactSearch').value='';save();renderOpening();};
  $('#openSampleAD').onclick=function(){example('ad');};$('#openSampleAP').onclick=function(){example('ap');};$('#openSampleFae').onclick=function(){example('fae');};$('#openSampleRammus').onclick=function(){example('rammus');};renderOpening();
 }
