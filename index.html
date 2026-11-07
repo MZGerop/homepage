@@ -477,7 +477,7 @@
     <div class="guide-panel-header"><div><div class="guide-step">2 · YOUR ACTUAL STARTER</div><h3>Which champion did you start with?</h3>
     <p>Choose the unit you actually received or kept after the first augment. It is added as a 1★ champion; upgrades are separate.</p></div>
     <button type="button" class="guide-action" data-guide-all-champs="1">All champions ＋</button></div>
-    <div class="guide-starters" id="guideStarters"></div><div class="guide-signal-note" id="guideStarterStatus"></div>
+    <div class="guide-starters" id="guideStarters"></div><div class="guide-signal-note" id="guideStarterStatus"></div><div id="guidePowerSpike" class="early-legendary-note" aria-live="polite"></div>
   </div>
   <div class="guide-columns">
     <div class="guide-panel">
@@ -527,7 +527,7 @@
       <div><div class="eyebrow">THE RECOMMENDATION LOOP</div><h2>Look for these next</h2><p id="nextContextLine" class="muted">Suggestions update when you record a find.</p></div>
       <div class="next-controls"><button class="btn" type="button" id="explainIcons" aria-pressed="false" title="Explain icons by tapping instead of changing your selections">ⓘ Explain icons: OFF</button><button type="button" id="nextShowAll" class="btn">＋ Add a find</button><button type="button" id="nextReset" class="btn plain">↺ New game</button></div>
     </div>
-    <div id="nextPrimary" class="next-reco-grid" aria-live="polite"></div>
+    <div id="nextPowerSpike" class="early-legendary-note" aria-live="polite"></div><div id="nextPrimary" class="next-reco-grid" aria-live="polite"></div>
     <div class="next-divider-head"><h3>Then work toward</h3><span class="muted">A direction, not a forced composition</span></div>
     <div id="nextLater" class="next-later-grid" aria-live="polite"></div>
   </section>
@@ -1596,8 +1596,19 @@ function laterBuildCard(comp,reason){
  '<div class="text"><b>'+esc(comp.name)+'</b><small>'+esc(reason)+'</small></div>'+
  '<button type="button" data-next-open-build="'+esc(comp.id)+'">Explore ↗</button></div>';
 }
+function renderEarlyLegendary(o){
+ const early=Number(o.stage)<=3?o.units.filter(u=>holderCost(u.name)===5):[];
+ const names=early.map(u=>u.name);
+ let message='';
+ if(names.includes('Kennen'))
+  message='Kennen is a 5-cost Inferno / Executioner fighter. Consider fielding him now, using your strongest existing frontline. Varus or Shen can help activate Inferno; Yunara or Azir offer Executioner later if they fit naturally. Do not force Solar just because of an older comp card.';
+ else if(names.length)
+  message='You found '+names.join(', ')+' unusually early. Test this powerful unit on your strongest board instead of forcing a weak reroll opener.';
+ const html=message?'<strong>Early legendary found · reassess your plan</strong><p>'+esc(message)+'</p>':'';
+ for(const id of ['#nextPowerSpike','#guidePowerSpike']){const el=$(id);if(el)el.innerHTML=html;}
+}
 function renderNext(o){
- renderNextFinds(o);
+ renderEarlyLegendary(o);renderNextFinds(o);
  const count=countFinds(o),hasInfo=count>0;
  const ranked=COMP_LIST.map(relevance).filter(r=>!r.readiness.blocked).sort((a,b)=>b.score-a.score);
  const routes=hasInfo?ranked.slice(0,3):[];
