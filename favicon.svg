@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title>TFT Field Guide</title>
+  <rect x="1" y="1" width="62" height="62" rx="14" fill="#080e1c"/>
+  <path d="M32 6 55 19v26L32 58 9 45V19Z" fill="#172a40" stroke="#f5cb6c" stroke-width="3.5" stroke-linejoin="round"/>
+  <path d="M32 12 49 22v20L32 52 15 42V22Z" fill="#174849"/>
+  <path d="M32 17 37.5 26.5 47 32 37.5 37.5 32 47 26.5 37.5 17 32 26.5 26.5Z" fill="#f5cb6c"/>
+  <path d="M32 23 35 29 41 32 35 35 32 41 29 35 23 32 29 29Z" fill="#fff5cf"/>
+</svg>
