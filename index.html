@@ -477,11 +477,58 @@ var AUGMENT_HINTS=[
  {id:'Coven Acolyte',label:'Coven Acolyte · Coven',group:'Trait',desc:'Coven-specific opener. No dedicated Coven final board in this guide yet.',boost:{}},
  {id:'Dark Ritual',label:'Dark Ritual · Coven',group:'Trait',desc:'Coven-specific scaling. No dedicated Coven final board in this guide yet.',boost:{}}
 ];
+
+const SHOP_ODDS={3:[75,25,0,0,0],4:[55,30,15,0,0],5:[45,33,20,2,0],6:[30,40,25,5,0],7:[16,30,43,10,1],8:[15,20,32,30,3],9:[10,17,25,33,15],10:[5,10,20,40,25]};
+function levelForRound(stage,round){
+ const s=Number(stage),r=Number(round);
+ if(s<=2)return r<=3?4:5;
+ if(s===3)return r<=3?6:7;
+ if(s===4)return r<=2?7:8;
+ if(s===5)return r<=2?8:9;
+ return 9;
+}
+function shopChance(o,cost){return (SHOP_ODDS[Number(o.level)]||SHOP_ODDS[6])[cost-1]||0;}
+function roundAdvice(o){
+ const lv=o.level;
+ if(lv<=5)return 'Early: prioritize upgraded 1–2-cost holders and preserve economy. Plan expensive carries for later.';
+ if(lv===6)return '2-costs are the most common (40%). Only reroll if you have good pairs; otherwise build a stable board.';
+ if(lv===7)return '3-costs peak here (43%). Consider Rammus/Azir or Yi reroll when uncontested; 4-costs remain uncommon.';
+ if(lv===8)return '4-costs become realistic (30% per slot). Stabilize your main carry and tank before pushing to 9.';
+ if(lv===9)return '5-costs become relevant (15% per slot). Add expensive finishers only if you can afford them.';
+ return 'A late-game shop full of 4/5-costs. Upgrade strong units without breaking your synergies.';
+}
+function renderRoundGuide(o){
+ for(const [q,key] of [['#pStages','stage'],['#pRounds','round'],['#pLevels','level']]){
+  document.querySelectorAll(q+' button').forEach(b=>{let active=String(b.dataset[key])===String(o[key]);b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});
+ }
+ const odds=SHOP_ODDS[o.level]||SHOP_ODDS[6],best=Math.max(...odds);
+ $('#roundGuidance').innerHTML='<strong>Round '+esc(o.stage)+'-'+esc(o.round)+' · Level '+esc(o.level)+'</strong>'+
+ '<div class="shop-odds">'+odds.map((n,i)=>'<span class="odds'+(n===best?' best':'')+'" title="Shop chance per slot for any '+(i+1)+'-cost champion">'+(i+1)+'g: <b>'+n+'%</b></span>').join('')+'</div>'+
+ '<div>'+esc(roundAdvice(o))+'</div><div class="shop-note">Odds are for the cost tier per shop slot, not for one exact champion. <a href="https://www.tftclimb.com/cheatsheet/tft-shop-odds" target="_blank" rel="noopener">Shop odds reference ↗</a></div>';
+}
+function changeRound(key,v){
+ const o=openingState();
+ if(key==='stage'){o.stage=String(v);o.level=levelForRound(o.stage,o.round);o.levelManual=false;}
+ if(key==='round'){o.round=Number(v);if(!o.levelManual)o.level=levelForRound(o.stage,o.round);}
+ if(key==='level'){o.level=Number(v);o.levelManual=true;}
+ save();renderOpening();
+}
+function bindRound(){
+ for(const [q,key] of [['#pStages','stage'],['#pRounds','round'],['#pLevels','level']]){
+  $(q).addEventListener('click',e=>{const b=e.target.closest('[data-'+key+']');if(b)changeRound(key,b.dataset[key]);});
+ }
+}
+
 function openingState(){
  if(!state.opening||typeof state.opening!=='object')state.opening={};
  var o=state.opening;
  ['items','components','units','augments','artifacts'].forEach(function(k){if(!Array.isArray(o[k]))o[k]=[];});
- if(!['2','3','4','5'].includes(String(o.stage)))o.stage='3';
+ if(!['2','3','4','5','6'].includes(String(o.stage)))o.stage='3';
+ if(!Number.isInteger(Number(o.round))||Number(o.round)<1||Number(o.round)>7)o.round=2;
+ o.round=Number(o.round);
+ if(!SHOP_ODDS[Number(o.level)])o.level=levelForRound(o.stage,o.round);
+ o.level=Number(o.level);
+ if(typeof o.levelManual!=='boolean')o.levelManual=false;
  return o;
 }
 function getItem(n){return ITEMS.find(function(i){return i[0]===n;});}
@@ -536,6 +583,7 @@ function relevance(comp){
    if(best){score+=best;artifactSynergies.push(n+' → '+bestName);}
   });
   if(artifactSynergies.length)reasons.push('Artifact holders: '+artifactSynergies.slice(0,2).join(', ')+'.');
+ score-=Math.max(0,comp.lvl-Number(o.level)-1)*2;
   if(augHits.length)reasons.push('Augment synergy: '+augHits.join(', ')+'.');
  if(itemHits.length)reasons.push('Great completed items: '+Array.from(new Set(itemHits)).slice(0,3).join(', ')+'.');
  if(unitHits.length)reasons.push('Your units already fit: '+unitHits.slice(0,3).join(', ')+'.');
@@ -599,7 +647,7 @@ function renderVisual(o){
  $('#pItemCount').textContent=o.items.length;$('#pComponentCount').textContent=o.components.length;$('#pUnitCount').textContent=o.units.length;$('#pAugmentCount').textContent=o.augments.length+' / 3';
  scrollIds.forEach((id,i)=>$(id).scrollTop=scrolls[i]);
  [['#pItemFilters','if','item'],['#pUnitFilters','uf','unit'],['#pAugmentFilters','af','augment']].forEach(([sel,k,filter])=>document.querySelectorAll(sel+' button').forEach(b=>{const on=b.dataset[k]===visualFilter[filter];b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on));}));
- document.querySelectorAll('#pStages button').forEach(b=>{const on=b.dataset.stage===o.stage;b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on));});
+ renderRoundGuide(o);
 }
 function chooseIcon(kind,id){
  const o=openingState();
@@ -660,7 +708,7 @@ function bindVisual(){
  $('#pUnitSearch').addEventListener('input',e=>{visualSearch.unit=e.target.value.trim().toLowerCase();if(visualSearch.unit)visualFilter.unit='all';renderOpening();});
  $('#pArtifactFilters').addEventListener('click',e=>{const b=e.target.closest('button');if(b){visualFilter.artifact=b.dataset.artf;renderOpening();}});
  $('#pArtifactSearch').addEventListener('input',e=>{visualSearch.artifact=e.target.value.trim().toLowerCase();renderOpening();});
- $('#pStages').addEventListener('click',e=>{const b=e.target.closest('[data-stage]');if(b){openingState().stage=b.dataset.stage;save();renderOpening();}});
+ bindRound();
 }
 
 /* Item → champion handoffs. Curated Set 18 suggestions, not live win-rate stats.
@@ -780,7 +828,7 @@ function findArtifactHolders(o){
   const matches=uniques.filter(a=>list.includes(a));
   const owned=o.units.find(u=>u.name===name);
   const cost=holderCost(name);
-  const score=matches.reduce((sum,a)=>sum+10-3*list.indexOf(a),0)+(matches.length>1?6:0)+(owned?(owned.stars===3?11:owned.stars===2?8:3):0);
+  const score=matches.reduce((sum,a)=>sum+10-3*list.indexOf(a),0)+(matches.length>1?6:0)+(owned?(owned.stars===3?11:owned.stars===2?8:3):0)+Math.min(4,shopChance(o,cost)/12);
   return {name,matches,owned,cost,score};
  }).filter(x=>x.matches.length).sort((a,b)=>b.score-a.score||Number(!!b.owned)-Number(!!a.owned)||a.cost-b.cost);
 }
@@ -820,7 +868,7 @@ function holderFit(path,o){
  const craft=path[3].filter(n=>!names.includes(n)&&canCraft(n,o.components));
  const owned=o.units.find(u=>u.name===path[0]);
  const bonus=owned?(owned.stars===3?13:owned.stars===2?9:4):0;
- const score=matched.length*6+(matched.length>1?5:0)+Math.min(2,craft.length)*1.8+bonus;
+ const score=matched.length*6+(matched.length>1?5:0)+Math.min(2,craft.length)*1.8+bonus+Math.min(4,shopChance(o,holderCost(path[0]))/12);
  return {path,matched,craft,owned,score};
 }
 function holderStep(n){
@@ -873,7 +921,7 @@ function renderOpening(){
   return;
  }
  var ranked=COMP_LIST.map(relevance).sort(function(a,b){return b.score-a.score;}).slice(0,5);
- $('#openIntro').textContent='Sorted by matches to your items, possible crafts, upgraded units, and Augments. Stage '+o.stage+'.';
+ $('#openIntro').textContent='Round '+o.stage+'-'+o.round+' · Level '+o.level+'. Endgame builds below are destinations; shop odds determine your near-term options.';
  $('#openCount').textContent=ranked.length+' suggested builds';
  $('#openResults').innerHTML=ranked.map(function(r,idx){
    var c=r.comp;
@@ -892,16 +940,16 @@ function renderOpening(){
  document.querySelectorAll('#openResults [data-open-comp]').forEach(function(b){b.onclick=function(){showComposition(b.dataset.openComp);};});
 }
 function example(type){
- var o={items:[],components:[],units:[],augments:[],artifacts:[],stage:'3'};
+ var o={items:[],components:[],units:[],augments:[],artifacts:[],stage:'3',round:2,level:6,levelManual:false};
  if(type==='ad'){o.items=["Guinsoo's Rageblade"];o.components=['Sword','Gloves'];o.units=[{name:'Kayle',stars:2},{name:'Alistar',stars:2}];}
  if(type==='ap'){o.items=['Spear of Shojin'];o.components=['Rod','Gloves'];o.units=[{name:'Teemo',stars:2},{name:'Alistar',stars:2}];}
  if(type==='fae'){o.items=['Jeweled Gauntlet'];o.components=['Bow','Rod'];o.units=[{name:'Xayah',stars:2},{name:'Rakan',stars:2}];o.augments=['Embiggen'];}
- if(type==='rammus'){o.items=['Gargoyle Stoneplate'];o.components=['Belt','Rod'];o.units=[{name:'Rammus',stars:2},{name:'Azir',stars:1}];o.stage='4';}
+ if(type==='rammus'){o.items=['Gargoyle Stoneplate'];o.components=['Belt','Rod'];o.units=[{name:'Rammus',stars:2},{name:'Azir',stars:1}];o.stage='4';o.round=1;o.level=7;}
  state.opening=o;save();renderOpening();
 }
 function initOpening(){
  bindVisual();
- $('#openingClear').onclick=function(){state.opening={items:[],components:[],units:[],augments:[],artifacts:[],stage:'3'};visualFilter={item:'all',unit:'early',augment:'all',artifact:'all'};visualSearch={item:'',unit:'',artifact:''};$('#pItemSearch').value='';$('#pUnitSearch').value='';$('#pArtifactSearch').value='';save();renderOpening();};
+ $('#openingClear').onclick=function(){state.opening={items:[],components:[],units:[],augments:[],artifacts:[],stage:'3',round:2,level:6,levelManual:false};visualFilter={item:'all',unit:'early',augment:'all',artifact:'all'};visualSearch={item:'',unit:'',artifact:''};$('#pItemSearch').value='';$('#pUnitSearch').value='';$('#pArtifactSearch').value='';save();renderOpening();};
  $('#openSampleAD').onclick=function(){example('ad');};$('#openSampleAP').onclick=function(){example('ap');};$('#openSampleFae').onclick=function(){example('fae');};$('#openSampleRammus').onclick=function(){example('rammus');};renderOpening();
 }
 window.renderOpening=renderOpening;
