@@ -171,11 +171,26 @@
 .hero-artifact-choice .letter,.artifact-holder-card .artifact-tag .abbr{position:relative;overflow:hidden;flex:0 0 30px;font-size:10px}
 .hero-artifact-choice .letter img,.artifact-holder-card .artifact-tag .abbr img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .artifact-gallery .pick-art img{max-width:100%;max-height:100%}
+
+.round-panel{border:1px solid #4a657f;border-radius:14px;background:linear-gradient(120deg,#18374c,#122236);padding:15px 17px;margin-bottom:15px}
+.round-panel-title h3{font-size:19px;margin:1px 0 4px}.round-panel-title p{font-size:12px;margin:0}
+.round-controls{display:grid;grid-template-columns:minmax(140px,.8fr) minmax(150px,1fr) minmax(200px,1.8fr);gap:12px;margin-top:12px}
+.round-controls>div>strong{font-size:11px;color:#d6e6f6;letter-spacing:.05em}
+.round-controls .picker-filters{margin:7px 0 3px}
+.round-controls .picker-filters button{min-width:33px;font-size:12px}
+.round-guidance{background:#0f283c;border-radius:9px;padding:10px 11px;font-size:12px;line-height:1.5;margin-top:11px;color:#c3d8ee}
+.round-guidance strong{color:#9fe8ce}.shop-odds{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.shop-odds .odds{display:inline-flex;align-items:center;gap:5px;background:#233c53;border:1px solid #45657d;border-radius:7px;padding:4px 7px;font-size:11px}
+.shop-odds .odds.best{border-color:#72c6b6;background:#1d534e}
+.shop-note{font-size:11px;color:#a6bfd5}
+.shop-reality{display:inline-block;border-radius:5px;font-size:10px;font-weight:750;color:#bfe2ff;background:#284562;padding:2px 5px;margin-left:5px}
+@media(max-width:950px){.round-controls{grid-template-columns:1fr 1fr}.round-controls>div:last-child{grid-column:1/-1}}
+@media(max-width:600px){.round-panel{padding:12px}.round-controls{grid-template-columns:1fr}.round-controls>div:last-child{grid-column:auto}}
 </style>
 </head>
 <body>
 <div class="shell">
-<aside class="sidebar" aria-label="Sections"><div class="brand"><div class="rune">✦ <b>TFT FIELD GUIDE</b></div><small>SET 18 · V1.7</small></div>
+<aside class="sidebar" aria-label="Sections"><div class="brand"><div class="rune">✦ <b>TFT FIELD GUIDE</b></div><small>SET 18 · V1.8</small></div>
 <a class="nav" href="#overview"><span class="n">◈</span> Overview</a><a class="nav" href="#opening"><span class="n">✧</span> Opening Planner</a><a class="nav" href="#comps"><span class="n">♛</span> Endgame comps</a><a class="nav" href="#champions"><span class="n">✧</span> Champions</a><a class="nav" href="#items"><span class="n">⚒</span> Items & recipes</a><a class="nav" href="#economy"><span class="n">◉</span> Leveling & economy</a><a class="nav" href="#training"><span class="n">◎</span> Win checklist</a><a class="nav" href="#notes"><span class="n">✎</span> My notes</a>
 <div class="foot">Local-first & editable<br>Patch reference: 18.6<br>Updated: 06 Nov 2026</div></aside>
 <main>
@@ -193,34 +208,46 @@
 
 <section class="section" id="opening">
 <div class="section-head"><div><div class="eyebrow">NEW · Decide from what you find</div><h2>Opening Planner</h2><p>Enter your current items, components, champions, and Augments. See which builds fit <em>your</em> start — and why.</p><p><b>Mouse:</b> left-click <b>+</b> · right-click <b>−</b> (no context menu). <b>Touch:</b> use the visible − and star buttons.</p></div><button class="btn" type="button" id="openingClear">Clear opening</button></div>
+
+<section class="round-panel" aria-label="Current round and shop level">
+  <div class="round-panel-title"><div class="eyebrow">Step 1 · Where are you in the match?</div><h3>Round & shop level</h3><p class="muted">Change the round and level to focus on champions you can realistically find now.</p></div>
+  <div class="round-controls">
+    <div><strong>Stage</strong><div class="picker-filters" id="pStages" role="group" aria-label="Stage"><button data-stage="2">2</button><button data-stage="3" class="active">3</button><button data-stage="4">4</button><button data-stage="5">5</button><button data-stage="6">6+</button></div></div>
+    <div><strong>Round</strong><div class="picker-filters" id="pRounds" role="group" aria-label="Round of stage"><button data-round="1">1</button><button data-round="2" class="active">2</button><button data-round="3">3</button><button data-round="4">4</button><button data-round="5">5</button><button data-round="6">6</button><button data-round="7">7</button></div></div>
+    <div><strong>Your level</strong><div class="picker-filters" id="pLevels" role="group" aria-label="Your player level"><button data-level="3">3</button><button data-level="4">4</button><button data-level="5">5</button><button data-level="6" class="active">6</button><button data-level="7">7</button><button data-level="8">8</button><button data-level="9">9</button><button data-level="10">10</button></div></div>
+  </div>
+  <div id="roundGuidance" class="round-guidance" aria-live="polite"></div>
+</section>
+
 <div class="opening-grid">
 <section class="card panel opening-panel">
  <div class="picker-head"><div><h3>1 · Completed items <span class="picker-total" id="pItemCount">0</span></h3><p>Left-click +1 · right-click −1. Numbers show copies.</p></div><input id="pItemSearch" class="picker-search" type="search" placeholder="Search items…" aria-label="Search items"></div>
  <div class="picker-filters" id="pItemFilters" role="group" aria-label="Item categories"><button data-if="all" class="active">All</button><button data-if="AD">AD</button><button data-if="AP">AP</button><button data-if="Tank">Tank</button><button data-if="Utility">Utility</button></div>
  <div class="picker-grid" id="pItems" role="group" aria-label="Tap an item to add it"></div>
 </section>
+<section class="card panel opening-panel artifact-picker-panel">
+  <div class="picker-head"><div><h3>2 · Artifacts <span class="picker-total" id="pArtifactCount">0</span></h3><p>Non-craftable items from the Armory or Anvil. Left-click +1 · right-click −1.</p></div><input id="pArtifactSearch" class="picker-search" type="search" placeholder="Search Artifacts…" aria-label="Search Artifacts"></div>
+  <div class="picker-filters" id="pArtifactFilters" role="group" aria-label="Artifact categories"><button class="active" data-artf="all">All</button><button data-artf="AD">AD</button><button data-artf="AP">AP</button><button data-artf="Tank">Tank</button><button data-artf="Utility">Utility</button></div>
+  <div class="picker-grid artifact-gallery" id="pArtifacts" role="group" aria-label="Click an Artifact to add, right-click to remove"></div>
+</section>
 <section class="card panel opening-panel">
- <div class="picker-head"><div><h3>2 · Components <span class="picker-total" id="pComponentCount">0</span></h3><p>Left-click +1 · right-click −1. Numbers show copies.</p></div></div>
+ <div class="picker-head"><div><h3>3 · Components <span class="picker-total" id="pComponentCount">0</span></h3><p>Left-click +1 · right-click −1. Numbers show copies.</p></div></div>
  <div class="picker-grid picker-components" id="pComponents" role="group" aria-label="Available components"></div>
 </section>
 <section class="card panel opening-panel">
- <div class="picker-head"><div><h3>3 · Champions <span class="picker-total" id="pUnitCount">0</span></h3><p>Left-click: ★ up · right-click: ★ down. Touch: star buttons.</p></div><input id="pUnitSearch" class="picker-search" type="search" placeholder="Search champions…" aria-label="Search champions"></div>
+ <div class="picker-head"><div><h3>4 · Champions <span class="picker-total" id="pUnitCount">0</span></h3><p>Left-click: ★ up · right-click: ★ down. Touch: star buttons.</p></div><input id="pUnitSearch" class="picker-search" type="search" placeholder="Search champions…" aria-label="Search champions"></div>
  <div class="picker-filters" id="pUnitFilters" role="group" aria-label="Champion costs"><button data-uf="early" class="active">Early 1–3g</button><button data-uf="all">All</button><button data-uf="1">1g</button><button data-uf="2">2g</button><button data-uf="3">3g</button><button data-uf="4">4g</button><button data-uf="5">5g</button></div>
  <div id="pChosenUnits" class="picker-chosen" aria-label="Selected champions"></div>
  <div class="picker-grid" id="pUnits" role="group" aria-label="Tap a champion to add, then choose star level"></div>
 </section>
 <section class="card panel opening-panel">
- <div class="picker-head"><div><h3>4 · Augments <span class="picker-total" id="pAugmentCount">0 / 3</span></h3><p>Left-click to select · right-click to remove. Up to 3.</p></div></div>
+ <div class="picker-head"><div><h3>5 · Augments <span class="picker-total" id="pAugmentCount">0 / 3</span></h3><p>Left-click to select · right-click to remove. Up to 3.</p></div></div>
  <div class="picker-filters" id="pAugmentFilters" role="group" aria-label="Augment categories"><button data-af="all" class="active">All</button><button data-af="Trait">Trait</button><button data-af="Economy">Economy</button><button data-af="Team">Team</button><button data-af="Item">Item</button></div>
  <div class="picker-grid picker-augments" id="pAugments" role="group" aria-label="Choose up to three Augments"></div>
- <div class="stage-controls"><strong>Stage</strong><div class="picker-filters" id="pStages" role="group" aria-label="Current stage"><button data-stage="2">2</button><button data-stage="3" class="active">3</button><button data-stage="4">4</button><button data-stage="5">5+</button></div></div>
+ 
  <small class="muted">13 curated Augments. Hover or focus to read the full effect.</small>
 </section>
-<section class="card panel opening-panel artifact-picker-panel">
-  <div class="picker-head"><div><h3>5 · Artifacts <span class="picker-total" id="pArtifactCount">0</span></h3><p>Non-craftable items from the Armory or Anvil. Left-click +1 · right-click −1.</p></div><input id="pArtifactSearch" class="picker-search" type="search" placeholder="Search Artifacts…" aria-label="Search Artifacts"></div>
-  <div class="picker-filters" id="pArtifactFilters" role="group" aria-label="Artifact categories"><button class="active" data-artf="all">All</button><button data-artf="AD">AD</button><button data-artf="AP">AP</button><button data-artf="Tank">Tank</button><button data-artf="Utility">Utility</button></div>
-  <div class="picker-grid artifact-gallery" id="pArtifacts" role="group" aria-label="Click an Artifact to add, right-click to remove"></div>
-</section>
+
 </div>
 <div class="opening-samples"><strong>Try an example:</strong><button class="chip" id="openSampleAD" type="button">AD + Guinsoo + Kayle</button><button class="chip" id="openSampleAP" type="button">AP + Teemo 2★</button><button class="chip" id="openSampleFae" type="button">Embiggen + Fae</button><button class="chip" id="openSampleRammus" type="button">Rammus reroll</button></div>
 <section class="artifact-choices" aria-label="Artifact holders">
@@ -421,15 +448,18 @@ init();
  * Each list gives three suggested artifacts, not universally optimal best-in-slot. */
 const ARTIFACTS={"Aegis of Dawn":{"category":"Tank","desc":"Steals Armor and heals"},"Aegis of Dusk":{"category":"Tank","desc":"Steals Magic Resist and deals damage"},"Blighting Jewel":{"category":"AP","desc":"Magic damage shreds MR and restores Mana"},"Dawncore":{"category":"AP","desc":"Lower max Mana with repeated casts"},"Eternal Pact":{"category":"AP","desc":"Shields and restores Mana from partner"},"Fishbones":{"category":"AD","desc":"Long attack range and random targeting"},"Flickerblades":{"category":"AD","desc":"Attacks stack AS, AD and AP"},"Forbidden Idol":{"category":"Tank","desc":"Converts shields to maximum Health"},"Gambler's Blade":{"category":"AD","desc":"Attack Speed and gold generation"},"Gold Collector":{"category":"AD","desc":"Low-HP execute and gold generation"},"Hellfire Hatchet":{"category":"AD","desc":"Health-based attack damage"},"Horizon Focus":{"category":"Utility","desc":"Extra damage after stuns"},"Hullcrusher":{"category":"Tank","desc":"Bonus stats without adjacent allies"},"Infinity Force":{"category":"AD","desc":"All-round stat package"},"Lich Bane":{"category":"AP","desc":"Bonus magic attack after casts"},"Lightshield Crest":{"category":"Tank","desc":"Periodic ally shields"},"Luden's Tempest":{"category":"AP","desc":"Splash damage from overkill"},"Manazane":{"category":"AP","desc":"Large Mana burst after first cast"},"Mittens":{"category":"AD","desc":"Debuff immunity and movement"},"Mogul's Mail":{"category":"Tank","desc":"Scaling defenses and gold"},"Rapid Firecannon":{"category":"AD","desc":"Extra range on takedowns"},"Seeker's Armguard":{"category":"AP","desc":"Stack armor, MR and AP on kills"},"Silvermere Dawn":{"category":"AD","desc":"Slow strong attacks with a stun"},"Statikk Shiv":{"category":"Utility","desc":"Third attack deals chain magic damage"},"Talisman of Ascension":{"category":"Tank","desc":"Power spike in long fights"},"The Indomitable":{"category":"Tank","desc":"Pull and durability for frontline"},"Titanic Hydra":{"category":"AD","desc":"Splash based on max Health and AD"},"Void Gauntlet":{"category":"Tank","desc":"Health stored, bursts on death"},"Wit's End":{"category":"AD","desc":"On-hit magic damage"},"Zhonya's Paradox":{"category":"AP","desc":"Emergency stasis and magic power"}};
 const HERO_ARTIFACTS={"Akali":["Lich Bane","Seeker's Armguard","Rapid Firecannon"],"Camille":["Infinity Force","Hellfire Hatchet","Seeker's Armguard"],"Cinderling":["Gold Collector","Dawncore","Luden's Tempest"],"Karma":["Blighting Jewel","Dawncore","Luden's Tempest"],"Kobuko":["Mogul's Mail","Aegis of Dawn","Lightshield Crest"],"Leona":["Void Gauntlet","The Indomitable","Lightshield Crest"],"Ornn":["Lightshield Crest","Forbidden Idol","Void Gauntlet"],"Pebbles":["Eternal Pact","Manazane","Blighting Jewel"],"Rakan":["Forbidden Idol","Lightshield Crest","Mogul's Mail"],"Rek'Sai":["Mogul's Mail","Void Gauntlet","Lightshield Crest"],"Varus":["Manazane","Gold Collector","Luden's Tempest"],"Veigar":["Dawncore","Luden's Tempest","Eternal Pact"],"Xayah":["Fishbones","Flickerblades","Titanic Hydra"],"Yorick":["Mogul's Mail","Aegis of Dawn","Lightshield Crest"],"Alistar":["Mogul's Mail","The Indomitable","Lightshield Crest"],"Caitlyn":["Flickerblades","Gold Collector","Fishbones"],"Elise":["Mogul's Mail","Aegis of Dusk","Lightshield Crest"],"Gromp":["Manazane","Eternal Pact","Luden's Tempest"],"Kayle":["Flickerblades","Wit's End","Seeker's Armguard"],"LeBlanc":["Manazane","Eternal Pact","Dawncore"],"Murkwolf":["Infinity Force","Mittens","Hellfire Hatchet"],"Scuttlecrab":["Aegis of Dawn","Lightshield Crest","The Indomitable"],"Sejuani":["Void Gauntlet","Lightshield Crest","Aegis of Dusk"],"Shen":["Forbidden Idol","Lightshield Crest","Aegis of Dawn"],"Teemo":["Manazane","Blighting Jewel","Lich Bane"],"Warwick":["Dawncore","Mittens","Hellfire Hatchet"],"Yunara":["Dawncore","Gold Collector","Fishbones"],"Azir":["Flickerblades","Wit's End","Blighting Jewel"],"Cassiopeia":["Blighting Jewel","Dawncore","Eternal Pact"],"Diana":["Seeker's Armguard","Zhonya's Paradox","Aegis of Dusk"],"Fiddlesticks":["Blighting Jewel","Seeker's Armguard","Zhonya's Paradox"],"Hecarim":["Aegis of Dawn","Lightshield Crest","Mogul's Mail"],"Kha'Zix":["Dawncore","Lich Bane","Zhonya's Paradox"],"Kog'Maw":["Blighting Jewel","Dawncore","Manazane"],"Krug":["Lightshield Crest","Void Gauntlet","Mogul's Mail"],"Mama Beak":["Flickerblades","Gold Collector","Gambler's Blade"],"Master Yi":["Wit's End","Hellfire Hatchet","Flickerblades"],"Rammus":["Lightshield Crest","Void Gauntlet","The Indomitable"],"Rengar":["Mittens","Fishbones","Flickerblades"],"Tristana":["Gold Collector","Flickerblades","Gambler's Blade"],"Vi":["Hellfire Hatchet","Titanic Hydra","The Indomitable"],"Ahri":["Eternal Pact","Luden's Tempest","Manazane"],"Amumu":["Lightshield Crest","Aegis of Dusk","Void Gauntlet"],"Aphelios":["Gold Collector","Flickerblades","Fishbones"],"Brambleback":["Hellfire Hatchet","Mittens","Infinity Force"],"Ezreal":["Gold Collector","Dawncore","Luden's Tempest"],"Lillia":["Aegis of Dawn","Lightshield Crest","Mogul's Mail"],"Malphite":["Forbidden Idol","Lightshield Crest","Mogul's Mail"],"Morgana":["Blighting Jewel","Seeker's Armguard","Zhonya's Paradox"],"Nidalee":["Infinity Force","Mittens","Hellfire Hatchet"],"Sentinel":["Horizon Focus","Lightshield Crest","The Indomitable"],"Sett":["Lightshield Crest","Mogul's Mail","Void Gauntlet"],"Sivir":["Fishbones","Gold Collector","Dawncore"],"Soraka":["Dawncore","Manazane","Lich Bane"],"Zyra":["Blighting Jewel","Eternal Pact","Manazane"],"Alune":["Eternal Pact","Dawncore","Manazane"],"Ashe":["Gold Collector","Manazane","Dawncore"],"Draven":["Gold Collector","Flickerblades","Fishbones"],"Elder Dragon":["Silvermere Dawn","Gold Collector","Infinity Force"],"Gnar":["Mittens","Infinity Force","Titanic Hydra"],"Ivern":["Eternal Pact","Forbidden Idol","Manazane"],"Kennen":["Seeker's Armguard","Blighting Jewel","Zhonya's Paradox"],"Lux":["Manazane","Luden's Tempest","Eternal Pact"],"Maokai":["Mogul's Mail","Void Gauntlet","The Indomitable"],"Taric":["Lightshield Crest","Mogul's Mail","The Indomitable"]};
-const ARTIFACT_ICON_OVERRIDES={'Flickerblades':'DA_Artifact_NavoriFlickerblade'};
+
+/* Named image assets from Mobalytics' Set 18 Artifact cheat sheet.
+ * Reliable source path replaces the old guessed HexComps filenames.
+ * If a remote icon fails, its visible two-letter fallback remains. */
+const ARTIFACT_ICON_SLUGS={"Aegis of Dawn":"aegis-of-dawn","Aegis of Dusk":"aegis-of-dusk","Blighting Jewel":"blighting-jewel1","Dawncore":"dawncore","Eternal Pact":"eternal-pact","Fishbones":"fishbones1","Flickerblades":"flickerblade","Forbidden Idol":"forbidden-idol1","Gambler's Blade":"gamblers-blade2","Gold Collector":"gold-collector","Hellfire Hatchet":"hellfire-hatchet","Horizon Focus":"horizon-focus1","Hullcrusher":"hullcrusher","Infinity Force":"infinity-force","Lich Bane":"lich-bane1","Lightshield Crest":"lightshield-crest1","Luden's Tempest":"luden's-tempest1","Manazane":"manazane","Mittens":"mittens1","Mogul's Mail":"moguls-mail2","Rapid Firecannon":"rapid-firecannon1","Seeker's Armguard":"seeker's-armguard1","Silvermere Dawn":"silvermere-dawn1","Statikk Shiv":"statikk-shiv","Talisman of Ascension":"talisman-of-ascension1","The Indomitable":"indomitable-gauntlet","Titanic Hydra":"titanic-hydra","Void Gauntlet":"void-gauntlet","Wit's End":"wits-end1","Zhonya's Paradox":"zhonyas-paradox"};
 function artifactImage(name){
- return 'https://hexcomps.com/img/items/'+(ARTIFACT_ICON_OVERRIDES[name]||'DA_Artifact_'+name.replace(/[^a-zA-Z0-9]/g,''))+'.webp';
+ const slug=ARTIFACT_ICON_SLUGS[name];
+ return slug?'https://cdn.mobalytics.gg/assets/tft/images/game-items/set18/'+encodeURIComponent(slug)+'.png?v=74':'';
 }
 function artifactImgTag(name){
- const x=name.replace(/[^a-zA-Z0-9]/g,'');
- const p1='https://hexcomps.com/img/items/DA_'+x+'.webp';
- const p2='https://hexcomps.com/img/artifacts/DA_'+x+'.webp';
- return '<img src="'+artifactImage(name)+'" data-fallback-one="'+p1+'" data-fallback-two="'+p2+'" loading="lazy" alt="" onerror="if(!this.dataset.failedOne){this.dataset.failedOne=1;this.src=this.dataset.fallbackOne}else if(!this.dataset.failedTwo){this.dataset.failedTwo=1;this.src=this.dataset.fallbackTwo}else{this.remove()}">';
+ const url=artifactImage(name);
+ return url?'<img src="'+url+'" loading="lazy" alt="" decoding="async" onerror="this.remove()">':'';
 }
 
 var AUGMENT_HINTS=[
