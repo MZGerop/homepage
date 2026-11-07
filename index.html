@@ -427,13 +427,25 @@
 @media(max-width:620px){.finder-followup{flex-direction:column;align-items:stretch}.finder-followup button{width:100%}}
 </style>
 <link rel="stylesheet" href="guided-opening.css">
+<link rel="stylesheet" href="workspace-tabs.css">
 </head>
-<body>
+<body data-tft-tab="start">
 <div class="shell">
-<aside class="sidebar" aria-label="Sections"><div class="brand"><div class="rune">✦ <b>TFT FIELD GUIDE</b></div><small>SET 18 · V4.0</small></div>
+<aside class="sidebar" aria-label="Sections"><div class="brand"><div class="rune">✦ <b>TFT FIELD GUIDE</b></div><small>SET 18 · V5.0</small></div>
 <a class="nav" href="#overview"><span class="n">◎</span> Next move</a><a class="nav" href="#opening"><span class="n">＋</span> Log a find</a><a class="nav" href="#deepDive"><span class="n">◈</span> Deep dive</a><a class="nav" href="#referenceLibrary"><span class="n">▤</span> Full library</a>
 <div class="foot">Local-first & editable<br>Patch reference: 18.6<br>Updated: 07 Nov 2026</div></aside>
 <main>
+<div class="tft-tabs-wrap"><div class="tft-tabs-brand"><strong>✦ TFT FIELD GUIDE</strong><small>SET 18 · YOUR GAME COMPANION</small></div>
+<nav class="tft-tabs" id="tftTabs" role="tablist" aria-label="Field Guide sections"><button type="button" role="tab" id="tft-tab-start" data-tft-tab-button="start" aria-controls="tabWorkspace" aria-selected="true" tabindex="0" class="tft-tab"><span class="tft-tab-label">Opening</span><span class="tft-tab-sub">Starter & rounds</span></button>
+<button type="button" role="tab" id="tft-tab-next" data-tft-tab-button="next" aria-controls="tabWorkspace" aria-selected="false" tabindex="-1" class="tft-tab"><span class="tft-tab-label">Next Move</span><span class="tft-tab-sub">Live priorities</span></button>
+<button type="button" role="tab" id="tft-tab-finds" data-tft-tab-button="finds" aria-controls="tabWorkspace" aria-selected="false" tabindex="-1" class="tft-tab"><span class="tft-tab-label">My Finds</span><span class="tft-tab-sub">Log your board</span></button>
+<button type="button" role="tab" id="tft-tab-augments" data-tft-tab-button="augments" aria-controls="tabWorkspace" aria-selected="false" tabindex="-1" class="tft-tab"><span class="tft-tab-label">Augments</span><span class="tft-tab-sub">Rank real offers</span></button>
+<button type="button" role="tab" id="tft-tab-items" data-tft-tab-button="items" aria-controls="tabWorkspace" aria-selected="false" tabindex="-1" class="tft-tab"><span class="tft-tab-label">Items</span><span class="tft-tab-sub">Gear & holders</span></button>
+<button type="button" role="tab" id="tft-tab-emblems" data-tft-tab-button="emblems" aria-controls="tabWorkspace" aria-selected="false" tabindex="-1" class="tft-tab"><span class="tft-tab-label">Emblems</span><span class="tft-tab-sub">Optional pivots</span></button>
+<button type="button" role="tab" id="tft-tab-builds" data-tft-tab-button="builds" aria-controls="tabWorkspace" aria-selected="false" tabindex="-1" class="tft-tab"><span class="tft-tab-label">Comps</span><span class="tft-tab-sub">Champion library</span></button>
+<button type="button" role="tab" id="tft-tab-strategy" data-tft-tab-button="strategy" aria-controls="tabWorkspace" aria-selected="false" tabindex="-1" class="tft-tab"><span class="tft-tab-label">Strategy</span><span class="tft-tab-sub">Economy & notes</span></button></nav></div>
+<div class="tft-tab-header"><div><div class="eyebrow">SET 18 · GUIDED DECISIONS</div><h1 id="tftTabTitle">Play your opening</h1><p id="tftTabDescription">Pick your starter and follow the first rounds.</p></div><div id="tftTabActions" class="tft-tab-actions"></div></div>
+<div id="tabWorkspace" class="tft-tab-panel" role="tabpanel" tabindex="0" aria-labelledby="tft-tab-start">
 <section id="overview" class="decision-home">
   <div class="decision-hero">
     <div class="decision-hero-left">
@@ -649,6 +661,7 @@
 <section class="section notes-section" id="notes"><div class="section-head"><div><div class="eyebrow">06 · Make it yours</div><h2>My notes & match journal</h2><p>Saved automatically in this browser. Export a backup before switching devices or clearing browser data.</p></div><div class="hero-actions"><button class="btn" onclick="exportData()">Export my data</button><label class="btn" style="cursor:pointer">Import data <input type="file" accept="application/json" id="importFile" hidden></label></div></div>
 <div class="split"><div class="card panel"><h3>Personal strategy notes</h3><textarea class="notes" id="myNotes" placeholder="What worked? Favorite comps, difficult transitions, favorite item holders, patch observations…"></textarea><p class="muted" style="font-size:11px">Autosaved locally • No sign-in or backend needed</p></div><div class="card panel"><h3>Log a match</h3><div class="match"><select id="matchPlace"><option value="1">1st</option><option value="2">2nd</option><option value="3">3rd</option><option value="4">4th</option><option value="5">5th</option><option value="6">6th</option><option value="7">7th</option><option value="8">8th</option></select><select id="matchComp"></select><input class="searchbar" id="matchLearning" placeholder="One thing I learned…"><button class="btn primary" onclick="saveMatch()">Add</button></div><div id="matchHistory" style="margin-top:15px"></div></div></div></section>
 </details>
+</div><!-- /tabWorkspace -->
 <footer class="mutebar"><b>Patch note:</b> curated reference for Set 18, patch 18.6, as of 05 Nov 2026. Champion rankings and compositions can change. Official notes: <a target="_blank" rel="noopener" href="https://teamfighttactics.leagueoflegends.com/en-us/news/game-updates/teamfight-tactics-patch-18-6/">Riot 18.6</a>. Source material: <a target="_blank" rel="noopener" href="https://hexcomps.com/">HexComps</a> · <a target="_blank" rel="noopener" href="https://tftcodex.com/comps/">TFT Codex</a> · <a target="_blank" rel="noopener" href="https://tft.ninja/">TFT Ninja</a> · <a target="_blank" rel="noopener" href="https://teamfighttactics.leagueoflegends.com/en-us/news/game-updates/teamfight-tactics-patch-18-2/">Riot patch notes</a>. Champion and item portraits require an internet connection; the guide remains usable without them. Unofficial fan guide, not affiliated with Riot Games.</footer>
 </main></div><div class="toast" id="toast"></div>
 <script>
@@ -1342,6 +1355,7 @@ function bindVisualHelp(){
 let activeFinderCategory='unit';
 const NEXT_CATEGORIES=['unit','component','item','artifact','radiant','augment','all'];
 function showFinder(category){
+ if(window.switchTFTTab)window.switchTFTTab('finds');
  activeFinderCategory=NEXT_CATEGORIES.includes(category)?category:'unit';
  const details=$('#pickerDetails');
  details.open=true;
@@ -1586,6 +1600,7 @@ function markNextAugment(name){
 function bindNext(){
  $('#finderFollowButton').onclick=()=>{
   $('#pickerDetails').open=false;
+  if(window.switchTFTTab)window.switchTFTTab('next');
   document.querySelector('.next-dashboard').scrollIntoView({behavior:'smooth',block:'start'});
  };
  $('#nextShowAll').onclick=()=>showFinder('unit');
@@ -2067,6 +2082,7 @@ function renderHolders(){
 }
 
 function showComposition(id){
+ if(window.switchTFTTab)window.switchTFTTab('builds');
  $('#referenceLibrary').open=true;
  $('#compSearch').value=COMP_LIST.find(function(c){return c.id===id;}).name;
  compFilter='all';document.querySelectorAll('#compFilters .chip').forEach(function(b){b.classList.toggle('active',b.dataset.filter==='all');});
@@ -2114,7 +2130,8 @@ function initOpening(){
  $('#openingClear').onclick=function(){state.opening={items:[],components:[],units:[],augments:[],augmentOffers:[],artifacts:[],radiants:[],emblems:[],starter:'',openingSignal:'',emblemPlan:'',stage:'2',round:1,level:4,levelManual:false};visualFilter={item:'all',unit:'early',augment:'all',artifact:'all',radiant:'all'};visualSearch={item:'',unit:'',artifact:'',radiant:''};$('#pItemSearch').value='';$('#pUnitSearch').value='';$('#pArtifactSearch').value='';$('#pRadiantSearch').value='';$('#pAugmentSearch').value='';augmentSearch='';augmentMode='chosen';augmentRarity='all';augmentTierFilter='all';save();renderOpening();};
  $('#openSampleAD').onclick=function(){example('ad');};$('#openSampleAP').onclick=function(){example('ap');};$('#openSampleFae').onclick=function(){example('fae');};$('#openSampleRammus').onclick=function(){example('rammus');};renderOpening();save();
 }
-window.TFTGuide={openingState,chooseIcon,removeIcon,save,renderOpening,showFinder,augmentMeta,augmentMatch,augmentHints:AUGMENT_HINTS,augmentImgTag,championImg,getItem,shopChance,holderCost,levelForRound};
+function openAugmentOffers(){augmentMode='offers';showFinder('augment');renderOpening();}
+window.TFTGuide={openingState,chooseIcon,removeIcon,save,renderOpening,showFinder,openAugmentOffers,augmentMeta,augmentMatch,augmentHints:AUGMENT_HINTS,augmentImgTag,championImg,getItem,shopChance,holderCost,levelForRound};
 window.renderOpening=renderOpening;
 window.refreshVisualHelp=refreshVisualHelp;
 initOpening();
@@ -2122,5 +2139,6 @@ initOpening();
 
 </script>
 <script src="guided-opening.js"></script>
+<script src="workspace-tabs.js"></script>
 <div id="visualTooltip" role="tooltip" class="visual-tooltip" hidden></div>
 </body></html>
