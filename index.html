@@ -408,6 +408,13 @@
 .library-drawer>section{scroll-margin-top:12px}
 @media(max-width:1120px){.decision-hero{grid-template-columns:1fr}.next-reco-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:670px){.decision-hero{padding:18px;gap:12px}.decision-hero h1{font-size:34px}.next-dashboard-head,.decision-stage-heading,.next-inventory-heading{align-items:flex-start;flex-direction:column}.next-reco-grid,.next-later-grid{grid-template-columns:1fr}.next-reco-icon{width:54px;height:54px;flex-basis:54px}.next-finds{gap:5px}.next-inventory{padding:12px}.finder-tabs button{flex:1 1 27%}.deep-dive .opening-results{grid-template-columns:1fr}}
+
+/* Compact, readable inventory icons share the same artwork as recommendation cards. */
+.next-find-art{display:inline-flex;align-items:center;justify-content:center;flex:0 0 32px;width:32px;height:32px;overflow:hidden;border-radius:6px}
+.next-find-art .next-reco-icon{height:31px;width:31px;flex:0 0 31px;border-width:1px;border-radius:6px;font-size:10px}
+.next-find-art .radiant-art{height:100%;width:100%}
+.next-finds .next-find-art img{width:100%;height:100%;object-fit:cover}
+.next-reco-card .next-reco-icon .radiant-art,.next-later-card .next-reco-icon .radiant-art{position:absolute;inset:0}
 </style>
 </head>
 <body>
@@ -455,6 +462,7 @@
     <div class="next-inventory-heading"><h2>What you already found</h2><span class="muted">Click − to reduce; right-click an icon to undo.</span></div>
     <div id="nextFinds" class="next-finds" aria-live="polite"></div>
   </section>
+<div hidden aria-hidden="true"><span id="countComps"></span><span id="countItems"></span><span id="countUnits"></span></div>
 </section>
 
 <section class="section" id="opening">
