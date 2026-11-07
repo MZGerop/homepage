@@ -425,6 +425,7 @@
  border-radius:8px;font-weight:900;font-size:12px;padding:10px 13px}
 @media(max-width:620px){.finder-followup{flex-direction:column;align-items:stretch}.finder-followup button{width:100%}}
 </style>
+<link rel="stylesheet" href="guided-opening.css">
 </head>
 <body>
 <div class="shell">
@@ -447,7 +448,55 @@
       <button id="nextOpenFinder" class="btn decision-hero-button" type="button">＋ Log something I found</button>
     </div>
   </div>
-  <div class="decision-stage-heading"><h2>Where are you in the match?</h2><span class="muted">The shop level determines which champion costs you can realistically see.</span></div>
+  
+<section id="guidedOpening" class="guided-opening" aria-label="Guided opening and optional emblem ideas">
+  <div class="guide-intro">
+    <div><div class="guide-step">NEW · YOUR OPENING COMPANION</div><h2>Start with what you actually found</h2>
+    <p>Select the champion you got after the first augment. Follow the first three rounds, tap what appears in your shop, and let the next suggestions adapt. No need to choose a final composition yet.</p></div>
+    <span class="guide-round-now" id="guideRoundNow">Round 2-1 · Level 4</span>
+  </div>
+  <div class="guide-panel">
+    <div class="guide-panel-header"><div><div class="guide-step">1 · FIRST THREE ROUNDS</div><h3>What to prioritize right now</h3><p>Tap 2-1, 2-2 or 2-3; advance as you play.</p></div></div>
+    <div class="guide-round-picker" id="guideRoundPills" role="group" aria-label="Opening round"></div>
+    <div class="guide-brief" id="guideRoundBrief" aria-live="polite"></div>
+  </div>
+  <div class="guide-panel">
+    <div class="guide-panel-header"><div><div class="guide-step">2 · YOUR ACTUAL STARTER</div><h3>Which champion did you start with?</h3>
+    <p>Choose the unit you actually received or kept after the first augment. It is added as a 1★ champion; upgrades are separate.</p></div>
+    <button type="button" class="guide-action" data-guide-all-champs="1">All champions ＋</button></div>
+    <div class="guide-starters" id="guideStarters"></div><div class="guide-signal-note" id="guideStarterStatus"></div>
+  </div>
+  <div class="guide-columns">
+    <div class="guide-panel">
+      <div class="guide-panel-header"><div><div class="guide-step">3 · YOUR SHOP WATCHLIST</div><h3>Look out for these</h3>
+      <p>Veigar, Blossom, Riftbeast, or another opening—ranked by your actual units and augments.</p></div>
+      <button type="button" class="guide-action" data-guide-details="1">Add items or components ＋</button></div>
+      <div class="guide-route-grid" id="guideRoutes" aria-live="polite"></div>
+      <div class="guide-signal-note" id="guideFeedback" aria-live="polite"></div>
+    </div>
+    <div class="guide-panel">
+      <div class="guide-panel-header"><div><div class="guide-step">4 · ONLY IF OFFERED</div>
+        <h3 id="guideAugmentHeading">Augments worth noticing</h3><p id="guideAugmentSub"></p></div></div>
+      <div class="guide-aug-list" id="guideAugments" aria-live="polite"></div>
+      <div class="guide-actions"><button class="guide-action primary" type="button" data-guide-offer="1">Compare my 3 real offers</button></div>
+      <div class="guide-warning" id="guideAugmentNote"></div>
+      <div class="guide-signal-note" id="guideChosenAugments"></div>
+    </div>
+  </div>
+  <section class="guide-emblem-section" aria-label="Optional emblem pivot explorer">
+    <div class="guide-emblem-title"><div><div class="guide-step">OPTIONAL · IF AN EMBLEM DROPS</div><h3>I found an emblem — what creative combos are possible?</h3>
+    <p>We never tell you to hunt for emblems. Log one only when you actually get it, then explore holders and pivots.</p></div></div>
+    <details class="guide-emblem-picker" id="guideEmblemPicker"><summary>＋ Select an emblem I found</summary>
+      <input type="search" id="guideEmblemSearch" class="guide-emblem-search" placeholder="Find an emblem…" aria-label="Search Set 18 emblems">
+      <div class="guide-emblem-grid" id="guideEmblemGrid" role="group" aria-label="Set 18 emblem selection"></div>
+    </details>
+    <div class="guide-emblem-status" id="guideEmblemChips" aria-label="Selected emblems"></div>
+    <p class="guide-warning" id="guideEmblemStatus">No emblem selected. This section will not recommend getting one.</p>
+    <div class="guide-emblem-ideas" id="guideEmblemIdeas" aria-live="polite"></div>
+  </section>
+</section>
+
+<details class="finder-details" id="advancedRounds"><summary>▤ Show detailed shop odds and manually adjust stage / level</summary><div class="decision-stage-heading"><h2>Where are you in the match?</h2><span class="muted">The shop level determines which champion costs you can realistically see.</span></div>
   <section class="round-panel" aria-label="Current round and shop level">
   <div class="round-panel-title"><div class="eyebrow">Step 1 · Where are you in the match?</div><h3>Round & shop level</h3><p class="muted">Change the round and level to focus on champions you can realistically find now.</p></div>
   <div class="round-controls">
@@ -458,6 +507,7 @@
   <div id="roundGuidance" class="round-guidance" aria-live="polite"></div>
 <div class="shop-targets"><div class="shop-targets-head"><b>Realistic champions to look for</b><span class="muted">Based on your round, shop level and selected gear</span></div><div id="shopTargets" class="shop-target-grid" aria-live="polite"></div></div>
 </section>
+</details>
   <section class="next-dashboard" aria-label="Your next best decisions">
     <div class="next-dashboard-head">
       <div><div class="eyebrow">THE RECOMMENDATION LOOP</div><h2>Look for these next</h2><p id="nextContextLine" class="muted">Suggestions update when you record a find.</p></div>
@@ -1311,7 +1361,7 @@ function applyFinderCategory(){
 }
 function countFinds(o){
  return o.units.length+o.items.length+o.components.length+
- o.artifacts.length+o.radiants.length+o.augments.length;
+ o.artifacts.length+o.radiants.length+o.augments.length+(o.emblems||[]).length;
 }
 function nextIcon(kind,name){
  if(kind==='unit')return championImg(name);
@@ -1347,8 +1397,8 @@ function renderNextFinds(o){
   if(kind==='unit'){for(const u of entries)content.push(nextFindChip(kind,u.name,1,u.stars));}
   else {for(const [name,n] of Object.entries(counted(entries)))content.push(nextFindChip(kind,name,n));}
  }
- $('#nextFinds').innerHTML=content.join('')||
- '<div class="next-finds-empty">Nothing logged yet. Pick a recommendation above, or tap <b>＋ Add a find</b> to record a champion, component, or item from your game.</div>';
+ $('#nextFinds').innerHTML=content.join('')||(o.emblems&&o.emblems.length?'':
+ '<div class="next-finds-empty">Nothing logged yet. Pick a recommendation above, or tap <b>＋ Add a find</b> to record a champion, component, or item from your game.</div>');
 }
 function findNextChamps(o,routes){
  const owned=new Map(o.units.map(u=>[u.name,u]));
@@ -1577,9 +1627,9 @@ function bindNext(){
 function openingState(){
  if(!state.opening||typeof state.opening!=='object')state.opening={};
  var o=state.opening;
- ['items','components','units','augments','augmentOffers','artifacts','radiants'].forEach(function(k){if(!Array.isArray(o[k]))o[k]=[];});
- if(!['2','3','4','5','6'].includes(String(o.stage)))o.stage='3';
- if(!Number.isInteger(Number(o.round))||Number(o.round)<1||Number(o.round)>7)o.round=2;
+ ['items','components','units','augments','augmentOffers','artifacts','radiants','emblems'].forEach(function(k){if(!Array.isArray(o[k]))o[k]=[];});
+ if(!['2','3','4','5','6'].includes(String(o.stage)))o.stage='2';
+ if(!Number.isInteger(Number(o.round))||Number(o.round)<1||Number(o.round)>7)o.round=1;
  o.round=Number(o.round);
  if(!SHOP_ODDS[Number(o.level)])o.level=levelForRound(o.stage,o.round);
  o.level=Number(o.level);
@@ -1645,6 +1695,7 @@ function relevance(comp){
    if(best){score+=best;artifactSynergies.push(n+' → '+bestName);}
   });
   if(artifactSynergies.length)reasons.push('Artifact holders: '+artifactSynergies.slice(0,2).join(', ')+'.');
+ for(const emblem of (o.emblems||[])){if(comp.traits.some(t=>t.toLowerCase().includes(emblem.toLowerCase()))){score+=9;reasons.push('Found '+emblem+' Emblem can support this trait if you use a holder without it.');}}
  score-=Math.max(0,comp.lvl-Number(o.level)-1)*2;
   if(augHits.length)reasons.push('Augment synergy: '+augHits.join(', ')+'.');
  if(itemHits.length)reasons.push('Great completed items: '+Array.from(new Set(itemHits)).slice(0,3).join(', ')+'.');
@@ -2020,8 +2071,8 @@ function showComposition(id){
  renderComps();document.querySelector('#comps').scrollIntoView({behavior:'smooth',block:'start'});
 }
 function renderOpening(){
- var o=openingState();renderVisual(o);renderArtifactHolders();renderHeroItems();renderHolders();renderNext(o);refreshVisualHelp();
- var hasAny=o.items.length+o.components.length+o.units.length+o.augments.length+o.artifacts.length+o.radiants.length;
+ var o=openingState();renderVisual(o);renderArtifactHolders();renderHeroItems();renderHolders();renderNext(o);refreshVisualHelp();if(window.renderGuidedOpening)window.renderGuidedOpening();
+ var hasAny=o.items.length+o.components.length+o.units.length+o.augments.length+o.artifacts.length+o.radiants.length+o.emblems.length;
  if(!hasAny){
   $('#openIntro').textContent='Add an item, an upgraded champion, or an Augment — or try a sample opening above.';
   $('#openCount').textContent='Waiting for your opening';
@@ -2058,14 +2109,16 @@ function example(type){
 }
 function initOpening(){
  bindVisual();bindValueTiers();bindCombos();bindAugmentGuide();bindVisualHelp();bindNext();
- $('#openingClear').onclick=function(){state.opening={items:[],components:[],units:[],augments:[],augmentOffers:[],artifacts:[],radiants:[],stage:'3',round:2,level:6,levelManual:false};visualFilter={item:'all',unit:'early',augment:'all',artifact:'all',radiant:'all'};visualSearch={item:'',unit:'',artifact:'',radiant:''};$('#pItemSearch').value='';$('#pUnitSearch').value='';$('#pArtifactSearch').value='';$('#pRadiantSearch').value='';$('#pAugmentSearch').value='';augmentSearch='';augmentMode='chosen';augmentRarity='all';augmentTierFilter='all';save();renderOpening();};
+ $('#openingClear').onclick=function(){state.opening={items:[],components:[],units:[],augments:[],augmentOffers:[],artifacts:[],radiants:[],emblems:[],starter:'',openingSignal:'',stage:'2',round:1,level:4,levelManual:false};visualFilter={item:'all',unit:'early',augment:'all',artifact:'all',radiant:'all'};visualSearch={item:'',unit:'',artifact:'',radiant:''};$('#pItemSearch').value='';$('#pUnitSearch').value='';$('#pArtifactSearch').value='';$('#pRadiantSearch').value='';$('#pAugmentSearch').value='';augmentSearch='';augmentMode='chosen';augmentRarity='all';augmentTierFilter='all';save();renderOpening();};
  $('#openSampleAD').onclick=function(){example('ad');};$('#openSampleAP').onclick=function(){example('ap');};$('#openSampleFae').onclick=function(){example('fae');};$('#openSampleRammus').onclick=function(){example('rammus');};renderOpening();save();
 }
+window.TFTGuide={openingState,chooseIcon,removeIcon,save,renderOpening,showFinder,augmentMeta,augmentMatch,augmentHints:AUGMENT_HINTS,augmentImgTag,championImg,getItem,shopChance,holderCost,levelForRound};
 window.renderOpening=renderOpening;
 window.refreshVisualHelp=refreshVisualHelp;
 initOpening();
 })();
 
 </script>
+<script src="guided-opening.js"></script>
 <div id="visualTooltip" role="tooltip" class="visual-tooltip" hidden></div>
 </body></html>
