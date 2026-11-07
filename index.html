@@ -693,7 +693,7 @@ const COMP_LIST = [
 {id:'dragon',name:'Draven / Elder Dragon',tier:'S',type:'ad',style:'Fast 9',lvl:9,headline:'High-ceiling dual legendary damage',carry:['Draven','Elder Dragon'],front:['Maokai','Taric','Sentinel'],units:['Amumu','Sentinel','Draven','Elder Dragon','Ivern','Kennen','Maokai','Taric'],traits:['Riftbeast','Vanguard','Juggernaut','Inferno'],when:'Very strong economy, AD items and uncontested expensive carries.',plan:'Get stable on 8, go 9, roll for legendary damage and frontline. Elder Dragon takes two unit slots.',carryItems:['Guinsoo\'s Rageblade','Kraken\'s Fury','Infinity Edge'],tankItems:['Gargoyle Stoneplate','Warmog\'s Armor'],pivot:'If level 9 is unaffordable, preserve a coherent upgraded Level 8 board instead.',url:'https://tftcodex.com/comps/'},
 {id:'rammus',name:'Sprykin Rammus / Azir',tier:'A',type:'reroll',style:'3-cost reroll',lvl:7,headline:'Rammus 3★ tank + Azir 3★ damage · Patch 18.6',carry:['Azir','Soraka'],front:['Rammus'],units:['Veigar','Teemo','Azir','Fiddlesticks','Rammus','Soraka','Zyra'],traits:['Sprykin','Defender','Spellweaver'],when:'Early Rammus/Azir pairs, tank and AP components, no heavy contest.',plan:'Slow-roll at Level 7 above 50 gold for Rammus and Azir 3★. Give Rammus Gargoyle / Warmog / Spirit Visage; Azir Guinsoo / Gunblade / Deathcap. Level afterward.',carryItems:['Guinsoo\'s Rageblade','Hextech Gunblade','Rabadon\'s Deathcap'],tankItems:['Gargoyle Stoneplate','Warmog\'s Armor','Spirit Visage'],pivot:'No pairs or two opponents contesting your units? Stop chasing 3★ and pivot to AP Fast 8.',url:'https://tftcodex.com/comps/'},
 {id:'primal-nidalee',name:'Primal Nidalee / Sivir',tier:'A',type:'ad',style:'Fast 8',lvl:8,headline:'Nidalee damage and healing buffed in Patch 18.6',carry:['Nidalee','Sivir'],front:['Amumu','Lillia','Sentinel'],units:['Rakan','Shen','Kog\'Maw','Amumu','Lillia','Nidalee','Sentinel','Sivir'],traits:['Primal','Defender','Vanguard'],when:'Natural Primal opener, suitable blessing and strong AD items.',plan:'Stabilize at Level 8 with upgraded Nidalee and Sivir and real frontline. The Nidalee buffs improve this line, but 2★ units matter more than forcing a bonus.',carryItems:['Bloodthirster','Edge of Night','Infinity Edge'],tankItems:['Gargoyle Stoneplate','Warmog\'s Armor'],pivot:'If Nidalee is contested, transfer items to another upgraded AD carry.',url:'https://tftcodex.com/comps/'},
-{id:'solar-yunara',name:'Solar Yunara / Sejuani',tier:'A',type:'reroll',style:'1-cost reroll',lvl:6,headline:'Early Solar reroll with upgraded frontline',carry:['Yunara','Karma'],front:['Sejuani','Leona','Yorick'],units:['Karma','Leona','Yorick','Kayle','LeBlanc','Sejuani','Yunara'],traits:['Solar','Defender'],when:'Many early cheap Solar pairs, good item components and uncontested shop.',plan:'Slow-roll at Level 6 for cheap 3★ core, then level for more traits and upgrades.',carryItems:['Spear of Shojin','Last Whisper','Deathblade'],tankItems:['Gargoyle Stoneplate','Warmog\'s Armor'],pivot:'No progress toward 3★ by Stage 4? Pivot into a regular 8-level board.',url:'https://tftcodex.com/comps/'}
+{id:'solar-yunara',name:'Blossom Karma / Yunara → Solar',tier:'A',type:'reroll',style:'Karma / Yunara reroll',lvl:6,headline:'Blossom opener; Solar comes later',carry:['Yunara','Karma'],front:['Sejuani','Leona','Yorick'],units:['Karma','Leona','Yorick','Kayle','LeBlanc','Sejuani','Yunara'],traits:['Blossom early','Solar later','Defender'],when:'Early Karma + Yunara pairs (ideally two of each by 2-5), with Yorick or Sejuani support and an uncontested shop.',plan:'Open with Karma, Yunara and Yorick for Blossom; play your strongest frontline. At Level 6 slow-roll for Karma, Yunara and Sejuani upgrades. Add Leona, Kayle and the Solar breakpoint later rather than forcing Solar in Stage 2.',carryItems:['Spear of Shojin','Last Whisper','Deathblade'],tankItems:['Gargoyle Stoneplate','Warmog\'s Armor'],pivot:'No progress toward 3★ by Stage 4? Pivot into a regular 8-level board.',url:'https://tftcodex.com/comps/'}
 ];
 const ROSTER_BY_COST={
 1:['Akali','Camille','Cinderling','Karma','Kobuko','Leona','Ornn','Pebbles','Rakan','Rek\'Sai','Varus','Veigar','Xayah','Yorick'],
@@ -802,9 +802,20 @@ function itemImg(id){
 function portrait(name,showName=true){const cost=Object.entries(ROSTER_BY_COST).find(([,v])=>v.includes(name))?.[0]||'?';const abbr=name.split(/\s+/).map(s=>s[0]).join('').slice(0,2).toUpperCase();return `<div class="champ-sm" data-champion="${esc(name)}" tabindex="0" title="${esc(name)}"><span class="portrait"><span class="abbr">${abbr}</span><img src="${championImg(name)}" loading="lazy" alt="" onerror="this.remove()"><span class="cost">${cost}g</span></span>${showName?`<span class="champ-label">${esc(name)}</span>`:''}</div>`}
 function itemMark(name,short=false){const x=ITEMS.find(i=>i[0]===name),icon=x?itemImg(x[5]):null;return `<span class="itemmark" data-item-name="${esc(name)}" tabindex="0" title="${esc(name)}"><span class="sicon">${esc(name[0])}${icon?`<img src="${icon}" loading="lazy" alt="" onerror="this.remove()">`:''}</span>${short?'':esc(name)}</span>`}
 let compFilter='all';
+function compWatchStatus(c){
+ const o=state.opening;
+ if(!o||!Array.isArray(o.units))return '';
+ const status=window.TFTGuide?.openingReadiness?.(c,o);
+ if(!status)return '';
+ const dismissed=(o.dismissedComps||[]).includes(c.id);
+ return '<div class="comp-live-status'+(status.blocked?' unavailable':'')+'">'+
+   esc(status.label||'Reference build. Log your units to evaluate whether it fits this game.')+
+   '</div><button type="button" class="build-dismiss-btn" data-dismiss-comp="'+esc(c.id)+'">'+
+   (dismissed?'↶ Reconsider this build':'Not finding its core · stop suggesting it')+'</button>';
+}
 function renderComps(){const q=$('#compSearch').value.toLowerCase(),sort=$('#compSort').value;let list=COMP_LIST.filter(c=>(compFilter==='all'||(compFilter==='fav'?state.favorites.includes(c.id):(compFilter==='fast9'?c.lvl===9:c.type===compFilter)))&&([c.name,c.headline,c.when,...c.traits,...c.units].join(' ').toLowerCase().includes(q)));
 list.sort((a,b)=>sort==='name'?a.name.localeCompare(b.name):sort==='level'?a.lvl-b.lvl:sort==='fav'?Number(state.favorites.includes(b.id))-Number(state.favorites.includes(a.id)):({S:0,A:1,B:2}[a.tier]-{S:0,A:1,B:2}[b.tier]));
-$('#compsGrid').innerHTML=list.map(c=>`<article class="card comp"><div class="comp-top"><div class="comp-meta"><span class="tag ${c.tier.toLowerCase()}">${c.tier} tier</span><span class="tag ${c.type}">${c.type==='reroll'?'REROLL':c.type.toUpperCase()}</span><span class="tag">${esc(c.style)} · Lv ${c.lvl}</span></div><div class="comp-title"><h3>${esc(c.name)}</h3><button class="fav ${state.favorites.includes(c.id)?'on':''}" aria-label="Toggle favorite" title="Favorite" onclick="toggleFav('${c.id}')">★</button></div><div class="sub">${esc(c.headline)}</div><div class="label">Primary carries</div><div class="champ-strip">${c.carry.map(n=>portrait(n)).join('')}</div><div class="label">Frontline / utility</div><div class="champ-strip">${c.front.map(n=>portrait(n)).join('')}</div></div><div class="comp-bottom"><span class="label">Key traits</span><div class="trait-list">${c.traits.map(t=>`<span>${esc(t)}</span>`).join('')}</div><div class="smallline"><b style="color:var(--gold)">Play when:</b> ${esc(c.when)}</div></div><button class="details-toggle" onclick="toggleDetails(this)">View final board, items & transitions ▾</button><div class="comp-details" hidden><div class="label">Example full board (check levels / special slot costs)</div><div class="champ-strip">${c.units.map(n=>portrait(n)).join('')}</div><div class="label">Carry items</div><div class="mini-items">${c.carryItems.map(i=>itemMark(i)).join('')}</div><div class="label">Tank items</div><div class="mini-items">${c.tankItems.map(i=>itemMark(i)).join('')}</div><p><b>Transition:</b> ${esc(c.plan)}</p><p><b>If contested / behind:</b> ${esc(c.pivot)}</p><a href="${esc(c.url)}" target="_blank" rel="noopener">Full composition guide ↗</a></div></article>`).join('')||'<p class="muted">No matching comps. Clear filters or search terms.</p>';
+$('#compsGrid').innerHTML=list.map(c=>`<article class="card comp"><div class="comp-top"><div class="comp-meta"><span class="tag ${c.tier.toLowerCase()}">${c.tier} tier</span><span class="tag ${c.type}">${c.type==='reroll'?'REROLL':c.type.toUpperCase()}</span><span class="tag">${esc(c.style)} · Lv ${c.lvl}</span></div><div class="comp-title"><h3>${esc(c.name)}</h3><button class="fav ${state.favorites.includes(c.id)?'on':''}" aria-label="Toggle favorite" title="Favorite" onclick="toggleFav('${c.id}')">★</button></div><div class="sub">${esc(c.headline)}</div><div class="label">Primary carries</div><div class="champ-strip">${c.carry.map(n=>portrait(n)).join('')}</div><div class="label">Frontline / utility</div><div class="champ-strip">${c.front.map(n=>portrait(n)).join('')}</div></div><div class="comp-bottom"><span class="label">Key traits</span><div class="trait-list">${c.traits.map(t=>`<span>${esc(t)}</span>`).join('')}</div><div class="smallline"><b style="color:var(--gold)">Play when:</b> ${esc(c.when)}</div>${compWatchStatus(c)}</div><button class="details-toggle" onclick="toggleDetails(this)">View final board, items & transitions ▾</button><div class="comp-details" hidden><div class="label">Example full board (check levels / special slot costs)</div><div class="champ-strip">${c.units.map(n=>portrait(n)).join('')}</div><div class="label">Carry items</div><div class="mini-items">${c.carryItems.map(i=>itemMark(i)).join('')}</div><div class="label">Tank items</div><div class="mini-items">${c.tankItems.map(i=>itemMark(i)).join('')}</div><p><b>Transition:</b> ${esc(c.plan)}</p><p><b>If contested / behind:</b> ${esc(c.pivot)}</p><a href="${esc(c.url)}" target="_blank" rel="noopener">Full composition guide ↗</a></div></article>`).join('')||'<p class="muted">No matching comps. Clear filters or search terms.</p>';
  if(window.refreshVisualHelp)window.refreshVisualHelp();
 }
 function toggleFav(id){state.favorites=state.favorites.includes(id)?state.favorites.filter(i=>i!==id):[...state.favorites,id];save();renderComps();toast('Favorites updated')}
@@ -1588,7 +1599,7 @@ function laterBuildCard(comp,reason){
 function renderNext(o){
  renderNextFinds(o);
  const count=countFinds(o),hasInfo=count>0;
- const ranked=COMP_LIST.map(relevance).sort((a,b)=>b.score-a.score);
+ const ranked=COMP_LIST.map(relevance).filter(r=>!r.readiness.blocked).sort((a,b)=>b.score-a.score);
  const routes=hasInfo?ranked.slice(0,3):[];
  const best=routes[0];
  const champs=findNextChamps(o,routes);
@@ -1637,6 +1648,12 @@ function markNextAugment(name){
  o.augments.push(name);o.augmentOffers=[];save();renderOpening();
 }
 function bindNext(){
+ ['#compsGrid','#openResults'].forEach(selector=>{
+   $(selector).addEventListener('click',event=>{
+     const button=event.target.closest('[data-dismiss-comp]');
+     if(button)toggleDismissedComp(button.dataset.dismissComp);
+   });
+ });
  $('#finderFollowButton').onclick=()=>{
   $('#pickerDetails').open=false;
   if(window.switchTFTTab)window.switchTFTTab('next');
@@ -1683,7 +1700,7 @@ function bindNext(){
 function openingState(){
  if(!state.opening||typeof state.opening!=='object')state.opening={};
  var o=state.opening;
- ['items','components','units','augments','augmentOffers','artifacts','radiants','emblems'].forEach(function(k){if(!Array.isArray(o[k]))o[k]=[];});
+ ['items','components','units','augments','augmentOffers','artifacts','radiants','emblems','dismissedComps'].forEach(function(k){if(!Array.isArray(o[k]))o[k]=[];});
  if(!['2','3','4','5','6'].includes(String(o.stage)))o.stage='2';
  if(!Number.isInteger(Number(o.round))||Number(o.round)<1||Number(o.round)>7)o.round=1;
  o.round=Number(o.round);
@@ -1695,6 +1712,34 @@ function openingState(){
 function getItem(n){return ITEMS.find(function(i){return i[0]===n;});}
 function counted(a){var d={};a.forEach(function(x){d[x]=(d[x]||0)+1;});return d;}
 function canCraft(item,have){var x=getItem(item);if(!x)return false;var c=counted(have);return c[x[1]]>=1 && c[x[2]] >= (x[1]===x[2]?2:1);}
+function openingReadiness(comp,o){
+ o=o||openingState();
+ if((o.dismissedComps||[]).includes(comp.id))
+  return {blocked:true,penalty:0,label:'Skipped for this game: you marked this build as not appearing in your shops.'};
+ if(comp.type!=='reroll')return {blocked:false,penalty:0,label:''};
+ const core=comp.carry.filter(n=>holderCost(n)>0&&holderCost(n)<=3);
+ const evidence=o.units.filter(u=>core.includes(u.name));
+ const upgraded=evidence.some(u=>u.stars>=2);
+ const stage=Number(o.stage),round=Number(o.round);
+ if(stage===2&&round>=5&&!evidence.length)
+  return {blocked:true,penalty:0,label:'No early reroll carries logged by 2-5. Keep this as a reference, but do not force it.'};
+ if(stage>=3&&!evidence.length)
+  return {blocked:true,penalty:0,label:'No core carries recorded by Stage 3. Pivot toward natural upgrades instead.'};
+ if(stage>=3&&!upgraded&&evidence.length<2)
+  return {blocked:true,penalty:0,label:'Only one unupgraded core recorded. Wait for more copies before committing.'};
+ if(stage===2&&round>=5&&evidence.length===1&&!upgraded)
+  return {blocked:false,penalty:13,label:'Speculative reroll: only one 1-star core recorded. Do not commit without more copies.'};
+ if(stage===2&&!evidence.length)
+  return {blocked:false,penalty:9,label:'Unproven reroll: no early carries logged yet.'};
+ return {blocked:false,penalty:0,label:evidence.length?'Some core units recorded; check bench copies and contesting before committing.':''};
+}
+function toggleDismissedComp(id){
+ if(!COMP_LIST.some(c=>c.id===id))return;
+ const o=openingState(),i=o.dismissedComps.indexOf(id);
+ if(i>=0)o.dismissedComps.splice(i,1);
+ else o.dismissedComps.push(id);
+ save();renderOpening();renderComps();
+}
 function relevance(comp){
  var o=openingState(),score=comp.tier==='S'?2:comp.tier==='A'?1:0,reasons=[],craft=[],itemHits=[],unitHits=[],augHits=[];
  var suggestedKinds=comp.carryItems.map(function(n){var i=getItem(n);return i&&i[3];}).filter(Boolean);
@@ -1752,6 +1797,7 @@ function relevance(comp){
   });
   if(artifactSynergies.length)reasons.push('Artifact holders: '+artifactSynergies.slice(0,2).join(', ')+'.');
  for(const emblem of (o.emblems||[])){if(comp.traits.some(t=>t.toLowerCase().includes(emblem.toLowerCase()))){score+=9;reasons.push('Found '+emblem+' Emblem can support this trait if you use a holder without it.');}}
+ const readiness=openingReadiness(comp,o);score-=readiness.penalty;
  score-=Math.max(0,comp.lvl-Number(o.level)-1)*2;
   if(augHits.length)reasons.push('Augment synergy: '+augHits.join(', ')+'.');
  if(itemHits.length)reasons.push('Great completed items: '+Array.from(new Set(itemHits)).slice(0,3).join(', ')+'.');
@@ -1760,7 +1806,8 @@ function relevance(comp){
  if(!reasons.length && o.items.length)reasons.push('Your item categories can support this damage type.');
  if(!reasons.length)reasons.push('Flexible direction, but few direct matches yet.');
  var missing=comp.carry.concat(comp.front).filter(function(n){return !o.units.some(function(u){return u.name===n;});}).slice(0,3);
- return {comp:comp,score:score,reasons:reasons,missing:missing,craft:craft};
+ if(readiness.label)reasons.unshift(readiness.label);
+ return {comp:comp,score:score,reasons:reasons,missing:missing,craft:craft,readiness:readiness};
 }
 
 const AUGMENT_ART={
@@ -2136,7 +2183,7 @@ function renderOpening(){
   $('#openResults').innerHTML='<div class="card panel" style="grid-column:1/-1"><h3>Start with what you know</h3><p class="muted">Even one completed item or an Augment can narrow the options. Add a 2★ champion to improve the recommendations further.</p></div>';
   refreshVisualHelp();return;
  }
- var ranked=COMP_LIST.map(relevance).sort(function(a,b){return b.score-a.score;}).slice(0,5);
+ var ranked=COMP_LIST.map(relevance).filter(function(r){return !r.readiness.blocked;}).sort(function(a,b){return b.score-a.score;}).slice(0,5);
  $('#openIntro').textContent='Round '+o.stage+'-'+o.round+' · Level '+o.level+'. Endgame builds below are destinations; shop odds determine your near-term options.';
  $('#openCount').textContent=ranked.length+' suggested builds';
  $('#openResults').innerHTML=ranked.map(function(r,idx){
@@ -2151,7 +2198,7 @@ function renderOpening(){
    +'<div class="label">Main carries</div><div class="champ-strip">'+c.carry.map(function(n){return portrait(n);}).join('')+'</div>'
    +'<div class="label">Why it matches</div><ul class="opening-reasons">'+reasons+'</ul></div>'
    +'<div class="opening-plan"><b>Next steps:</b> '+esc(missing)+' '+esc(stageAdvice+usefulAug)
-   +'<button class="btn opening-action" data-open-comp="'+esc(c.id)+'" type="button">Open complete build ↗</button></div></article>';
+   +'<button class="btn opening-action" data-open-comp="'+esc(c.id)+'" type="button">Open complete build ↗</button><button class="build-dismiss-btn" type="button" data-dismiss-comp="'+esc(c.id)+'">Not finding these units · hide this build</button></div></article>';
  }).join('');
  document.querySelectorAll('#openResults [data-open-comp]').forEach(function(b){b.onclick=function(){showComposition(b.dataset.openComp);};});
 }
@@ -2166,14 +2213,15 @@ function example(type){
 }
 function initOpening(){
  bindVisual();bindValueTiers();bindCombos();bindAugmentGuide();bindVisualHelp();bindNext();
- $('#openingClear').onclick=function(){state.opening={items:[],components:[],units:[],augments:[],augmentOffers:[],artifacts:[],radiants:[],emblems:[],starter:'',openingSignal:'',emblemPlan:'',stage:'2',round:1,level:4,levelManual:false};visualFilter={item:'all',unit:'early',augment:'all',artifact:'all',radiant:'all'};visualSearch={item:'',unit:'',artifact:'',radiant:''};$('#pItemSearch').value='';$('#pUnitSearch').value='';$('#pArtifactSearch').value='';$('#pRadiantSearch').value='';$('#pAugmentSearch').value='';augmentSearch='';augmentMode='chosen';augmentRarity='all';augmentTierFilter='all';save();renderOpening();};
+ $('#openingClear').onclick=function(){state.opening={items:[],components:[],units:[],augments:[],augmentOffers:[],artifacts:[],radiants:[],emblems:[],starter:'',openingSignal:'',emblemPlan:'',dismissedComps:[],stage:'2',round:1,level:4,levelManual:false};visualFilter={item:'all',unit:'early',augment:'all',artifact:'all',radiant:'all'};visualSearch={item:'',unit:'',artifact:'',radiant:''};$('#pItemSearch').value='';$('#pUnitSearch').value='';$('#pArtifactSearch').value='';$('#pRadiantSearch').value='';$('#pAugmentSearch').value='';augmentSearch='';augmentMode='chosen';augmentRarity='all';augmentTierFilter='all';save();renderOpening();};
  $('#openSampleAD').onclick=function(){example('ad');};$('#openSampleAP').onclick=function(){example('ap');};$('#openSampleFae').onclick=function(){example('fae');};$('#openSampleRammus').onclick=function(){example('rammus');};renderOpening();save();
 }
 function openAugmentOffers(){augmentMode='offers';showFinder('augment');renderOpening();}
-window.TFTGuide={openingState,chooseIcon,removeIcon,save,renderOpening,showFinder,openAugmentOffers,augmentMeta,augmentMatch,augmentHints:AUGMENT_HINTS,augmentImgTag,championImg,getItem,shopChance,holderCost,levelForRound};
+window.TFTGuide={openingState,openingReadiness,toggleDismissedComp,chooseIcon,removeIcon,save,renderOpening,showFinder,openAugmentOffers,augmentMeta,augmentMatch,augmentHints:AUGMENT_HINTS,augmentImgTag,championImg,getItem,shopChance,holderCost,levelForRound};
 window.renderOpening=renderOpening;
 window.refreshVisualHelp=refreshVisualHelp;
 initOpening();
+renderComps();
 })();
 
 </script>
