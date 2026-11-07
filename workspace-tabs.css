@@ -142,3 +142,13 @@ body[data-tft-tab="finds"] #opening > #pickerDetails{display:block!important}
 .missing-augment-fields select{min-width:110px}
 .missing-augment-form > small{font-size:11px}
 @media(max-width:600px){.missing-augment-fields input,.missing-augment-fields button{flex:1 1 100%}}
+
+/* Persistent new-match reset, visible above every purpose tab. */
+.tft-tabs-brand-right{display:flex;align-items:center;justify-content:flex-end;gap:14px;min-width:0}
+.tft-reset-game{flex:none;display:inline-flex;align-items:center;justify-content:center;padding:7px 13px;border-radius:9px;border:1px solid #835965;background:#34202c;color:#ffd6d4;font-size:12px;font-weight:850;white-space:nowrap}
+.tft-reset-game:hover{background:#54303b;border-color:#d38a94;color:#fff}
+.tft-reset-game:focus-visible{outline:2px solid #f5cb6c;outline-offset:2px}
+@media(max-width:600px){
+ .tft-tabs-brand-right{gap:7px}
+ .tft-reset-game{padding:7px 9px;font-size:11px}
+}
