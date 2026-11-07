@@ -319,6 +319,10 @@
 [data-explain]{cursor:help}
 .pick-main[data-explain],button[data-explain]{cursor:pointer}
 @media(max-width:600px){.visual-tooltip{max-width:calc(100vw - 24px);font-size:13px}}
+
+.tier-champion{display:inline-flex;align-items:center;gap:6px;padding:3px 7px 3px 3px!important;border:1px solid #465f7a;border-radius:8px!important}
+.tier-champion img{width:30px;height:30px;object-fit:cover;border-radius:6px;flex-shrink:0}
+.tier-champion span{font-size:11px;color:#d9e9fa}
 </style>
 </head>
 <body>
@@ -742,7 +746,7 @@ function renderShopTargets(o){
  }).filter(x=>x.chance>0||x.owned).sort((a,b)=>b.score-a.score||a.cost-b.cost).slice(0,6);
  $('#shopTargets').innerHTML=list.map(x=>{
    const col=COST_COLORS[x.cost]||'#8398ba';
-   return '<div class="shop-target'+(x.owned?' have':'')+'" title="'+esc(x.name+' · '+x.cost+' gold cost tier, '+x.chance+'% per shop slot')+'"><div class="shop-target-image" style="--target-color:'+col+'">'+esc(x.name.slice(0,1))+'<img src="'+championImg(x.name)+'" alt="" loading="lazy" onerror="this.remove()"></div><div class="shop-target-name"><b>'+esc(x.name)+'</b><span>'+x.cost+'g · '+x.chance+'% tier'+(x.owned?' · '+x.owned.stars+'★':'')+'</span></div></div>';
+   return '<div class="shop-target'+(x.owned?' have':'')+'" data-champion="'+esc(x.name)+'" tabindex="0" title="'+esc(x.name+' · '+x.cost+' gold cost tier, '+x.chance+'% per shop slot')+'"><div class="shop-target-image" style="--target-color:'+col+'">'+esc(x.name.slice(0,1))+'<img src="'+championImg(x.name)+'" alt="" loading="lazy" onerror="this.remove()"></div><div class="shop-target-name"><b>'+esc(x.name)+'</b><span>'+x.cost+'g · '+x.chance+'% tier'+(x.owned?' · '+x.owned.stars+'★':'')+'</span></div></div>';
  }).join('');
 }
 
@@ -857,7 +861,7 @@ function renderPowerCombos(){
   const count=c.items.length+c.artifacts.length+1;
   const match=x.matched?x.matched+' of '+count+' pieces matched':'No pieces yet';
   const availability=x.odds===0&&!champOwn?'Not in your current shop':x.odds<=2?'Rare at Level '+o.level:'Possible at Level '+o.level;
-  return '<article class="combo-card'+(x.matched?' matched':'')+'"><div class="combo-card-head"><h4>'+esc(c.title)+'</h4><span class="combo-class">'+esc(c.tag)+'</span></div>'+
+  return '<article class="combo-card'+(x.matched?' matched':'')+'" data-help-kind="combo" data-help-name="'+esc(c.id)+'" tabindex="0"><div class="combo-card-head"><h4>'+esc(c.title)+'</h4><span class="combo-class">'+esc(c.tag)+'</span></div>'+
    '<div class="combo-icons">'+parts.join('')+'</div>'+
    '<div class="combo-match">'+esc(match)+' · '+esc(availability)+'</div>'+
    '<p>'+esc(c.why)+'</p><p><b>Play it:</b> '+esc(c.plan)+'</p>'+
@@ -1053,7 +1057,26 @@ function explainForNode(el){
  if(d.itemName)return helpText('item',d.itemName);
  return '';
 }
+
+function decorateLegacyTiers(){
+ // The original champion tier panels contained text-only names.
+ // Upgrade those names into portraits without changing the underlying ranking.
+ document.querySelectorAll('.namecloud').forEach(cloud=>{
+  if(cloud.dataset.iconsReady)return;
+  cloud.dataset.iconsReady='1';
+  cloud.querySelectorAll('span').forEach(el=>{
+   const label=el.textContent.trim(),name=label.replace(/\*$/,'').replace(/\s+reroll$/i,'').trim();
+   if(!holderCost(name))return;
+   el.setAttribute('class','tier-champion');
+   el.setAttribute('data-champion',name);
+   el.setAttribute('tabindex','0');
+   el.innerHTML='<img src="'+championImg(name)+'" loading="lazy" alt="" onerror="this.remove()"><span>'+esc(label)+'</span>';
+  });
+ });
+}
+
 function refreshVisualHelp(){
+ decorateLegacyTiers();
  const queries=[
   '[data-kind]','[data-tier-kind]','[data-aug-select]','[data-aug-take]',
   '[data-help-kind]','[data-champion]','[data-item-name]'
@@ -1266,7 +1289,7 @@ function renderVisual(o){
  renderAugments(o);
  renderArtifacts(o);renderRadiants(o);
  renderValueTiers();renderPowerCombos();renderAugmentGuide(o);
- $('#pItemCount').textContent=o.items.length;$('#pComponentCount').textContent=o.components.length;$('#pUnitCount').textContent=o.units.length;$('#pAugmentCount').textContent=o.augments.length+' / 3';
+ $('#pItemCount').textContent=o.items.length;$('#pComponentCount').textContent=o.components.length;$('#pUnitCount').textContent=o.units.length;$('#pAugmentCount').textContent=o.augments.length+' chosen · '+o.augmentOffers.length+' offered';
  scrollIds.forEach((id,i)=>$(id).scrollTop=scrolls[i]);
  [['#pItemFilters','if','item'],['#pUnitFilters','uf','unit'],['#pAugmentFilters','af','augment']].forEach(([sel,k,filter])=>document.querySelectorAll(sel+' button').forEach(b=>{const on=b.dataset[k]===visualFilter[filter];b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on));}));
  renderRoundGuide(o);
@@ -1391,7 +1414,7 @@ function heroItemStatus(name,o){
  return {className:'missing',label:'Need parts',missing};
 }
 function heroItemRecipeIcon(part){
- return '<span class="hero-picks-component" title="'+esc(COMPONENTS[part])+'">'+esc(part[0])+
+ return '<span class="hero-picks-component" data-help-kind="component" data-help-name="'+esc(part)+'" tabindex="0" title="'+esc(COMPONENTS[part])+'">'+esc(part[0])+
  '<img src="https://hexcomps.com/img/items/'+COMPONENT_ART[part]+'" alt="'+esc(COMPONENTS[part])+'" loading="lazy" onerror="this.remove()"></span>';
 }
 function heroItemRow(pair,o){
@@ -1429,7 +1452,7 @@ function heroItemCard(unit,o){
  const later=profile.next.slice(0,2);
  const compId=profile.comps.find(id=>COMP_LIST.some(c=>c.id===id));
  const comp=COMP_LIST.find(c=>c.id===compId);
- return '<article class="hero-picks-card"><div class="hero-picks-top"><div class="hero-picks-photo" style="--unit-color:'+rim+'">'+esc(name.slice(0,2))+
+ return '<article class="hero-picks-card" data-champion="'+esc(name)+'" tabindex="0"><div class="hero-picks-top"><div class="hero-picks-photo" style="--unit-color:'+rim+'">'+esc(name.slice(0,2))+
  '<img src="'+championImg(name)+'" alt="" loading="lazy" onerror="this.remove()"><small>'+cost+'g</small></div>'+
  '<div><h4>'+esc(name)+'</h4><div class="hero-picks-role">'+esc(profile.role)+' · '+esc(profile.quality)+'</div>'+
  '<span class="hero-picks-stars">'+('★'.repeat(unit.stars))+'</span></div></div>'+
@@ -1479,11 +1502,11 @@ function artifactHolderCard(m){
  const comp=COMP_LIST.find(c=>c.carry.includes(m.name)||c.front.includes(m.name))||
   COMP_LIST.find(c=>c.units.includes(m.name));
  const costColor=COST_COLORS[m.cost]||'#af95c8';
- return '<article class="artifact-holder-card'+(m.owned?' owned':'')+'"><div class="identity"><div class="portrait" style="border-color:'+costColor+'">'+
+ return '<article class="artifact-holder-card'+(m.owned?' owned':'')+'" data-champion="'+esc(m.name)+'" tabindex="0"><div class="identity"><div class="portrait" style="border-color:'+costColor+'">'+
  esc(m.name.slice(0,2))+'<img src="'+championImg(m.name)+'" alt="" loading="lazy" onerror="this.remove()"><small>'+m.cost+'g</small></div>'+
  '<div><b>'+esc(m.name)+'</b><small>'+(m.owned?'On your board · '+m.owned.stars+'★':m.cost<=2?'Early holder':m.cost<=3?'Midgame holder':'Late carry')+'</small></div></div>'+
  '<p>'+esc(m.matches.length>1?'Multiple selected Artifacts fit this champion.':'Good match for your selected Artifact.')+'</p>'+
- '<div>'+m.matches.map(a=>'<span class="artifact-tag"><span class="abbr">'+esc(a.slice(0,2))+artifactImgTag(a)+'</span>'+esc(a)+'</span>').join('')+'</div>'+
+ '<div>'+m.matches.map(a=>'<span class="artifact-tag" data-help-kind="artifact" data-help-name="'+esc(a)+'" tabindex="0"><span class="abbr">'+esc(a.slice(0,2))+artifactImgTag(a)+'</span>'+esc(a)+'</span>').join('')+'</div>'+
  (comp?'<p class="handoff">Possible direction: <b>'+esc(comp.name)+'</b></p>':'')+'</article>';
 }
 function renderArtifactHolders(){
@@ -1515,18 +1538,18 @@ function holderFit(path,o){
  return {path,matched,craft,owned,score};
 }
 function holderStep(n){
- return '<span class="holder-step"><img src="'+championImg(n)+'" alt="" loading="lazy" onerror="this.remove()">'+esc(n)+'</span>';
+ return '<span class="holder-step" data-champion="'+esc(n)+'" tabindex="0"><img src="'+championImg(n)+'" alt="" loading="lazy" onerror="this.remove()">'+esc(n)+'</span>';
 }
 function holderCard(m){
  const o=openingState();
  const p=m.path,name=p[0],cost=holderCost(name);
  const rim={1:'#9ba8bd',2:'#70cf9d',3:'#6ca7ee',4:'#ad81eb',5:'#f4c66f'}[cost]||'#7891ad';
- const source=(name,idx)=>{const i=getItem(name),radiant=o.radiants.includes(radiantName(name));return '<span class="holder-item">'+(radiant?radiantImgTag(radiantName(name)):'<img src="'+(i?itemImg(i[5]):'')+'" alt="" loading="lazy" onerror="this.remove()">')+esc((radiant?'Radiant ':'')+name)+(idx?' (craft)':'')+'</span>';};
+ const source=(name,idx)=>{const i=getItem(name),radiant=o.radiants.includes(radiantName(name));return '<span class="holder-item" data-help-kind="'+(radiant?'radiant':'item')+'" data-help-name="'+esc(radiant?radiantName(name):name)+'" tabindex="0">'+(radiant?radiantImgTag(radiantName(name)):'<img src="'+(i?itemImg(i[5]):'')+'" alt="" loading="lazy" onerror="this.remove()">')+esc((radiant?'Radiant ':'')+name)+(idx?' (craft)':'')+'</span>';};
  const target=p[1]===0?p[4]:p[5];
  const last=p[1]===0?p[5]:[];
  const firstId=p[6].find(id=>COMP_LIST.some(c=>c.id===id));
  const firstComp=COMP_LIST.find(c=>c.id===firstId);
- return '<article class="holder-card'+(m.owned?' owned':'')+'"><div class="holder-person"><div class="holder-photo" style="--holder-rim:'+rim+'">'+esc(name.slice(0,2))+'<img src="'+championImg(name)+'" alt="" loading="lazy" onerror="this.remove()"><small>'+cost+'g</small></div><div><b>'+esc(name)+'</b><div class="meta">'+esc(p[2])+'</div><div class="holder-label">'+(m.owned?'ON YOUR BOARD · '+m.owned.stars+'★':m.matched.length+' item'+(m.matched.length===1?'':'s')+' fit')+'</div></div></div>'
+ return '<article class="holder-card'+(m.owned?' owned':'')+'" data-champion="'+esc(name)+'" tabindex="0"><div class="holder-person"><div class="holder-photo" style="--holder-rim:'+rim+'">'+esc(name.slice(0,2))+'<img src="'+championImg(name)+'" alt="" loading="lazy" onerror="this.remove()"><small>'+cost+'g</small></div><div><b>'+esc(name)+'</b><div class="meta">'+esc(p[2])+'</div><div class="holder-label">'+(m.owned?'ON YOUR BOARD · '+m.owned.stars+'★':m.matched.length+' item'+(m.matched.length===1?'':'s')+' fit')+'</div></div></div>'
  +'<p class="holder-summary">'+esc(p[7])+'</p>'
  +'<div class="holder-minititle">Items that fit</div><div class="holder-gooditems">'+(m.matched.length?m.matched.map(n=>source(n,0)).join(''):(m.craft.length?'':'No completed matching items yet'))+m.craft.slice(0,1).map(n=>source(n,1)).join('')+'</div>'
  +'<div class="holder-minititle">Transition</div><div class="holder-flow">'+holderStep(name)+'<span class="holder-arrow">→</span>'+target.slice(0,2).map(holderStep).join('')+(last.length?'<span class="holder-arrow">→</span>'+last.slice(0,2).map(holderStep).join(''):'')+'</div>'
