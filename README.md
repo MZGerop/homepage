@@ -35,6 +35,29 @@ The browser's context menu is suppressed **only for these interactive planner co
 
 For touchscreen, keyboard, or accessibility use, visible **−** controls and direct 1★ / 2★ / 3★ buttons remain. The selected champion row has **×** to remove a champion entirely.
 
+## Augment tiers, three-offer comparison and icon explanations (v2.0)
+
+The Opening Planner includes a curated **Patch 18.6 Augment tier list (63 entries)**, sourced from [PivotTFT's Set 18 rankings](https://www.pivottft.com/augments/) as of 7 November 2026. The source has more than 249 ranked Augments; the guide shows a selected subset, **not** the complete game catalogue.
+
+### Choosing between three Augments
+
+- Under **Augments**, switch between **My Augments** (the three you already selected) and **Compare 3 offers** (the three offered in-game now).
+- Choose up to three offer icons. A contextual recommendation compares **general patch tier**, your selected champions and items, your possible composition, **stage and level**, plus trait/strategy synergy.
+- A situational S-tier trait Augment is penalized when you have none of its required trait units. The reason and warnings appear in short prose under the icon.
+- **Mark as chosen** records your decision without deleting the other options. Existing saves migrate with a new `opening.augmentOffers` array. Clear opening resets both picked Augments and offered choices.
+- Filter the Augment catalogue by **Silver / Gold / Prismatic**, category, name, or S / A / B / C tier.
+- Entries no longer verified as live in Patch 18.6 are marked **Unranked / legacy** rather than assigned a fabricated tier. These remain readable if previously saved.
+
+**Scores are heuristic fit comparisons, not win probabilities**, measured placements, or a game-data feed. They cannot know your opponents, current HP, streak, exact shop pool, or augment offers unless you enter them.
+
+### Visual explanation system
+
+- All item, component, Artifact, Radiant and Augment tiles, champion portraits, champion tier panels, champion-item recipes, shop targets, synergy combos, and item tier icons receive **short contextual explanations** when hovered or keyboard-focused.
+- Explanations summarize what an item does, its two-component recipe where applicable, good holders, champion role and recommended items, or why an Augment is valuable.
+- A **ⓘ Explain icons** toggle makes icons tap-to-explain instead of tap-to-select, which is more usable on touchscreens and for people who prefer visual reading. Switch it off to return to ordinary controls.
+- Normal left-click +1 / right-click −1, champion star progression, and selected item quantities remain intact outside Explain mode.
+- Missing Augment artwork falls back to a generic tier-colored icon rather than a broken image, and original item/Artifact icon fallbacks remain.
+
 ## Radiant item selection (v1.9)
 
 - Added a dedicated **gold-bordered Radiant items** icon picker beside completed items and Artifacts, covering **36 regular Radiant upgrades** in Set 18. The separate single-use Radiant potions and Lucky Item Chest are intentionally excluded from this equipment picker.
