@@ -152,3 +152,13 @@ body[data-tft-tab="finds"] #opening > #pickerDetails{display:block!important}
  .tft-tabs-brand-right{gap:7px}
  .tft-reset-game{padding:7px 9px;font-size:11px}
 }
+
+/* Optional early legendary alert: only appears after a logged 5-cost in Stage 2/3. */
+.early-legendary-note:empty{display:none}
+.early-legendary-note:not(:empty){margin:12px 0 16px;padding:14px 17px;border:1px solid #72664a;border-left:4px solid #f5cb6c;border-radius:10px;background:linear-gradient(100deg,#302a2e,#152438)}
+.early-legendary-note strong{display:block;color:#ffe6a5;font-size:14px}
+.early-legendary-note p{font-size:12px;color:#d0e0ef;margin:5px 0 0;line-height:1.6}
+.build-dismiss-btn{border:1px solid #536379;background:#1a2a40;color:#ccd8ec;border-radius:8px;font-size:11px;font-weight:750;line-height:1.35;padding:8px 10px;margin:7px 4px 0 0;cursor:pointer;white-space:normal}
+.build-dismiss-btn:hover{background:#243851;border-color:#86a0bc;color:white}
+.comp-live-status{margin:11px 0 4px;padding:9px 10px;font-size:11px;color:#abcab9;border-left:3px solid #5a9f8f;background:#1b323b;border-radius:0 7px 7px 0}
+.comp-live-status.unavailable{color:#edc3b7;border-left-color:#b97a6e;background:#392b34}
