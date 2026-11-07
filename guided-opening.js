@@ -87,8 +87,8 @@
       [['Spellweaver + Invoker','Morgana','Veigar, Karma, Ahri','An off-trait caster gets extra mana as teammates cast.']]],
     ['Vanguard','Frying Pan + Vest',['Lillia','Fiddlesticks'],['Rakan','Sentinel'],
       [['Vanguard + Fae','Lillia','Rakan, Xayah, Sentinel','A durable outside frontline can complete a Vanguard breakpoint.']]],
-    ['Coven','Elusive / cannot craft',['Morgana'],['Camille','Elise','Caitlyn'],
-      [['Coven + spell carry','Morgana','Camille, Elise, Caitlyn','Only take this direction if you already have useful Coven units.']]],
+    ['Coven','Elusive / cannot craft',['Fiddlesticks'],['Camille','Elise','Caitlyn'],
+      [['Coven + spell carry','Fiddlesticks','Camille, Elise, Caitlyn','Only take this direction if you already have useful Coven units.']]],
     ['Defender','Elusive / cannot craft',['Rengar'],['Ornn','Leona','Shen'],
       [['Defender + melee carry','Rengar','Ornn, Leona, Shen','Use the extra defensive trait on a non-Defender with room for an emblem.']]],
     ['Flora Fatalis','Elusive / cannot craft',['Veigar','Cassiopeia'],[],
@@ -274,6 +274,7 @@
     }).join('');
     if(!chosen.length){
       el('guideEmblemIdeas').innerHTML='';
+      el('guideEmblemFollowUp').innerHTML='';
       el('guideEmblemStatus').textContent='No emblem selected. This section does not recommend chasing or crafting one.';
       return;
     }
@@ -283,21 +284,36 @@
       if(!e)return;
       e.ideas.forEach(function(idea){ideas.push({e:e,idea:idea,score:emblemIdeaScore(idea,e,o)});});
     });
-    ideas.sort(function(a,b){return b.score-a.score;});
+    ideas.sort(function(a,b){var selected=o.emblemPlan||'';var sa=a.e.name+'::'+a.idea[0]===selected?1:0,sb=b.e.name+'::'+b.idea[0]===selected?1:0;return sb-sa||b.score-a.score;});
     el('guideEmblemStatus').textContent=chosen.length+' emblem type'+(chosen.length===1?'':'s')+
       ' logged. These are possible pivots because you already have an emblem—not shopping goals.';
     el('guideEmblemIdeas').innerHTML=ideas.slice(0,4).map(function(x){
       var e=x.e,idea=x.idea,holder=idea[1],already=owned(o,holder),natural=e.natural.filter(function(n){return owned(o,n);});
       var desired=idea[2].split(',').map(function(s){return s.trim();})
         .filter(function(n){return n&&!/^(get|find) /i.test(n)&&!owned(o,n);}).slice(0,3);
-      return '<article class="guide-emblem-idea"><div class="guide-step">'+escape(e.name)+' EMBLEM · IDEA</div>'+
+      var planId=e.name+'::'+idea[0],active=o.emblemPlan===planId;
+      return '<article class="guide-emblem-idea'+(active?' chosen':'')+'"><div class="guide-step">'+escape(e.name)+' EMBLEM · '+(active?'YOUR CHOSEN COMBO':'IDEA')+'</div>'+
         '<h4>'+escape(idea[0])+'</h4><p>'+escape(idea[3])+'</p>'+
         '<p><b>Try on:</b> '+escape(holder)+(already?' · you own this unit':' · later if found')+'</p>'+
         (natural.length?'<small>Matching units you logged: '+escape(natural.join(', '))+'</small>':
           '<small>Check your natural '+escape(e.name)+' units before committing.</small>')+
-        '<div class="guide-idea-actions">'+desired.map(function(n){return '<button type="button" data-guide-found="'+escape(n)+'">I found '+escape(n)+'</button>';}).join('')+
+        '<div class="guide-idea-actions"><button type="button" data-guide-emblem-plan="'+escape(planId)+'" class="guide-action primary">'+(active?'✓ Following combo':'Try this combo')+'</button>'+desired.map(function(n){return '<button type="button" data-guide-found="'+escape(n)+'">I found '+escape(n)+'</button>';}).join('')+
         '<button type="button" data-guide-emblem-learn="'+escape(e.name)+'">Why this?</button></div></article>';
     }).join('');
+    var selected=ideas.find(function(x){return x.e.name+'::'+x.idea[0]===o.emblemPlan;});
+    if(selected){
+      var e=selected.e,idea=selected.idea,needed=idea[2].split(',').map(function(s){return s.trim();})
+        .filter(function(n){return n&&!/^(get|find) /i.test(n)&&!owned(o,n);}).slice(0,4);
+      var holder=idea[1];
+      el('guideEmblemFollowUp').innerHTML='<div class="guide-panel-header"><div><div class="guide-step">YOUR CHOSEN PIVOT</div><h3>'+escape(idea[0])+'</h3>'+
+        '<p>Next, look for natural trait pieces and a suitable non-trait holder. Do not buy a weak unit solely for the emblem.</p></div>'+
+        '<button type="button" class="guide-action" data-guide-emblem-unfocus="1">Change plan</button></div>'+
+        '<div class="guide-actions">'+needed.map(function(n){
+          return '<button class="guide-action" type="button" data-guide-found="'+escape(n)+'">I found '+escape(n)+'</button>';
+        }).join('')+(owned(o,holder)?'<span class="guide-round-now">Holder '+escape(holder)+' already owned</span>':
+          '<button class="guide-action" data-guide-found="'+escape(holder)+'">I found holder '+escape(holder)+'</button>')+'</div>'+
+        '<p class="guide-warning">A possible route, not a guaranteed breakpoint. Double-check how many natural '+escape(e.name)+' units you can field at your current level.</p>';
+    }else el('guideEmblemFollowUp').innerHTML='';
   }
   function render(){
     var o=ostate();
@@ -335,6 +351,8 @@
     if(b.dataset.guideEmblem){var o=ostate();o.emblems.push(b.dataset.guideEmblem);persist();return;}
     if(b.dataset.guideEmblemAdd){var o=ostate();o.emblems.push(b.dataset.guideEmblemAdd);persist();return;}
     if(b.dataset.guideEmblemRemove){var o=ostate(),i=o.emblems.indexOf(b.dataset.guideEmblemRemove);if(i>=0)o.emblems.splice(i,1);persist();return;}
+    if(b.dataset.guideEmblemPlan){var o=ostate();o.emblemPlan=b.dataset.guideEmblemPlan;persist();return;}
+    if(b.dataset.guideEmblemUnfocus){var o=ostate();o.emblemPlan='';persist();return;}
     if(b.dataset.guideEmblemLearn){var m=EMBLEMS.find(function(x){return x.name===b.dataset.guideEmblemLearn;});if(m)el('guideEmblemStatus').textContent=m.name+' Emblem: '+m.recipe+'. Try '+m.holders.join(' or ')+'. A useful holder must not already have the trait. Only commit if you can reach a meaningful breakpoint.';return;}
     if(b.dataset.guideAllChamps){api.showFinder('unit');return;}
     if(b.dataset.guideDetails){api.showFinder('component');return;}
