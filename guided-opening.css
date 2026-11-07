@@ -69,3 +69,6 @@
 @media(max-width:1180px){.guide-route-grid{grid-template-columns:1fr 1fr}.guide-columns{grid-template-columns:1fr}}
 @media(max-width:760px){.guide-route-grid{grid-template-columns:1fr}.guide-starter{width:calc(25% - 6px)}.guide-starters{gap:7px}.guide-panel{padding:14px}.guide-intro h2{font-size:23px}}
 @media(max-width:490px){.guide-starter{width:calc(33.333% - 5px)}.guide-augment{grid-template-columns:32px 1fr}.guide-augment .guide-action{grid-column:2}.guide-emblem-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.guide-emblem-idea.chosen{border-color:#e0bc7b;background:#262b42}
+#guideEmblemFollowUp:empty{display:none}
