@@ -186,6 +186,44 @@
 .shop-reality{display:inline-block;border-radius:5px;font-size:10px;font-weight:750;color:#bfe2ff;background:#284562;padding:2px 5px;margin-left:5px}
 @media(max-width:950px){.round-controls{grid-template-columns:1fr 1fr}.round-controls>div:last-child{grid-column:1/-1}}
 @media(max-width:600px){.round-panel{padding:12px}.round-controls{grid-template-columns:1fr}.round-controls>div:last-child{grid-column:auto}}
+
+/* Item/Artifact values and contextual strong-combo cards */
+.value-guide,.combo-guide{margin:22px 0;border-top:1px solid #344d6a;padding-top:17px}
+.value-guide-top{display:flex;align-items:start;justify-content:space-between;gap:15px}
+.value-guide-top h3{font-size:20px;margin:0 0 4px}.value-guide-top p{font-size:12px;margin:0}
+.value-guide-top>a{font-size:11px;white-space:nowrap;margin-top:7px}
+.value-filters{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.value-tier-group{display:flex;gap:11px;margin-top:12px;background:#14263b;border:1px solid #344d64;border-radius:10px;padding:11px}
+.value-tier-letter{flex:0 0 38px;display:flex;align-items:center;justify-content:center;color:#f5f7ff;font-size:23px;font-weight:900;background:#425273;border-radius:8px;height:44px}
+.value-tier-letter.tier-S{background:#7d6231;color:#fff3c3}.value-tier-letter.tier-A{background:#265d59;color:#caffef}.value-tier-letter.tier-B{background:#345b86;color:#d9edff}.value-tier-letter.tier-C{background:#50425c;color:#e7d6f9}
+.value-tier-contents{flex:1;min-width:0}.value-tier-contents p{font-size:11px;margin:0 0 9px;color:#a7c0d9}
+.value-icon-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:7px}
+.value-icon{display:flex;flex-direction:column;align-items:center;gap:5px;padding:7px 5px;text-align:center;border:1px solid #314861;border-radius:9px;background:#1a2a43;position:relative;color:#e1e9f7;min-width:0}
+.value-icon:hover{border-color:#a2b6d5;background:#253c58}
+.value-icon.owned{border-color:#60c9a4;background:#18483c}
+.value-icon.can-craft{border-color:#ae98d3;background:#322e49}
+.value-icon img{height:48px;width:48px;border-radius:8px;object-fit:cover}
+.value-icon .value-fallback{height:48px;width:48px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;background:#39415b;font-size:15px}
+.value-icon-name{font-size:10.5px;line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere;min-height:25px}
+.value-label{position:absolute;right:2px;top:2px;border-radius:12px;color:#113020;background:#9debc4;font-size:10px;font-weight:900;padding:3px 5px}
+.value-empty{padding:16px;color:#bfd1e3;font-size:12px}
+.pick-quick-tier{position:absolute;left:3px;top:3px;font-size:10px;font-weight:850;border:1px solid #50647a;color:#eaf2ff;border-radius:5px;background:#26384e;padding:2px 4px}
+.combo-card-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.combo-card{border:1px solid #455f80;border-radius:11px;background:#192b42;padding:13px;min-width:0}
+.combo-card.matched{border-color:#67c9a7;background:#1a3c3b}
+.combo-card-head{display:flex;align-items:center;gap:9px;justify-content:space-between}
+.combo-card-head h4{font-size:15px;line-height:1.25;margin:0}
+.combo-class{font-size:10px;border:1px solid #6d6186;border-radius:6px;background:#3f3752;color:#ddcaff;padding:4px 6px;white-space:nowrap}
+.combo-icons{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin:11px 0}
+.combo-icon{display:flex;align-items:center;gap:5px;font-size:11px;background:#29415a;border-radius:8px;padding:4px 7px 4px 4px;max-width:100%}
+.combo-icon img{width:36px;height:36px;object-fit:cover;border-radius:6px}
+.combo-icon .fallback{width:36px;height:36px;background:#55456b;border-radius:6px;display:flex;align-items:center;justify-content:center}
+.combo-icon.have{outline:2px solid #63caab}
+.combo-card p{font-size:12px;color:#c3d8eb;line-height:1.46;margin:7px 0}
+.combo-match{font-size:11px;color:#9febc8;font-weight:800}
+.combo-build-link{display:block;width:100%;margin-top:10px;border:1px solid #587d9e;border-radius:8px;background:#274764;color:#e6f6ff;font-size:12px;padding:9px;text-align:left}
+@media(max-width:920px){.combo-card-grid{grid-template-columns:1fr}}
+@media(max-width:650px){.value-guide-top{flex-direction:column}.value-tier-group{padding:8px;gap:7px}.value-tier-letter{flex-basis:32px;font-size:18px;height:37px}.value-icon-grid{grid-template-columns:repeat(auto-fill,minmax(71px,1fr));gap:5px}.value-icon img,.value-icon .value-fallback{height:42px;width:42px}.value-icon-name{font-size:10px}}
 </style>
 </head>
 <body>
@@ -250,6 +288,18 @@
 
 </div>
 <div class="opening-samples"><strong>Try an example:</strong><button class="chip" id="openSampleAD" type="button">AD + Guinsoo + Kayle</button><button class="chip" id="openSampleAP" type="button">AP + Teemo 2★</button><button class="chip" id="openSampleFae" type="button">Embiggen + Fae</button><button class="chip" id="openSampleRammus" type="button">Rammus reroll</button></div>
+
+<section class="value-guide" aria-label="Current item and Artifact tier lists">
+ <div class="value-guide-top"><div><div class="eyebrow">Patch 18.6 · Snapshot 7 November 2026</div><h3>Item & Artifact tier list</h3><p class="muted">S = most flexible / powerful · A = strong · B = situational · C = niche. A perfect holder can make a B-tier Artifact excellent.</p></div><a href="https://www.pivottft.com/items/" target="_blank" rel="noopener">Source: PivotTFT 18.6 ↗</a></div>
+ <div class="value-filters"><div id="valueKindFilters" class="picker-filters" role="group" aria-label="Select item class"><button data-value-kind="item" class="active">Completed items</button><button data-value-kind="artifact">Artifacts</button></div><div id="valueTierFilters" class="picker-filters" role="group" aria-label="Filter by tier"><button data-value-tier="all" class="active">All tiers</button><button data-value-tier="S">S</button><button data-value-tier="A">A</button><button data-value-tier="B">B</button><button data-value-tier="C">C</button><button data-value-tier="inventory">Mine / craftable</button></div></div>
+ <div id="valueTierBoard" class="value-tier-board" aria-live="polite"></div>
+ <p class="muted" style="font-size:11px;margin-top:9px">This is a manually curated patch snapshot, not a live win-rate model. Tiers reflect broad effectiveness; don't force an S-tier item onto the wrong champion. Artifact icons are sourced from the Set 18 image library.</p>
+</section>
+<section class="combo-guide" aria-label="High synergy item combinations">
+ <div class="value-guide-top"><div><div class="eyebrow">Champion + Item + Artifact interactions</div><h3>Powerful combinations to look for</h3><p class="muted">Some combinations are far stronger together than their individual item tiers suggest.</p></div></div>
+ <div class="picker-filters" id="comboFilters" role="group" aria-label="Choose which combos to show"><button class="active" data-combo-filter="all">All combos</button><button data-combo-filter="matched">Matches my opening</button></div>
+ <div id="comboCards" class="combo-card-grid" aria-live="polite"></div>
+</section>
 <section class="artifact-choices" aria-label="Artifact holders">
   <div class="holder-titlebar"><div><div class="eyebrow">Artifacts → Champions → Builds</div><h3>Who should hold my Artifacts?</h3><p class="muted">Early, midgame and late-game options, prioritized by Artifact fit and upgraded champions you already own.</p></div><span class="tag" id="artifactHolderCount">Choose an Artifact</span></div>
   <div id="artifactHolderResults" class="artifact-holder-grid" aria-live="polite"></div>
@@ -519,6 +569,46 @@ function bindRound(){
  }
 }
 
+
+/* PivotTFT 18.6 snapshot: tier applies to item generally, not to every champion. */
+const ITEM_TIER_GROUPS={"S":{"item":["Gargoyle Stoneplate","Guinsoo's Rageblade","Infinity Edge","Jeweled Gauntlet","Rabadon's Deathcap","Spear of Shojin","Warmog's Armor"],"artifact":["Dawncore","Luden's Tempest","Silvermere Dawn","Wit's End"]},"A":{"item":["Adaptive Helm","Archangel's Staff","Blue Buff","Crownguard","Deathblade","Edge of Night","Giant Slayer","Hand of Justice","Hextech Gunblade","Kraken's Fury","Last Whisper","Morellonomicon","Protector's Vow","Red Buff","Spirit Visage","Striker's Flail","Thief's Gloves","Void Staff"],"artifact":["Eternal Pact","Hellfire Hatchet","Horizon Focus","Lich Bane","Lightshield Crest","Manazane","Talisman of Ascension"]},"B":{"item":["Bloodthirster","Bramble Vest","Dragon's Claw","Evenshroud","Ionic Spark","Nashor's Tooth","Quicksilver","Steadfast Heart","Sunfire Cape","Titan's Resolve"],"artifact":["Aegis of Dusk","Blighting Jewel","Flickerblades","Gold Collector","Infinity Force","Mittens","Rapid Firecannon","Seeker's Armguard","Statikk Shiv","The Indomitable","Titanic Hydra","Void Gauntlet","Zhonya's Paradox"]},"C":{"item":[],"artifact":["Aegis of Dawn","Fishbones","Forbidden Idol","Gambler's Blade","Hullcrusher","Mogul's Mail"]}};
+const ITEM_TIER={};const ARTIFACT_TIER={};
+for(const [tier,data] of Object.entries(ITEM_TIER_GROUPS)){
+ for(const name of data.item)ITEM_TIER[name]=tier;
+ for(const name of data.artifact)ARTIFACT_TIER[name]=tier;
+}
+function tierFor(name,kind){return(kind==='artifact'?ARTIFACT_TIER:ITEM_TIER)[name]||'B';}
+let valueKind='item',valueTier='all';
+function tierIcon(name,kind,o){
+ const artifact=kind==='artifact',info=artifact?ARTIFACTS[name]:getItem(name);
+ const owned=counted(artifact?o.artifacts:o.items)[name]||0;
+ const craft=!artifact&&!owned&&canCraft(name,o.components);
+ const src=artifact?artifactImage(name):itemImg(info[5]);
+ return '<button class="value-icon'+(owned?' owned':craft?' can-craft':'')+'" type="button" data-tier-kind="'+kind+'" data-tier-name="'+esc(name)+'" title="'+esc(name+(artifact?' — Artifact. ':' — '+info[1]+' + '+info[2]+'. ')+(owned?'You have '+owned+'. ':craft?'Can craft. ':'')+(artifact?info.desc:info[4]))+'">'+
+ (artifact?'<span class="value-fallback">'+esc(name.slice(0,2).toUpperCase())+artifactImgTag(name)+'</span>':'<span class="value-fallback">'+esc(name.slice(0,2).toUpperCase())+'<img src="'+src+'" loading="lazy" alt="" onerror="this.remove()"></span>')+
+ (owned?'<span class="value-label">×'+owned+'</span>':craft?'<span class="value-label">Craft</span>':'')+
+ '<span class="value-icon-name">'+esc(name)+'</span></button>';
+}
+function renderValueTiers(){
+ const o=openingState(),list=valueKind==='item'?ITEMS.map(x=>x[0]):Object.keys(ARTIFACTS);
+ const groups=['S','A','B','C'];
+ const desired=groups.filter(t=>['all','inventory'].includes(valueTier)||t===valueTier);
+ $('#valueTierBoard').innerHTML=desired.map(t=>{
+   let names=list.filter(n=>tierFor(n,valueKind)===t);
+   if(valueTier==='inventory')names=names.filter(n=>counted(valueKind==='item'?o.items:o.artifacts)[n]||valueKind==='item'&&canCraft(n,o.components));
+   if(!names.length)return '';
+   const description={S:'Top broad value — still needs the right holder',A:'Strong and usually worth using',B:'Good with a matching champion or team',C:'Niche or heavily dependent on its holder'}[t];
+   return '<div class="value-tier-group"><span class="value-tier-letter tier-'+t+'">'+t+'</span><div class="value-tier-contents"><p>'+description+' · '+names.length+' items</p><div class="value-icon-grid">'+names.map(n=>tierIcon(n,valueKind,o)).join('')+'</div></div></div>';
+ }).join('')||'<div class="value-empty">No items in this category match your current selection.</div>';
+ document.querySelectorAll('#valueKindFilters button').forEach(b=>{let active=b.dataset.valueKind===valueKind;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});
+ document.querySelectorAll('#valueTierFilters button').forEach(b=>{let active=b.dataset.valueTier===valueTier;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});
+}
+function bindValueTiers(){
+ $('#valueKindFilters').addEventListener('click',e=>{const b=e.target.closest('[data-value-kind]');if(b){valueKind=b.dataset.valueKind;renderValueTiers();}});
+ $('#valueTierFilters').addEventListener('click',e=>{const b=e.target.closest('[data-value-tier]');if(b){valueTier=b.dataset.valueTier;renderValueTiers();}});
+ $('#valueTierBoard').addEventListener('click',e=>{const b=e.target.closest('[data-tier-name]');if(b){chooseIcon(b.dataset.tierKind,b.dataset.tierName);}});
+}
+
 function openingState(){
  if(!state.opening||typeof state.opening!=='object')state.opening={};
  var o=state.opening;
@@ -609,9 +699,10 @@ function renderTile(type,id,label,src,n,more){
  const found=n>0;const cost=more&&more.cost;
  const img='<span class="pick-art"'+(cost?' style="border-bottom:3px solid '+COST_COLORS[cost]+'"':'')+'>'+esc(label.slice(0,2).toUpperCase())+'<img src="'+src+'" loading="lazy" alt="" onerror="this.remove()">'+(cost?'<span class="pick-cost">'+cost+'g</span>':'')+'</span>';
  const count=found?'<span class="pick-number">'+(type==='unit'?'★'.repeat(n):n)+'</span>':'';
+ const quickTier=type==='item'?'<span class="pick-quick-tier">'+tierFor(id,'item')+'</span>':'';
  const instructions=type==='unit'?'Left click: increase stars; right click: decrease stars. ':type==='augment'?'Left click: toggle; right click: remove. ':'Left click: add one; right click: remove one. ';
   const labelText=type==='unit'?label+', currently '+n+' stars, left click to upgrade, right click to downgrade':label+', '+n+' selected, left click to add, right click to remove';
-  let s='<div class="pick-cell"><button type="button" class="pick-main" data-kind="'+type+'" data-id="'+esc(id)+'" aria-pressed="'+found+'" aria-label="'+esc(labelText)+'" title="'+esc(instructions+label+(more&&more.desc?' — '+more.desc:''))+'">'+img+count+'<span class="pick-name">'+esc(label)+'</span></button>';
+  let s='<div class="pick-cell"><button type="button" class="pick-main" data-kind="'+type+'" data-id="'+esc(id)+'" aria-pressed="'+found+'" aria-label="'+esc(labelText)+'" title="'+esc(instructions+label+(more&&more.desc?' — '+more.desc:''))+'">'+img+count+quickTier+'<span class="pick-name">'+esc(label)+'</span></button>';
  if(found&&type==='unit'){s+='<div class="pick-stars" role="group" aria-label="'+esc(label)+' star level">'+[1,2,3].map(x=>'<button type="button" data-star="'+x+'" data-id="'+esc(id)+'" class="'+(x===n?'active':'')+'" aria-pressed="'+(x===n)+'" aria-label="'+esc(label)+' '+x+' stars">'+('★'.repeat(x))+'</button>').join('')+'</div>';}
  if(found&&type!=='augment'){s+='<button class="pick-minus" type="button" data-minus="'+type+'" data-id="'+esc(id)+'" aria-label="Remove '+esc(label)+'">−</button>';}
  return s+'</div>';
@@ -625,7 +716,7 @@ function renderArtifacts(o){
   .map(([name,info])=>{
    const qty=counts[name]||0;
    return '<div class="pick-cell"><button type="button" class="pick-main" data-kind="artifact" data-id="'+esc(name)+'" aria-pressed="'+!!qty+'" aria-label="'+esc(name+', '+qty+' owned, left click to add, right click to remove')+'" title="'+esc(name+' — '+info.desc+' (Artifact, cannot craft)')+'"><span class="pick-art">'+esc(name.slice(0,2))+artifactImgTag(name)+'</span>'+
-    (qty?'<span class="pick-number">'+qty+'</span>':'')+'<span class="pick-name">'+esc(name)+'</span></button>'+
+    (qty?'<span class="pick-number">'+qty+'</span>':'')+'<span class="pick-quick-tier">'+tierFor(name,'artifact')+'</span><span class="pick-name">'+esc(name)+'</span></button>'+
     (qty?'<button type="button" class="pick-minus" data-minus="artifact" data-id="'+esc(name)+'" aria-label="Remove one '+esc(name)+'">−</button>':'')+
     '</div>';
   }).join('');
@@ -644,6 +735,7 @@ function renderVisual(o){
  $('#pChosenUnits').innerHTML=o.units.map(u=>'<span class="chosen"><img src="'+championImg(u.name)+'" alt="" onerror="this.remove()">'+esc(u.name)+' <span class="goldstars">'+('★'.repeat(u.stars))+'</span><button type="button" data-clear-unit="'+esc(u.name)+'" aria-label="Remove '+esc(u.name)+' entirely">×</button></span>').join('');
  $('#pAugments').innerHTML=AUGMENT_HINTS.filter(x=>visualFilter.augment==='all'||x.group===visualFilter.augment).map(x=>renderTile('augment',x.id,x.id,'https://hexcomps.com/img/augments/'+AUGMENT_ART[x.id],o.augments.includes(x.id)?1:0,x)).join('');
  renderArtifacts(o);
+ renderValueTiers();
  $('#pItemCount').textContent=o.items.length;$('#pComponentCount').textContent=o.components.length;$('#pUnitCount').textContent=o.units.length;$('#pAugmentCount').textContent=o.augments.length+' / 3';
  scrollIds.forEach((id,i)=>$(id).scrollTop=scrolls[i]);
  [['#pItemFilters','if','item'],['#pUnitFilters','uf','unit'],['#pAugmentFilters','af','augment']].forEach(([sel,k,filter])=>document.querySelectorAll(sel+' button').forEach(b=>{const on=b.dataset[k]===visualFilter[filter];b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on));}));
@@ -948,7 +1040,7 @@ function example(type){
  state.opening=o;save();renderOpening();
 }
 function initOpening(){
- bindVisual();
+ bindVisual();bindValueTiers();
  $('#openingClear').onclick=function(){state.opening={items:[],components:[],units:[],augments:[],artifacts:[],stage:'3',round:2,level:6,levelManual:false};visualFilter={item:'all',unit:'early',augment:'all',artifact:'all'};visualSearch={item:'',unit:'',artifact:''};$('#pItemSearch').value='';$('#pUnitSearch').value='';$('#pArtifactSearch').value='';save();renderOpening();};
  $('#openSampleAD').onclick=function(){example('ad');};$('#openSampleAP').onclick=function(){example('ap');};$('#openSampleFae').onclick=function(){example('fae');};$('#openSampleRammus').onclick=function(){example('rammus');};renderOpening();
 }
