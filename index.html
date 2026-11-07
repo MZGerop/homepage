@@ -224,6 +224,20 @@
 .combo-build-link{display:block;width:100%;margin-top:10px;border:1px solid #587d9e;border-radius:8px;background:#274764;color:#e6f6ff;font-size:12px;padding:9px;text-align:left}
 @media(max-width:920px){.combo-card-grid{grid-template-columns:1fr}}
 @media(max-width:650px){.value-guide-top{flex-direction:column}.value-tier-group{padding:8px;gap:7px}.value-tier-letter{flex-basis:32px;font-size:18px;height:37px}.value-icon-grid{grid-template-columns:repeat(auto-fill,minmax(71px,1fr));gap:5px}.value-icon img,.value-icon .value-fallback{height:42px;width:42px}.value-icon-name{font-size:10px}}
+
+.shop-targets{margin-top:12px;border-top:1px solid #3b5871;padding-top:11px}
+.shop-targets-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.shop-targets-head>b{font-size:12px}.shop-targets-head>span{font-size:11px}
+.shop-target-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px}
+.shop-target{display:flex;align-items:center;gap:7px;border:1px solid #4c617d;background:#183149;border-radius:9px;padding:6px;min-width:0}
+.shop-target-image{width:43px;height:43px;flex:0 0 43px;border-radius:7px;border:2px solid var(--target-color,#89a8be);background:#445676;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:14px}
+.shop-target-image img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.shop-target-name{min-width:0}.shop-target-name b{font-size:11px;line-height:1.2;display:block;overflow-wrap:anywhere}
+.shop-target-name span{font-size:10px;color:#c6d7eb}
+.shop-target.have{border-color:#69c9a7;background:#1b4a40}
+.shop-target-small{color:#a2b6cf;font-size:10px;margin-top:6px}
+@media(max-width:1120px){.shop-target-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:620px){.shop-targets-head{flex-direction:column;align-items:flex-start;gap:3px}.shop-target-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 </head>
 <body>
@@ -255,6 +269,7 @@
     <div><strong>Your level</strong><div class="picker-filters" id="pLevels" role="group" aria-label="Your player level"><button data-level="3">3</button><button data-level="4">4</button><button data-level="5">5</button><button data-level="6" class="active">6</button><button data-level="7">7</button><button data-level="8">8</button><button data-level="9">9</button><button data-level="10">10</button></div></div>
   </div>
   <div id="roundGuidance" class="round-guidance" aria-live="polite"></div>
+<div class="shop-targets"><div class="shop-targets-head"><b>Realistic champions to look for</b><span class="muted">Based on your round, shop level and selected gear</span></div><div id="shopTargets" class="shop-target-grid" aria-live="polite"></div></div>
 </section>
 
 <div class="opening-grid">
@@ -547,11 +562,41 @@ function roundAdvice(o){
  if(lv===9)return '5-costs become relevant (15% per slot). Add expensive finishers only if you can afford them.';
  return 'A late-game shop full of 4/5-costs. Upgrade strong units without breaking your synergies.';
 }
+
+/* Quick shop shortlist; never confuses tier odds with exact champion hit chance. */
+const SHOP_CANDIDATES=[
+ 'Varus','Xayah','Karma','Ornn','Leona','Veigar','Rakan',
+ 'Kayle','Teemo','Alistar','Yunara','LeBlanc','Sejuani','Warwick',
+ 'Rammus','Azir','Master Yi','Vi','Mama Beak','Tristana','Cassiopeia',
+ 'Ezreal','Aphelios','Ahri','Morgana','Sentinel','Nidalee','Sivir','Brambleback',
+ 'Draven','Alune','Ashe','Maokai','Taric'
+];
+function renderShopTargets(o){
+ const standard=counted(o.items),artifacts=counted(o.artifacts);
+ const list=SHOP_CANDIDATES.map(name=>{
+   const cost=holderCost(name),chance=shopChance(o,cost);
+   const owned=o.units.find(u=>u.name===name);
+   const route=HOLDER_PATHS.find(p=>p[0]===name),profile=heroItemProfile(name);
+   const good=profile.items.filter(n=>standard[n]).length;
+   const artifactGood=(HERO_ARTIFACTS[name]||[]).filter(n=>artifacts[n]).length;
+   let score=chance/7+good*7+artifactGood*10+(owned?4+owned.stars*3:0);
+   if(o.level<=5&&cost===1)score+=2;
+   if(o.level>=8&&cost===4)score+=2;
+   if(o.level>=9&&cost===5)score+=3;
+   return {name,cost,chance,score,owned};
+ }).filter(x=>x.chance>0||x.owned).sort((a,b)=>b.score-a.score||a.cost-b.cost).slice(0,6);
+ $('#shopTargets').innerHTML=list.map(x=>{
+   const col=COST_COLORS[x.cost]||'#8398ba';
+   return '<div class="shop-target'+(x.owned?' have':'')+'" title="'+esc(x.name+' · '+x.cost+' gold cost tier, '+x.chance+'% per shop slot')+'"><div class="shop-target-image" style="--target-color:'+col+'">'+esc(x.name.slice(0,1))+'<img src="'+championImg(x.name)+'" alt="" loading="lazy" onerror="this.remove()"></div><div class="shop-target-name"><b>'+esc(x.name)+'</b><span>'+x.cost+'g · '+x.chance+'% tier'+(x.owned?' · '+x.owned.stars+'★':'')+'</span></div></div>';
+ }).join('');
+}
+
 function renderRoundGuide(o){
  for(const [q,key] of [['#pStages','stage'],['#pRounds','round'],['#pLevels','level']]){
   document.querySelectorAll(q+' button').forEach(b=>{let active=String(b.dataset[key])===String(o[key]);b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});
  }
  const odds=SHOP_ODDS[o.level]||SHOP_ODDS[6],best=Math.max(...odds);
+ renderShopTargets(o);
  $('#roundGuidance').innerHTML='<strong>Round '+esc(o.stage)+'-'+esc(o.round)+' · Level '+esc(o.level)+'</strong>'+
  '<div class="shop-odds">'+odds.map((n,i)=>'<span class="odds'+(n===best?' best':'')+'" title="Shop chance per slot for any '+(i+1)+'-cost champion">'+(i+1)+'g: <b>'+n+'%</b></span>').join('')+'</div>'+
  '<div>'+esc(roundAdvice(o))+'</div><div class="shop-note">Odds are for the cost tier per shop slot, not for one exact champion. <a href="https://www.tftclimb.com/cheatsheet/tft-shop-odds" target="_blank" rel="noopener">Shop odds reference ↗</a></div>';
