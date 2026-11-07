@@ -638,12 +638,12 @@ const SHOP_CANDIDATES=[
  'Draven','Alune','Ashe','Maokai','Taric'
 ];
 function renderShopTargets(o){
- const standard=counted(o.items),artifacts=counted(o.artifacts);
+ const standard=counted(o.items),artifacts=counted(o.artifacts),radiants=counted(o.radiants);
  const list=SHOP_CANDIDATES.map(name=>{
    const cost=holderCost(name),chance=shopChance(o,cost);
    const owned=o.units.find(u=>u.name===name);
    const route=HOLDER_PATHS.find(p=>p[0]===name),profile=heroItemProfile(name);
-   const good=profile.items.filter(n=>standard[n]).length;
+   const good=profile.items.filter(n=>standard[n]).length+profile.items.filter(n=>radiants[radiantName(n)]).length*1.5;
    const artifactGood=(HERO_ARTIFACTS[name]||[]).filter(n=>artifacts[n]).length;
    let score=chance/7+good*7+artifactGood*10+(owned?4+owned.stars*3:0);
    if(o.level<=5&&cost===1)score+=2;
@@ -740,9 +740,9 @@ function comboScore(combo,o){
  let score=0,matched=0;
  const owns=o.units.find(u=>u.name===combo.champion);
  if(owns){matched++;score+=owns.stars===3?11:owns.stars===2?9:6;}
- const itemCounts=counted(o.items),artifactCounts=counted(o.artifacts);
+ const itemCounts=counted(o.items),artifactCounts=counted(o.artifacts),radiantCounts=counted(o.radiants);
  for(const n of combo.items){
-  if(itemCounts[n]){matched++;score+=5;}
+  if(itemCounts[n]||radiantCounts[radiantName(n)]){matched++;score+=radiantCounts[radiantName(n)]?8:5;}
   else if(canCraft(n,o.components)){matched++;score+=2;}
  }
  for(const n of combo.artifacts)if(artifactCounts[n]){matched++;score+=10;}
@@ -751,19 +751,19 @@ function comboScore(combo,o){
  return {combo,score,matched,owns,odds,cost};
 }
 function comboIcon(kind,name,has){
- const isChampion=kind==='champion',isArtifact=kind==='artifact';
- const item=getItem(name),url=isChampion?championImg(name):isArtifact?artifactImage(name):item?itemImg(item[5]):'';
- const img=isArtifact?artifactImgTag(name):'<img src="'+url+'" alt="" loading="lazy" onerror="this.remove()">';
+ const isChampion=kind==='champion',isArtifact=kind==='artifact',isRadiant=kind==='radiant';
+ const item=getItem(name),url=isChampion?championImg(name):isArtifact?artifactImage(name):isRadiant?radiantImage(name):item?itemImg(item[5]):'';
+ const img=isArtifact?artifactImgTag(name):isRadiant?radiantImgTag(name):'<img src="'+url+'" alt="" loading="lazy" onerror="this.remove()">';
  return '<span class="combo-icon'+(has?' have':'')+'" title="'+esc(name)+'"><span class="fallback">'+esc(name.slice(0,2))+img+'</span><span>'+esc(name)+'</span></span>';
 }
 function renderPowerCombos(){
- const o=openingState(),inventoryItems=counted(o.items),inventoryArtifacts=counted(o.artifacts);
+ const o=openingState(),inventoryItems=counted(o.items),inventoryArtifacts=counted(o.artifacts),inventoryRadiants=counted(o.radiants);
  const sorted=POWER_COMBOS.map(c=>comboScore(c,o)).filter(x=>comboFilter==='all'||x.matched>0).sort((a,b)=>b.score-a.score||b.matched-a.matched);
  const visible=sorted.slice(0,8);
  $('#comboCards').innerHTML=visible.map(x=>{
   const c=x.combo,champOwn=!!x.owns;
   const parts=[comboIcon('champion',c.champion,champOwn)]
-   .concat(c.items.map(n=>comboIcon('item',n,!!inventoryItems[n]||canCraft(n,o.components))))
+   .concat(c.items.map(n=>inventoryRadiants[radiantName(n)]?comboIcon('radiant',radiantName(n),true):comboIcon('item',n,!!inventoryItems[n]||canCraft(n,o.components))))
    .concat(c.artifacts.map(n=>comboIcon('artifact',n,!!inventoryArtifacts[n])));
   const count=c.items.length+c.artifacts.length+1;
   const match=x.matched?x.matched+' of '+count+' pieces matched':'No pieces yet';
@@ -808,6 +808,13 @@ function relevance(comp){
   else if(suggestedKinds.includes(category)){score+=2.5;}
   else if(category==='AD' && comp.type==='ad'){score+=1.4;}
   else if(category==='AP' && comp.type==='ap'){score+=1.4;}
+ });
+ [...new Set(o.radiants)].forEach(function(n){
+  const r=RADIANT_ITEMS[n];if(!r)return;
+  if(comp.carryItems.includes(r.base)){score+=11;itemHits.push(n);}
+  else if(comp.tankItems.includes(r.base)){score+=8;itemHits.push(n);}
+  else if(r.category==='Tank'){score+=1.5;}
+  else if(r.category===comp.type.toUpperCase()){score+=2.5;}
  });
  Array.from(new Set(comp.carryItems.concat(comp.tankItems))).forEach(function(n){
   if(canCraft(n,o.components)){craft.push(n);score+=3.3;}
@@ -1064,6 +1071,23 @@ function heroItemRow(pair,o){
  '<span>+</span>'+heroItemRecipeIcon(recipe[2])+'</div></div>'+
  '<span class="hero-picks-badge '+status.className+'">'+esc(status.label)+'</span></div>';
 }
+
+function heroRadiantAdvice(name,o){
+ const profile=heroItemProfile(name);
+ let bases=profile.items.filter(base=>!!RADIANT_ITEMS[radiantName(base)]);
+ if(/melee|fighter/i.test(profile.role||''))bases.push("Sterak's Gage");
+ bases=[...new Set(bases)];
+ const owned=counted(o.radiants);
+ // All owned compatible Radiants first, then the most useful normal item counterparts.
+ const choice=bases.sort((a,b)=>Number(!!owned[radiantName(b)])-Number(!!owned[radiantName(a)])).slice(0,4);
+ if(!choice.length)return '';
+ return '<div class="hero-radiants"><h5>Recommended Radiant items</h5><div class="hero-artifact-row">'+choice.map(base=>{
+   const n=radiantName(base),has=!!owned[n];
+   return '<span class="hero-artifact-choice'+(has?' owned':'')+'" title="'+esc(n+' · Special item, not craftable')+
+   '"><span class="letter">'+radiantImgTag(n)+'</span><span>'+esc(base)+(has?' · Have ×'+owned[n]:'')+'</span></span>';
+ }).join('')+'</div><div class="radiant-legend">Gold = Radiant upgrade · Green = in your inventory · cannot be crafted</div></div>';
+}
+
 function heroItemCard(unit,o){
  const name=unit.name,profile=heroItemProfile(name),cost=holderCost(name);
  const rim=COST_COLORS[cost]||'#9ba8c4',rank={have:3,craft:2,missing:1};
@@ -1078,7 +1102,7 @@ function heroItemCard(unit,o){
  '<div><h4>'+esc(name)+'</h4><div class="hero-picks-role">'+esc(profile.role)+' · '+esc(profile.quality)+'</div>'+
  '<span class="hero-picks-stars">'+('★'.repeat(unit.stars))+'</span></div></div>'+
  '<div class="hero-picks-body"><p class="hero-picks-note">'+esc(profile.note)+'</p>'+
- '<div class="hero-picks-itemlist">'+shown.map(p=>heroItemRow(p,o)).join('')+'</div>'+heroArtifactAdvice(name,o)+
+ '<div class="hero-picks-itemlist">'+shown.map(p=>heroItemRow(p,o)).join('')+'</div>'+heroRadiantAdvice(name,o)+heroArtifactAdvice(name,o)+
  (later.length?'<div class="hero-picks-next"><b>Later item holders</b><div class="hero-picks-next-list">'+
  '<span><img src="'+championImg(name)+'" alt="" onerror="this.remove()">'+esc(name)+'</span>'+
  '<span class="arrow">→</span>'+later.map(n=>'<span><img src="'+championImg(n)+'" alt="" onerror="this.remove()">'+esc(n)+'</span>').join('')+
@@ -1150,12 +1174,12 @@ function renderArtifactHolders(){
 
 function holderCost(n){const e=Object.entries(ROSTER_BY_COST).find(x=>x[1].includes(n));return e?Number(e[0]):0;}
 function holderFit(path,o){
- const names=[...new Set(o.items)];
+ const names=[...new Set(o.items.concat(o.radiants.map(n=>RADIANT_ITEMS[n]?.base).filter(Boolean)))];
  const matched=names.filter(n=>path[3].includes(n));
  const craft=path[3].filter(n=>!names.includes(n)&&canCraft(n,o.components));
  const owned=o.units.find(u=>u.name===path[0]);
  const bonus=owned?(owned.stars===3?13:owned.stars===2?9:4):0;
- const score=matched.length*6+(matched.length>1?5:0)+Math.min(2,craft.length)*1.8+bonus+Math.min(4,shopChance(o,holderCost(path[0]))/12);
+ const score=matched.length*6+(matched.length>1?5:0)+Math.min(2,craft.length)*1.8+bonus+matched.filter(n=>o.radiants.includes(radiantName(n))).length*3+Math.min(4,shopChance(o,holderCost(path[0]))/12);
  return {path,matched,craft,owned,score};
 }
 function holderStep(n){
@@ -1164,7 +1188,7 @@ function holderStep(n){
 function holderCard(m){
  const p=m.path,name=p[0],cost=holderCost(name);
  const rim={1:'#9ba8bd',2:'#70cf9d',3:'#6ca7ee',4:'#ad81eb',5:'#f4c66f'}[cost]||'#7891ad';
- const source=(name,idx)=>{const i=getItem(name);return '<span class="holder-item"><img src="'+(i?itemImg(i[5]):'')+'" alt="" loading="lazy" onerror="this.remove()">'+esc(name)+(idx?' (craft)':'')+'</span>';};
+ const source=(name,idx)=>{const i=getItem(name),radiant=o.radiants.includes(radiantName(name));return '<span class="holder-item">'+(radiant?radiantImgTag(radiantName(name)):'<img src="'+(i?itemImg(i[5]):'')+'" alt="" loading="lazy" onerror="this.remove()">')+esc((radiant?'Radiant ':'')+name)+(idx?' (craft)':'')+'</span>';};
  const target=p[1]===0?p[4]:p[5];
  const last=p[1]===0?p[5]:[];
  const firstId=p[6].find(id=>COMP_LIST.some(c=>c.id===id));
