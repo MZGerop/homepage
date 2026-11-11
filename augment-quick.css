@@ -101,3 +101,36 @@ body[data-tft-tab="augments"] #overview,body[data-tft-tab="augments"] #opening{d
  .augv-pick-art>.augv-icon-frame,.augv-pick-art>.augv-icon-fallback{width:68px;height:68px}
  .augv-pick-name{font-size:10.5px}
 }
+
+/* Fast tier scanning: start on S+A, group tiers with readable labels and effects. */
+.augv-tier-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:11px 1px 8px}
+.augv-tier-filters{display:flex;gap:7px;flex-wrap:wrap}
+.augv-tier-filters button{display:inline-flex;align-items:center;gap:5px;justify-content:center;background:#1c3046;border:1px solid #45677b;border-radius:9px;color:#c5d9e9;padding:9px 12px;min-height:38px;font-size:12px;font-weight:850;cursor:pointer}
+.augv-tier-filters button[aria-pressed="true"]{border:2px solid #82d9bb;background:#235047;color:#fff;padding:8px 11px}
+.augv-tier-filters button:hover{background:#2a4858;border-color:#93c9ca}
+.augv-tier-filters button:focus-visible{outline:2px solid #f4d18b;outline-offset:2px}
+.augv-tier-filters button>span{display:inline-flex;align-items:center;justify-content:center;width:19px;height:19px;border-radius:5px;font-size:11px;font-weight:950}
+.augv-tier-toolbar>small{font-size:11px;color:#9bb9ca}
+.augv-group-title{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:8px;border-radius:9px;padding:11px 13px;margin-top:7px;background:#233348;border-left:4px solid #7691aa}
+.augv-group-title strong{font-size:14px;letter-spacing:.02em}
+.augv-group-title small{font-size:11px;color:#b4c9dc}
+.augv-group-title.gradeS{background:linear-gradient(95deg,#4b3d22,#1b2b41 80%);border-color:#e4bd65}
+.augv-group-title.gradeS strong{color:#ffe5a4}
+.augv-group-title.gradeA{background:linear-gradient(95deg,#1e4b3d,#1b2d42 80%);border-color:#71d5a7}
+.augv-group-title.gradeA strong{color:#b7f9d6}
+.augv-group-title.gradeB{border-color:#73ade1}
+.augv-group-title.gradeC{border-color:#ad8bcc}
+.augv-gallery{grid-auto-flow:row;align-content:start}
+.augv-pick{min-height:173px;gap:5px;padding:10px 8px 11px}
+.augv-pick[aria-pressed="true"]{padding:9px 7px 10px}
+.augv-pick-name{font-size:11.5px;font-weight:850;min-height:28px;display:flex;align-items:center;justify-content:center;line-height:1.25;-webkit-line-clamp:unset;overflow:visible}
+.augv-pick-desc{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;text-align:center;font-size:10px;line-height:1.35;color:#a9c1d1;max-width:100%}
+@media(max-width:680px){
+  .augv-tier-toolbar>small{width:100%}
+  .augv-tier-filters{width:100%;display:grid;grid-template-columns:1fr 1fr}
+  .augv-tier-filters button{padding:8px 5px;font-size:11px;min-width:0}
+  .augv-tier-filters button[aria-pressed="true"]{padding:7px 4px}
+  .augv-pick{min-height:154px}
+  .augv-pick-name{font-size:10.5px;min-height:28px}
+  .augv-pick-desc{font-size:9.5px}
+}
