@@ -64,3 +64,17 @@ body[data-tft-tab="augments"] #opening{display:none!important}
 .augq-advanced .augq-button{display:inline-block}
 @media(max-width:900px){.augq-offer-grid{grid-template-columns:1fr 1fr 1fr}.augq-offer{padding:11px;gap:7px}.augq-offer .augq-badge{height:48px;width:41px;font-size:24px}.augq-offer-icon{height:35px;width:35px}.augq-offer-name{font-size:12px}}
 @media(max-width:650px){.augq-offer-grid{grid-template-columns:1fr}.augq-offer{min-height:92px;padding:12px}.augq-offer .augq-badge{width:43px;height:49px}.augq-results{grid-template-columns:1fr;max-height:360px}.augq-find{padding:12px}.augq-legend{gap:8px}}
+
+/* Visible one-tap rarity filters; selected offers stay unchanged. */
+.augq-rarity-row{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin:11px 0 14px}
+.augq-rarity-label{font-size:12px;font-weight:850;color:#bfd4e7}
+.augq-rarity-buttons{display:flex;flex-wrap:wrap;gap:8px}
+.augq-rarity-buttons button{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 15px;min-height:40px;border-radius:9px;border:1px solid #3b5671;background:#172a41;color:#bcd0e3;font-size:12px;font-weight:850;cursor:pointer}
+.augq-rarity-buttons button:hover{border-color:#86adbf;background:#223a52;color:white}
+.augq-rarity-buttons button[aria-pressed="true"]{background:#264a4a;border:2px solid #72d8b9;color:#fff;padding:9px 14px}
+.augq-rarity-buttons button:focus-visible{outline:2px solid #f4cf77;outline-offset:2px}
+.augq-rarity-dot{width:12px;height:12px;display:inline-block;flex:none;border-radius:4px;border:1px solid #ffffff55}
+.augq-rarity-dot.silver{background:linear-gradient(135deg,#e7eef5,#96aabf)}
+.augq-rarity-dot.gold{background:linear-gradient(135deg,#fff1aa,#d49c28)}
+.augq-rarity-dot.prismatic{background:linear-gradient(135deg,#f6b3fa,#a9d9ff 46%,#a5f4c5)}
+@media(max-width:650px){.augq-rarity-row{align-items:stretch;gap:7px}.augq-rarity-label{width:100%}.augq-rarity-buttons{width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.augq-rarity-buttons button{padding:9px 8px;min-width:0}.augq-rarity-buttons button[aria-pressed="true"]{padding:8px 7px}}
