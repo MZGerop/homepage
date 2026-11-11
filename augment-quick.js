@@ -15,7 +15,7 @@
   names.add(a.id.toLowerCase());catalog.push(a);
  });
  catalog.sort(sorted);
- let selected=[],limit=32;
+ let selected=[],limit=32,rarity='all';
  const tierLabel={S:'Top tier',A:'Strong',B:'Situational',C:'Niche','?':'Not rated'};
  const badgeClass=t=>t==='?'?'unknown':t;
  function badge(t){
@@ -47,12 +47,15 @@
  }
  function matches(){
   const q=byId('augqSearch').value.trim().toLowerCase();
-  const rarity=byId('augqRarity').value;
   const result=catalog.filter(a=>(rarity==='all'||a.rarity===rarity)&&
     (!q||a.id.toLowerCase().includes(q)||a.desc.toLowerCase().includes(q)));
   return {q,result};
  }
  function renderResults(){
+  byId('augqRarity').querySelectorAll('[data-augq-rarity]').forEach(button=>{
+   const active=button.dataset.augqRarity===rarity;
+   button.setAttribute('aria-pressed',String(active));
+  });
   const {q,result}=matches();
   const subset=result.slice(0,limit);
   const selectedNames=new Set(selected.map(a=>a.id));
@@ -85,7 +88,9 @@
  }
  root.addEventListener('click',event=>{
   const button=event.target.closest('button');if(!button)return;
-  if(button.dataset.augqPick){
+  if(button.dataset.augqRarity){
+   rarity=button.dataset.augqRarity;limit=32;renderResults();
+  } else if(button.dataset.augqPick){
    const a=catalog.find(x=>x.id===button.dataset.augqPick);
    if(a)choose(a);
   } else if(button.dataset.augqRemove){
@@ -104,9 +109,8 @@
   }
  });
  byId('augqSearch').addEventListener('input',()=>{limit=32;renderResults();});
- byId('augqRarity').addEventListener('change',()=>{limit=32;renderResults();});
  document.getElementById('tftResetGame')?.addEventListener('click',()=>{
-  selected=[];byId('augqSearch').value='';byId('augqRarity').value='all';limit=32;render();
+  selected=[];byId('augqSearch').value='';rarity='all';limit=32;render();
  });
  window.resetAugmentQuick=()=>{selected=[];byId('augqSearch').value='';render();};
  render();
