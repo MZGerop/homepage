@@ -507,10 +507,16 @@
   <div class="augq-intro"><div><span class="augq-kicker">FIND AN AUGMENT</span>
     <p>Search by name, then click the matching card. Tap it again to remove it.</p></div></div>
   <div class="augq-search-bar">
-   <input id="augqSearch" class="augq-search" type="search" autocomplete="off" placeholder="Search augment name, e.g. Epic Rolldown…" aria-label="Search Augment names and descriptions">
-   <select id="augqRarity" class="augq-filter" aria-label="Augment rarity filter">
-    <option value="all">All rarities</option><option value="Silver">Silver</option><option value="Gold">Gold</option><option value="Prismatic">Prismatic</option>
-   </select>
+   <input id="augqSearch" class="augq-search" type="search" autocomplete="off" placeholder="Augment suchen, z. B. Epic Rolldown…" aria-label="Augment nach Namen oder Effekt suchen">
+  </div>
+  <div class="augq-rarity-row">
+   <span class="augq-rarity-label">Seltenheit:</span>
+   <div id="augqRarity" class="augq-rarity-buttons" role="group" aria-label="Nach Augment-Seltenheit filtern">
+    <button type="button" data-augq-rarity="all" aria-pressed="true">Alle</button>
+    <button type="button" data-augq-rarity="Silver" aria-pressed="false"><span class="augq-rarity-dot silver"></span>Silber</button>
+    <button type="button" data-augq-rarity="Gold" aria-pressed="false"><span class="augq-rarity-dot gold"></span>Gold</button>
+    <button type="button" data-augq-rarity="Prismatic" aria-pressed="false"><span class="augq-rarity-dot prismatic"></span>Prismatisch</button>
+   </div>
   </div>
   <div class="augq-legend" aria-label="Meaning of tier grades">
     <span><span class="augq-badge augq-S">S</span> Excellent</span>
