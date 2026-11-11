@@ -13,8 +13,8 @@
       actions:[['Log a find','finds',1],['Compare augments','augments']]},
     {id:'finds',label:'Log Finds',sub:'Optional input',title:'Record what you actually found',desc:'Select champions, components, items, artifacts, radiants or your real augment offers. Your choices stay saved.',
       actions:[['See updated plan','next',1],['Compare chosen offers','augments']]},
-    {id:'augments',label:'Augments',sub:'Rank real offers',title:'Choose between the augments offered',desc:'Review your current three choices, their contextual fit, and the curated tier list.',
-      actions:[['Enter my 3 offers','offers',1],['Back to opening','start']]},
+    {id:'augments',label:'Augments',sub:'Quick tier check',title:'Compare your 3 Augments',desc:'Search your three in-game Augment offers and see each S / A / B / C tier immediately. No board logging required.',
+      actions:[['Search Augments','aug-search',1],['Advanced picker','offers']]},
     {id:'items',label:'Items',sub:'Gear & holders',title:'Items, crafting and holders',desc:'Compare completed items, Radiants, Artifacts, recipes and handoffs for your current carries.',
       actions:[['Log components','components',1],['Log an item','item']]},
     {id:'emblems',label:'Emblems',sub:'Optional pivots',title:'Emblem combinations',desc:'Only if you already found an emblem: explore creative holders, trait pivots and what to look for next.',
@@ -84,6 +84,7 @@
     return id;
   }
   function navigateAction(kind){
+    if(kind==='aug-search'){activate('augments');document.getElementById('augqSearch')?.focus();return;}
     if(kind==='offers'){
       if(window.TFTGuide?.openAugmentOffers){window.TFTGuide.openAugmentOffers();return;}
       activate('finds');window.TFTGuide?.showFinder?.('augment');return;
