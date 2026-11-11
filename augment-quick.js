@@ -13,7 +13,7 @@
   const tiers={S:0,A:1,B:2,C:3,'?':4};
   const labels={S:'Spitzenklasse',A:'Stark',B:'Situativ',C:'Nische','?':'Nicht bewertet'};
   const grades={S:'gradeS',A:'gradeA',B:'gradeB',C:'gradeC','?':'gradeUnknown'};
-  let list=[],selected=[],rarity='Gold',search='',loading=true;
+  let list=[],selected=[],rarity='Gold',tierFocus='top',search='',loading=true;
   const index=new Map();
   const abbrev=name=>{
     const words=name.replace(/[+!'’]/g,' ').split(/[^a-zA-Z0-9]+/).filter(Boolean);
@@ -63,32 +63,59 @@
   }
   function filtered(){
     const candidates=list.filter(a=>rarity==='all'||a.rarity===rarity);
-    if(!search)return candidates;
-    // Names matter most during a round. Search effects only when no name matches.
-    const byName=candidates.filter(a=>a.name.toLowerCase().includes(search));
-    return byName.length?byName:candidates.filter(a=>a.description.toLowerCase().includes(search));
+    // Searching must find any Augment even when the default S+A filter is active.
+    // Otherwise the player would assume a B/C Augment is missing from the game.
+    let matches;
+    if(search){
+      const byName=candidates.filter(a=>a.name.toLowerCase().includes(search));
+      matches=byName.length?byName:candidates.filter(a=>a.description.toLowerCase().includes(search));
+    }else{
+      matches=tierFocus==='top'?candidates.filter(a=>a.tier==='S'||a.tier==='A'):candidates;
+    }
+    return matches.sort((a,b)=>tiers[a.tier]-tiers[b.tier]||collator.compare(a.name,b.name));
   }
   function renderGallery(){
     const active=new Set(selected.map(a=>a.id));
     $('augvRarity').querySelectorAll('[data-av-rarity]').forEach(b=>{
       b.setAttribute('aria-pressed',String(b.dataset.avRarity===rarity));
     });
+    $('augvTierFilters').querySelectorAll('[data-av-tier]').forEach(b=>{
+      b.setAttribute('aria-pressed',String(b.dataset.avTier===tierFocus));
+    });
+    updateCounts();
     const visible=filtered();
-    $('augvCount').textContent=loading?'Katalog wird geladen …':visible.length+' Augments · alphabetisch · Bild antippen';
+    const scope=search?'Suchtreffer aus allen Tiers':tierFocus==='top'?'Nur S + A':'Alle Tiers';
+    $('augvCount').textContent=loading?'Katalog wird geladen …':
+      visible.length+' Augments · '+scope+' · nach Tier sortiert';
     $('augvGallery').setAttribute('aria-busy',String(loading));
-    $('augvGallery').innerHTML=visible.map(a=>{
-      const picked=active.has(a.id);
-      return '<button type="button" class="augv-pick" data-av-pick="'+escapeHTML(a.id)+'" aria-pressed="'+picked+
-       '" aria-label="'+escapeHTML(a.name+' — '+a.tier+' Tier'+(picked?', gewählt':''))+'" title="'+escapeHTML(a.name+(a.description?' — '+a.description:''))+'">'+
-       '<span class="augv-pick-art">'+picture(a)+grade(a)+(picked?'<span class="augv-picked">✓</span>':'')+'</span>'+
-       '<span class="augv-pick-name">'+escapeHTML(a.name)+'</span></button>';
-    }).join('')||(loading?'<p class="augv-empty">Augment-Symbole werden geladen …</p>':
+    const sections=['S','A','B','C','?'].map(t=>{
+      const matches=visible.filter(a=>a.tier===t);
+      if(!matches.length)return '';
+      const title=t==='S'?'S-Tier · Top-Auswahl':t==='A'?'A-Tier · Starke Optionen':t==='B'?'B-Tier · Situativ':
+        t==='C'?'C-Tier · Nische':'Nicht bewertet';
+      const heading='<div class="augv-group-title '+grades[t]+'"><strong>'+escapeHTML(title)+
+        '</strong><small>'+matches.length+' Augments</small></div>';
+      return heading+matches.map(a=>{
+        const picked=active.has(a.id);
+        const short=(a.description||'Keine Beschreibung').replace(/\s+/g,' ').trim();
+        return '<button type="button" class="augv-pick" data-av-pick="'+escapeHTML(a.id)+'" aria-pressed="'+picked+
+         '" aria-label="'+escapeHTML(a.name+' — '+a.tier+' Tier'+(picked?', gewählt':''))+'" title="'+escapeHTML(a.name+(a.description?' — '+a.description:''))+'">'+
+         '<span class="augv-pick-art">'+picture(a)+grade(a)+(picked?'<span class="augv-picked">✓</span>':'')+'</span>'+
+         '<span class="augv-pick-name">'+escapeHTML(a.name)+'</span>'+
+         '<span class="augv-pick-desc">'+escapeHTML(short)+'</span></button>';
+      }).join('');
+    }).join('');
+    $('augvGallery').innerHTML=sections||(loading?'<p class="augv-empty">Augment-Symbole werden geladen …</p>':
       '<p class="augv-empty">Keine Treffer. Anderen Seltenheitsfilter wählen oder Suche löschen.</p>');
   }
   function render(){renderComparison();renderGallery();}
   function setRarity(next){
     if(!['all','Silver','Gold','Prismatic'].includes(next))return;
     rarity=next;renderGallery();$('augvGallery').scrollTop=0;
+  }
+  function setTier(next){
+    if(!['top','all'].includes(next))return;
+    tierFocus=next;renderGallery();$('augvGallery').scrollTop=0;
   }
   function selectAugment(id){
     const a=index.get(id);if(!a)return;
@@ -103,7 +130,7 @@
   }
   function updateCounts(){
     const counts={Silver:0,Gold:0,Prismatic:0};
-    for(const a of list)if(a.rarity in counts)counts[a.rarity]++;
+    for(const a of list)if((tierFocus==='all'||a.tier==='S'||a.tier==='A')&&a.rarity in counts)counts[a.rarity]++;
     $('augvSilverCount').textContent=counts.Silver;
     $('augvGoldCount').textContent=counts.Gold;
     $('augvPrismaticCount').textContent=counts.Prismatic;
@@ -131,6 +158,7 @@
   root.addEventListener('click',e=>{
     const b=e.target.closest('button');if(!b)return;
     if(b.dataset.avRarity){setRarity(b.dataset.avRarity);return;}
+    if(b.dataset.avTier){setTier(b.dataset.avTier);return;}
     if(b.dataset.avPick){selectAugment(b.dataset.avPick);return;}
     if(b.dataset.avRemove){selectAugment(b.dataset.avRemove);return;}
     if(b.id==='augvClear'){selected=[];render();return;}
