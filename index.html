@@ -429,6 +429,7 @@
 <link rel="stylesheet" href="guided-opening.css">
 <link rel="stylesheet" href="workspace-tabs.css">
 <link rel="stylesheet" href="quick-hints.css">
+<link rel="stylesheet" href="augment-quick.css">
 </head>
 <body data-tft-tab="hints">
 <div class="shell">
@@ -490,6 +491,45 @@
    <div class="hint-combo-grid" id="hintComboCards"></div>
   </section>
   <p class="hint-bottom-note">These are curated strategy examples based on the site's Set 18 data, not live win-rate recommendations. Upgrades, economy, items and contested units still matter more than forcing a combo.</p>
+</section>
+
+<section id="augmentQuick" class="augq" aria-label="Quick Augment tier comparison">
+ <div class="augq-intro">
+  <div><span class="augq-kicker">NO BOARD TRACKING · QUICK TIER CHECK</span>
+   <p>Pick the three Augments you were offered. Their <b>general tier</b> appears instantly in large letters; no need to enter your champions, items or round.</p></div>
+  <button type="button" class="augq-button" id="augqClear">↻ Clear 3 offers</button>
+ </div>
+ <div class="augq-offer-grid" id="augqOffers" aria-label="Your three offered Augments" aria-live="polite">
+  <div class="augq-offer empty">Offer 1</div><div class="augq-offer empty">Offer 2</div><div class="augq-offer empty">Offer 3</div>
+ </div>
+ <p id="augqStatus" class="augq-status" role="status" aria-live="polite">Select the three Augments you see in your match.</p>
+ <div class="augq-find">
+  <div class="augq-intro"><div><span class="augq-kicker">FIND AN AUGMENT</span>
+    <p>Search by name, then click the matching card. Tap it again to remove it.</p></div></div>
+  <div class="augq-search-bar">
+   <input id="augqSearch" class="augq-search" type="search" autocomplete="off" placeholder="Search augment name, e.g. Epic Rolldown…" aria-label="Search Augment names and descriptions">
+   <select id="augqRarity" class="augq-filter" aria-label="Augment rarity filter">
+    <option value="all">All rarities</option><option value="Silver">Silver</option><option value="Gold">Gold</option><option value="Prismatic">Prismatic</option>
+   </select>
+  </div>
+  <div class="augq-legend" aria-label="Meaning of tier grades">
+    <span><span class="augq-badge augq-S">S</span> Excellent</span>
+    <span><span class="augq-badge augq-A">A</span> Strong</span>
+    <span><span class="augq-badge augq-B">B</span> Situational</span>
+    <span><span class="augq-badge augq-C">C</span> Niche</span>
+    <span><span class="augq-badge augq-unknown">?</span> Not rated</span>
+  </div>
+  <div id="augqCount" class="augq-result-count" aria-live="polite"></div>
+  <div id="augqResults" class="augq-results" aria-label="Select an Augment to compare"></div>
+  <div id="augqManual" aria-live="polite"></div>
+  <button type="button" id="augqShowMore" class="augq-button" hidden>Show more Augments</button>
+  <p class="augq-hint">These are the site's saved Set 18 / 18.6 editorial tiers, <b>not live win rates</b>. A trait-specific S tier may still be poor for your actual board. The database is curated and not complete; unknown entries display ? instead of a made-up rating.</p>
+ </div>
+ <details class="augq-advanced">
+  <summary>Want board-specific advice instead of a quick tier lookup?</summary>
+  <p>The advanced picker can compare your actual offers with your logged board. It takes more input and is optional.</p>
+  <button type="button" id="augqFullTracker" class="augq-button">Open full Augment picker</button>
+ </details>
 </section>
 
 <section id="overview" class="decision-home">
@@ -2285,5 +2325,6 @@ renderComps();
 <script src="guided-opening.js"></script>
 <script src="workspace-tabs.js"></script>
 <script src="quick-hints.js"></script>
+<script src="augment-quick.js"></script>
 <div id="visualTooltip" role="tooltip" class="visual-tooltip" hidden></div>
 </body></html>
