@@ -493,49 +493,49 @@
   <p class="hint-bottom-note">These are curated strategy examples based on the site's Set 18 data, not live win-rate recommendations. Upgrades, economy, items and contested units still matter more than forcing a combo.</p>
 </section>
 
-<section id="augmentQuick" class="augq" aria-label="Quick Augment tier comparison">
- <div class="augq-intro">
-  <div><span class="augq-kicker">NO BOARD TRACKING · QUICK TIER CHECK</span>
-   <p>Pick the three Augments you were offered. Their <b>general tier</b> appears instantly in large letters; no need to enter your champions, items or round.</p></div>
-  <button type="button" class="augq-button" id="augqClear">↻ Clear 3 offers</button>
- </div>
- <div class="augq-offer-grid" id="augqOffers" aria-label="Your three offered Augments" aria-live="polite">
-  <div class="augq-offer empty">Offer 1</div><div class="augq-offer empty">Offer 2</div><div class="augq-offer empty">Offer 3</div>
- </div>
- <p id="augqStatus" class="augq-status" role="status" aria-live="polite">Select the three Augments you see in your match.</p>
- <div class="augq-find">
-  <div class="augq-intro"><div><span class="augq-kicker">FIND AN AUGMENT</span>
-    <p>Search by name, then click the matching card. Tap it again to remove it.</p></div></div>
-  <div class="augq-search-bar">
-   <input id="augqSearch" class="augq-search" type="search" autocomplete="off" placeholder="Augment suchen, z. B. Epic Rolldown…" aria-label="Augment nach Namen oder Effekt suchen">
+<section id="augmentQuick" class="augv" aria-label="Visueller Augment-Vergleich">
+  <div class="augv-intro">
+    <div><div class="augv-kicker">AUGMENT-KOMPASS · SET 18</div>
+      <h2>Welche drei Symbole hast du bekommen?</h2>
+      <p>Wähle die Seltenheit, erkenne deine Augments am Bild und tippe sie an. <strong>Kein Board eintragen, keine Namen merken.</strong></p></div>
+    <button type="button" id="augvClear" class="augv-clear" aria-label="Augment-Auswahl löschen">↻ Auswahl löschen</button>
   </div>
-  <div class="augq-rarity-row">
-   <span class="augq-rarity-label">Seltenheit:</span>
-   <div id="augqRarity" class="augq-rarity-buttons" role="group" aria-label="Nach Augment-Seltenheit filtern">
-    <button type="button" data-augq-rarity="all" aria-pressed="true">Alle</button>
-    <button type="button" data-augq-rarity="Silver" aria-pressed="false"><span class="augq-rarity-dot silver"></span>Silber</button>
-    <button type="button" data-augq-rarity="Gold" aria-pressed="false"><span class="augq-rarity-dot gold"></span>Gold</button>
-    <button type="button" data-augq-rarity="Prismatic" aria-pressed="false"><span class="augq-rarity-dot prismatic"></span>Prismatisch</button>
-   </div>
+  <div class="augv-compare" aria-label="Deine drei Augment-Angebote" id="augvCompare" aria-live="polite">
+    <div class="augv-slot empty">1 · Augment wählen</div>
+    <div class="augv-slot empty">2 · Augment wählen</div>
+    <div class="augv-slot empty">3 · Augment wählen</div>
   </div>
-  <div class="augq-legend" aria-label="Meaning of tier grades">
-    <span><span class="augq-badge augq-S">S</span> Excellent</span>
-    <span><span class="augq-badge augq-A">A</span> Strong</span>
-    <span><span class="augq-badge augq-B">B</span> Situational</span>
-    <span><span class="augq-badge augq-C">C</span> Niche</span>
-    <span><span class="augq-badge augq-unknown">?</span> Not rated</span>
+  <p id="augvVerdict" class="augv-verdict" role="status" aria-live="polite">Wähle bis zu drei Augments aus der Symbolübersicht.</p>
+  <div class="augv-toolbar">
+    <div class="augv-rarity" role="group" aria-label="Seltenheit deiner Augments" id="augvRarity">
+      <button type="button" data-av-rarity="Silver" aria-pressed="false"><span class="augv-gem silver"></span>Silber <small id="augvSilverCount"></small></button>
+      <button type="button" data-av-rarity="Gold" aria-pressed="true"><span class="augv-gem gold"></span>Gold <small id="augvGoldCount"></small></button>
+      <button type="button" data-av-rarity="Prismatic" aria-pressed="false"><span class="augv-gem prismatic"></span>Prismatisch <small id="augvPrismaticCount"></small></button>
+      <button type="button" data-av-rarity="all" aria-pressed="false">Alle</button>
+    </div>
+    <div class="augv-secondary">
+      <input type="search" id="augvSearch" autocomplete="off" placeholder="Optional: Name suchen …" aria-label="Augments nach Namen durchsuchen">
+      <button type="button" class="augv-clear-search" id="augvSearchClear" aria-label="Suche löschen" title="Suche löschen">×</button>
+    </div>
   </div>
-  <div id="augqCount" class="augq-result-count" aria-live="polite"></div>
-  <div id="augqResults" class="augq-results" aria-label="Select an Augment to compare"></div>
-  <div id="augqManual" aria-live="polite"></div>
-  <button type="button" id="augqShowMore" class="augq-button" hidden>Show more Augments</button>
-  <p class="augq-hint">These are the site's saved Set 18 / 18.6 editorial tiers, <b>not live win rates</b>. A trait-specific S tier may still be poor for your actual board. The database is curated and not complete; unknown entries display ? instead of a made-up rating.</p>
- </div>
- <details class="augq-advanced">
-  <summary>Want board-specific advice instead of a quick tier lookup?</summary>
-  <p>The advanced picker can compare your actual offers with your logged board. It takes more input and is optional.</p>
-  <button type="button" id="augqFullTracker" class="augq-button">Open full Augment picker</button>
- </details>
+  <div class="augv-gallery-head">
+    <div><strong>Augments an ihren Icons erkennen</strong><small id="augvCount">Lade Bilder …</small></div>
+    <div class="augv-key" aria-label="Tier-Bewertungen">
+      <span class="tierS">S</span><span class="tierA">A</span><span class="tierB">B</span><span class="tierC">C</span>
+      <small>allgemeine Tiers</small>
+    </div>
+  </div>
+  <div class="augv-gallery" id="augvGallery" role="group" aria-label="Augment-Symbole zum Auswählen" aria-busy="true"></div>
+  <div id="augvLoadNote" class="augv-load-note" role="status"></div>
+  <div class="augv-bottom">
+    <p><strong>Wichtig:</strong> Die Buchstaben sind redaktionelle Tier-Bewertungen aus Patch 18.6 und keine Live-Winrates. Traits, Items und dein Board können die richtige Wahl verändern. Bei fehlendem Original-Icon wird ein Buchstabenfeld angezeigt.</p>
+    <a href="https://www.pivottft.com/set-18/augments/" target="_blank" rel="noopener">Vollständige Augment-Quelle ansehen ↗</a>
+    <details class="augv-advanced">
+      <summary>Optional: ausführliche Auswertung mit deinem gespeicherten Board</summary>
+      <p>Nur nötig, wenn du eine Einschätzung passend zu deinen Champions und Items möchtest.</p>
+      <button type="button" id="augvFullTracker" class="augv-clear">Erweiterten Vergleich öffnen</button>
+    </details>
+  </div>
 </section>
 
 <section id="overview" class="decision-home">
