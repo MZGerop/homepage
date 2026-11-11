@@ -1,117 +1,156 @@
-
-/* Fast augment tier lookup; no game tracking, no live ranking claims. */
+/* TFT Set 18 Augment icon-first lookup.
+ * No game state or user selections are sent to an external server.
+ * Static catalog is bundled in augments-set18.json.
+ */
 (function(){
- 'use strict';
- const root=document.getElementById('augmentQuick');
- const api=window.TFTGuide;
- if(!root||!api||!Array.isArray(api.augmentHints))return;
- const byId=id=>document.getElementById(id);
- const esc=value=>String(value==null?'':value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
- const order={S:0,A:1,B:2,C:3,'?':4};
- const sorted=(a,b)=>(order[a.tier]??4)-(order[b.tier]??4)||a.id.localeCompare(b.id);
- const names=new Set(),catalog=[];
- api.augmentHints.forEach(a=>{
-  if(!a||!a.id||a.inactive||names.has(a.id.toLowerCase()))return;
-  names.add(a.id.toLowerCase());catalog.push(a);
- });
- catalog.sort(sorted);
- let selected=[],limit=32,rarity='all';
- const tierLabel={S:'Top tier',A:'Strong',B:'Situational',C:'Niche','?':'Not rated'};
- const badgeClass=t=>t==='?'?'unknown':t;
- function badge(t){
-  return '<span class="augq-badge augq-'+badgeClass(t)+'" aria-label="'+esc((t==='?'?'Unranked':t+' tier'))+'">'+esc(t)+'</span>';
- }
- function picture(a){
-  return a.manual?'<span class="augq-badge augq-unknown" aria-hidden="true">?</span>':
-   '<span class="augq-image-wrap">'+api.augmentImgTag(a.id).replace('<img ','<img class="augq-offer-icon" ')+'</span>';
- }
- function renderOffers(){
-  const shown=selected.slice().sort(sorted);
-  byId('augqOffers').innerHTML=[0,1,2].map(i=>{
-   const a=shown[i];
-   if(!a)return '<div class="augq-offer empty"><div><span class="augq-empty-number">'+(i+1)+'</span>'+
-     '<span class="augq-empty-hint">Choose an Augment below</span></div></div>';
-   const tier=a.tier==='?'?'unknown':a.tier;
-   return '<article class="augq-offer augq-tier-'+tier+'">'+badge(a.tier)+
-     '<div class="augq-offer-main"><div class="augq-offer-top">'+picture(a)+
-     '<div><strong class="augq-offer-name">'+esc(a.id)+'</strong><span class="augq-offer-type">'+
-       esc((a.rarity||'Unknown')+' · '+tierLabel[a.tier])+'</span></div></div>'+
-     '<p class="augq-offer-desc">'+esc(a.desc||'No verified description in this guide.')+'</p></div>'+
-     '<button type="button" class="augq-offer-remove" data-augq-remove="'+esc(a.id)+'" title="Remove '+esc(a.id)+'" aria-label="Remove '+esc(a.id)+'">×</button></article>';
-  }).join('');
-  const rated=shown.filter(a=>a.tier!=='?'),best=rated[0];
-  byId('augqStatus').innerHTML=selected.length===0?'Select your three Augments below to compare their general tiers.':
-    selected.length<3?selected.length+' of 3 selected · pick '+(3-selected.length)+' more.':
-    best?'<strong>'+esc(best.id)+' ('+best.tier+')</strong> has the highest general tier here. Check whether its conditions fit your board.':
-      'All three are unranked here. Compare their in-game effects; no ranking is being guessed.';
- }
- function matches(){
-  const q=byId('augqSearch').value.trim().toLowerCase();
-  const result=catalog.filter(a=>(rarity==='all'||a.rarity===rarity)&&
-    (!q||a.id.toLowerCase().includes(q)||a.desc.toLowerCase().includes(q)));
-  return {q,result};
- }
- function renderResults(){
-  byId('augqRarity').querySelectorAll('[data-augq-rarity]').forEach(button=>{
-   const active=button.dataset.augqRarity===rarity;
-   button.setAttribute('aria-pressed',String(active));
+  'use strict';
+  const root=document.getElementById('augmentQuick');
+  if(!root)return;
+  const api=window.TFTGuide||{};
+  const $=id=>document.getElementById(id);
+  const escapeHTML=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  const collator=new Intl.Collator('en',{sensitivity:'base',numeric:true});
+  const tiers={S:0,A:1,B:2,C:3,'?':4};
+  const labels={S:'Spitzenklasse',A:'Stark',B:'Situativ',C:'Nische','?':'Nicht bewertet'};
+  const grades={S:'gradeS',A:'gradeA',B:'gradeB',C:'gradeC','?':'gradeUnknown'};
+  let list=[],selected=[],rarity='Gold',search='',loading=true;
+  const index=new Map();
+  const abbrev=name=>{
+    const words=name.replace(/[+!'’]/g,' ').split(/[^a-zA-Z0-9]+/).filter(Boolean);
+    return (words.length>1?words.slice(0,3).map(x=>x[0]).join(''):name.slice(0,2)).toUpperCase();
+  };
+  function picture(a,extraClass=''){
+    const text=escapeHTML(abbrev(a.name));
+    if(!a.icon)return '<span class="augv-icon-fallback '+extraClass+'" aria-label="Kein verlässliches Icon verfügbar">'+text+'</span>';
+    return '<span class="augv-icon-frame '+extraClass+'"><img loading="lazy" decoding="async" src="'+escapeHTML(a.icon)+
+      '" alt="" onerror="this.hidden=true;this.nextElementSibling.hidden=false">'+
+      '<span class="augv-icon-fallback" hidden>'+text+'</span></span>';
+  }
+  function grade(a){
+    const t=tiers[a.tier]===undefined?'?':a.tier;
+    return '<span class="augv-tier '+grades[t]+'" title="'+escapeHTML(labels[t])+'">'+escapeHTML(t)+'</span>';
+  }
+  function ordered(arr){return arr.slice().sort((a,b)=>tiers[a.tier]-tiers[b.tier]||collator.compare(a.name,b.name));}
+  function renderComparison(){
+    const box=$('augvCompare');
+    const rated=selected.filter(a=>tiers[a.tier]<4);
+    const bestGrade=Math.min(...rated.map(a=>tiers[a.tier]));
+    box.innerHTML=[0,1,2].map(i=>{
+      const a=selected[i];
+      if(!a)return '<div class="augv-slot empty" aria-label="Freier Platz '+(i+1)+'">'+
+        '<span class="augv-slot-number">'+(i+1)+'</span><span>Augment auswählen</span></div>';
+      const best=tiers[a.tier]===bestGrade;
+      return '<article class="augv-slot'+(best?' top-grade':'')+'">'+
+        '<div class="augv-slot-art">'+picture(a)+'<span class="augv-slot-grade">'+grade(a)+'</span></div>'+
+        '<div class="augv-slot-detail"><strong>'+escapeHTML(a.name)+'</strong>'+
+        '<small>'+escapeHTML(a.rarity==='Prismatic'?'Prismatisch':a.rarity==='Silver'?'Silber':a.rarity==='Gold'?'Gold':'Unbekannt')+
+        ' · '+escapeHTML(labels[a.tier]||labels['?'])+'</small>'+
+        '<p title="'+escapeHTML(a.description)+'">'+escapeHTML(a.description||'Keine überprüfte Beschreibung vorhanden.')+'</p></div>'+
+        '<button class="augv-slot-remove" type="button" data-av-remove="'+escapeHTML(a.id)+'" aria-label="'+escapeHTML(a.name)+' entfernen" title="Entfernen">×</button></article>';
+    }).join('');
+    let message='Klicke auf die großen Symbole unten, um bis zu drei Angebote zu vergleichen.';
+    if(selected.length===1)message='1 von 3 gewählt. Wähle die nächsten Symbole – du musst keine Namen eintippen.';
+    if(selected.length===2)message='2 von 3 gewählt. Ein Angebot fehlt noch.';
+    if(selected.length===3){
+      const strongest=ordered(rated);
+      if(strongest.length){
+        const equal=strongest.filter(a=>a.tier===strongest[0].tier).map(a=>a.name);
+        message='<b>Höchste allgemeine Einstufung:</b> '+escapeHTML(equal.join(' / '))+' ('+
+          escapeHTML(strongest[0].tier)+'). Die passende Wahl hängt trotzdem von deinem Board ab.';
+      }else message='Keines dieser Augments ist bewertet. Prüfe ihre Effekte im Spiel.';
+    }
+    $('augvVerdict').innerHTML=message;
+  }
+  function filtered(){
+    return list.filter(a=>(rarity==='all'||a.rarity===rarity)&&
+      (!search||a.name.toLowerCase().includes(search)||a.description.toLowerCase().includes(search)));
+  }
+  function renderGallery(){
+    const active=new Set(selected.map(a=>a.id));
+    $('augvRarity').querySelectorAll('[data-av-rarity]').forEach(b=>{
+      b.setAttribute('aria-pressed',String(b.dataset.avRarity===rarity));
+    });
+    const visible=filtered();
+    $('augvCount').textContent=loading?'Katalog wird geladen …':visible.length+' Augments · alphabetisch · Bild antippen';
+    $('augvGallery').setAttribute('aria-busy',String(loading));
+    $('augvGallery').innerHTML=visible.map(a=>{
+      const picked=active.has(a.id);
+      return '<button type="button" class="augv-pick" data-av-pick="'+escapeHTML(a.id)+'" aria-pressed="'+picked+
+       '" aria-label="'+escapeHTML(a.name+' — '+a.tier+' Tier'+(picked?', gewählt':''))+'" title="'+escapeHTML(a.name+(a.description?' — '+a.description:''))+'">'+
+       '<span class="augv-pick-art">'+picture(a)+grade(a)+(picked?'<span class="augv-picked">✓</span>':'')+'</span>'+
+       '<span class="augv-pick-name">'+escapeHTML(a.name)+'</span></button>';
+    }).join('')||(loading?'<p class="augv-empty">Augment-Symbole werden geladen …</p>':
+      '<p class="augv-empty">Keine Treffer. Anderen Seltenheitsfilter wählen oder Suche löschen.</p>');
+  }
+  function render(){renderComparison();renderGallery();}
+  function setRarity(next){
+    if(!['all','Silver','Gold','Prismatic'].includes(next))return;
+    rarity=next;renderGallery();$('augvGallery').scrollTop=0;
+  }
+  function selectAugment(id){
+    const a=index.get(id);if(!a)return;
+    const i=selected.findIndex(x=>x.id===id);
+    if(i>=0){selected.splice(i,1);}
+    else if(selected.length<3){selected.push(a);}
+    else {
+      $('augvVerdict').textContent='Drei ausgewählt. Entferne oben erst ein Augment (×), um ein anderes zu vergleichen.';
+      return;
+    }
+    render();
+  }
+  function updateCounts(){
+    const counts={Silver:0,Gold:0,Prismatic:0};
+    for(const a of list)if(a.rarity in counts)counts[a.rarity]++;
+    $('augvSilverCount').textContent=counts.Silver;
+    $('augvGoldCount').textContent=counts.Gold;
+    $('augvPrismaticCount').textContent=counts.Prismatic;
+  }
+  function applyCatalog(data){
+    const known=new Set();
+    list=(Array.isArray(data)?data:[]).filter(a=>{
+      if(!a||typeof a.name!=='string'||!a.name||known.has(a.name.toLowerCase()))return false;
+      known.add(a.name.toLowerCase());return true;
+    }).map(a=>({
+      id:a.id||a.name,name:a.name,rarity:a.rarity||'Unknown',
+      tier:tiers[a.tier]===undefined?'?':a.tier,
+      description:String(a.description||'').trim(),icon:a.icon||null
+    })).sort((a,b)=>collator.compare(a.name,b.name));
+    index.clear();for(const a of list)index.set(a.id,a);
+    loading=false;updateCounts();render();
+  }
+  function fallbackCatalog(){
+    const items=api.augmentHints||[];
+    return items.filter(a=>!a.inactive).map(a=>({
+      id:a.id,name:a.id,rarity:a.rarity||'Unknown',tier:a.tier||'?',
+      description:a.desc||'',icon:null
+    }));
+  }
+  root.addEventListener('click',e=>{
+    const b=e.target.closest('button');if(!b)return;
+    if(b.dataset.avRarity){setRarity(b.dataset.avRarity);return;}
+    if(b.dataset.avPick){selectAugment(b.dataset.avPick);return;}
+    if(b.dataset.avRemove){selectAugment(b.dataset.avRemove);return;}
+    if(b.id==='augvClear'){selected=[];render();return;}
+    if(b.id==='augvSearchClear'){$('augvSearch').value='';search='';renderGallery();$('augvSearch').focus();return;}
+    if(b.id==='augvFullTracker')api.openAugmentOffers?.();
   });
-  const {q,result}=matches();
-  const subset=result.slice(0,limit);
-  const selectedNames=new Set(selected.map(a=>a.id));
-  byId('augqCount').textContent=result.length+' Augment'+(result.length===1?'':'s')+
-    (q?' found':' listed')+' · S, A, B, C are general tiers';
-  byId('augqResults').innerHTML=subset.map(a=>{
-   const picked=selectedNames.has(a.id);
-   const d=(a.desc||'').slice(0,105);
-   return '<button type="button" class="augq-pick" data-augq-pick="'+esc(a.id)+'" aria-pressed="'+picked+'" title="'+esc(a.desc||'')+'">'+
-    badge(a.tier)+picture(a)+'<span style="min-width:0;flex:1">'+
-    '<strong class="augq-pick-name">'+esc(a.id)+'</strong><span class="augq-pick-detail">'+
-    esc(a.rarity||'Unknown')+' · '+esc(d)+(d.length>=105?'…':'')+'</span></span>'+
-    (picked?'<span class="augq-pick-check">✓</span>':'')+'</button>';
-  }).join('')||'<p class="augq-hint">No matching Augments in the saved tier list.</p>';
-  byId('augqShowMore').hidden=result.length<=limit;
-  byId('augqManual').innerHTML=q.length>=2&&!result.some(a=>a.id.toLowerCase()===q)?
-    '<button type="button" class="augq-unlisted" data-augq-custom="'+esc(q)+'">Not listed? Add “'+esc(byId('augqSearch').value.trim())+'” as unranked (?)</button>':'';
- }
- function render(){renderOffers();renderResults();}
- function choose(a){
-  const idx=selected.findIndex(s=>s.id===a.id);
-  if(idx>=0)selected.splice(idx,1);
-  else if(selected.length<3)selected.push(a);
-  else {
-   byId('augqStatus').textContent='Three already selected. Remove one (×) or clear the comparison first.';
-   return;
-  }
-  byId('augqSearch').value='';limit=32;render();
-  byId('augqSearch').focus({preventScroll:true});
- }
- root.addEventListener('click',event=>{
-  const button=event.target.closest('button');if(!button)return;
-  if(button.dataset.augqRarity){
-   rarity=button.dataset.augqRarity;limit=32;renderResults();
-  } else if(button.dataset.augqPick){
-   const a=catalog.find(x=>x.id===button.dataset.augqPick);
-   if(a)choose(a);
-  } else if(button.dataset.augqRemove){
-   selected=selected.filter(a=>a.id!==button.dataset.augqRemove);render();
-  } else if(button.dataset.augqCustom){
-   const name=byId('augqSearch').value.trim().replace(/\s+/g,' ').slice(0,90);
-   if(!name)return;
-   const known=catalog.find(a=>a.id.toLowerCase()===name.toLowerCase());
-   choose(known||{id:name,tier:'?',rarity:'Unknown',desc:'Not in the saved tier list. No rating is claimed.',manual:true});
-  } else if(button.id==='augqClear'){
-   selected=[];byId('augqSearch').value='';limit=32;render();
-  } else if(button.id==='augqShowMore'){
-   limit+=32;renderResults();
-  } else if(button.id==='augqFullTracker'){
-   api.openAugmentOffers();
-  }
- });
- byId('augqSearch').addEventListener('input',()=>{limit=32;renderResults();});
- document.getElementById('tftResetGame')?.addEventListener('click',()=>{
-  selected=[];byId('augqSearch').value='';rarity='all';limit=32;render();
- });
- window.resetAugmentQuick=()=>{selected=[];byId('augqSearch').value='';render();};
- render();
+  $('augvSearch').addEventListener('input',e=>{
+    search=e.target.value.trim().toLowerCase();
+    renderGallery();$('augvGallery').scrollTop=0;
+  });
+  document.getElementById('openingClear')?.addEventListener('click',()=>{
+    selected=[];$('augvSearch').value='';search='';render();
+  });
+  render();
+  const done=()=>{$('augvLoadNote').textContent='';};
+  fetch('./augments-set18.json?v=2',{cache:'default'}).then(response=>{
+    if(!response.ok)throw new Error('HTTP '+response.status);
+    return response.json();
+  }).then(json=>{
+    if(!json||!Array.isArray(json.entries)||json.entries.length<200)throw new Error('Katalog unvollständig');
+    applyCatalog(json.entries);done();
+  }).catch(()=>{
+    applyCatalog(fallbackCatalog());
+    $('augvLoadNote').innerHTML='<b>Hinweis:</b> Der große Symbolkatalog konnte nicht geladen werden. Es wird nur die kleinere, lokal hinterlegte Auswahl gezeigt. Bitte Seite neu laden.';
+  });
 })();
