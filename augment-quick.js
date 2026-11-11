@@ -62,8 +62,11 @@
     $('augvVerdict').innerHTML=message;
   }
   function filtered(){
-    return list.filter(a=>(rarity==='all'||a.rarity===rarity)&&
-      (!search||a.name.toLowerCase().includes(search)||a.description.toLowerCase().includes(search)));
+    const candidates=list.filter(a=>rarity==='all'||a.rarity===rarity);
+    if(!search)return candidates;
+    // Names matter most during a round. Search effects only when no name matches.
+    const byName=candidates.filter(a=>a.name.toLowerCase().includes(search));
+    return byName.length?byName:candidates.filter(a=>a.description.toLowerCase().includes(search));
   }
   function renderGallery(){
     const active=new Set(selected.map(a=>a.id));
